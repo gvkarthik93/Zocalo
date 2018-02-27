@@ -15,8 +15,40 @@
   <link rel="stylesheet" href="./css/content.css">
 </head>
 <body>
+
+<script type="text/javascript">
+
+  function funct(data){
+      var xhttp = new XMLHttpRequest();
+      xhttp.onreadystatechange = function() {
+
+        if(xhttp.readyState == 4 && xhttp.status == 200){
+          var jsonElem = JSON.parse(xhttp.responseText);
+          console.log("Response received from server: "+xhttp.responseText);
+          console.log("Testing Response");
+        }
+
+      };
+
+      xhttp.open("POST", "/login", true);
+      xhttp.send(data);
+  }
+
+  function test_button(){
+      var data = document.search_form.search_bar.value;
+      funct(data);
+    }
+</script>
+
   <div id="content"></div>
   <script src="bundle.js"></script>
+
+<div id="search_container">
+  <form method="POST" name="search_form" action="/Form">
+    <input type="text" name="search_bar" id="search_bar" placeholder="How can I help you?" onfocus="this.placeholder=''" onblur="this.placeholder='How can I help you?'" oninput="test_button()" autocomplete="off" />
+  </form>
+</div>
+
 
 <!--<div class="jumbotron">
   <div class="container text-center">

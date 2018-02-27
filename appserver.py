@@ -8,8 +8,9 @@ import cgi
 import threading
 import sqlite3
 import json
+from validation import UserValidation
 
-PORT = int(os.environ.get('PORT', 8080))
+PORT = int(os.environ.get('PORT', 8081))
 
 class myHandler(BaseHTTPRequestHandler):
     #Handler for GET requests
@@ -39,10 +40,19 @@ class myHandler(BaseHTTPRequestHandler):
         except IOError:
             self.send_error(404,'File Not Found: %s' % self.path)
 
-    #def do_GET(self):
-    #    self.send_response(200)
-    #    self.end_headers()
-    #    self.wfile.write(b"<html><body>Zocalo</body></html>")
+    def do_POST(self):
+        if self.path == "/login":
+            # Logic
+            dataVariable = self.headers['Content-Length']
+            #dataVariable contains the length of the variable provided in the string format
+            dataVar = int(dataVariable)
+            user_input = self.rfile.read(dataVar).decode().strip()
+            print ("user input: ", user_input)
+            validate_user = UserValidation()
+            if validate_user.validateCredentials("username", "password"):
+                print ("Valid User")
+            else:
+                print ("Invalid User")
 
 class ThreadedTCPServer(socketserver.ThreadingMixIn, socketserver.TCPServer):
     pass

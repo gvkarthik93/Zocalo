@@ -10,7 +10,7 @@ import sqlite3
 import json
 from validation import UserValidation
 
-PORT = int(os.environ.get('PORT', 8081))
+PORT = int(os.environ.get('PORT', 8080))
 
 class myHandler(BaseHTTPRequestHandler):
     #Handler for GET requests

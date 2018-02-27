@@ -50,7 +50,14 @@ class myHandler(BaseHTTPRequestHandler):
             print ("user input: ", user_input)
             validate_user = UserValidation()
             if validate_user.validateCredentials("username", "password"):
+                validation_response = {"User_Detail":"Valid"}
+                validation_response = json.dumps(validation_response)
                 print ("Valid User")
+                self.send_response(200)
+                self.send_header("Content-type", "text/plain")
+                self.end_headers()
+                self.flush_headers()
+                self.wfile.write(validation_response.encode("utf-8"))
             else:
                 print ("Invalid User")
 

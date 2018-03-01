@@ -1,7 +1,15 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import Login from './Login';
+
+const App = () => (
+  <MuiThemeProvider>
+    <Login />
+  </MuiThemeProvider>
+);
 
 ReactDOM.render(
-  <h1>Hello, world!</h1>,
+  <App />,
   document.getElementById('content')
 );

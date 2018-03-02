@@ -54,6 +54,7 @@ class myHandler(BaseHTTPRequestHandler):
                 print ("Valid User")
                 self.send_response(200)
                 self.send_header("Content-type", "text/plain")
+                self.send_header("Access-Control-Allow-Origin", "localhost:3000")
                 self.end_headers()
                 self.flush_headers()
                 self.wfile.write(validation_response.encode("utf-8"))

@@ -4,7 +4,8 @@
   "description": "Open source platform for collaboration among students and professors",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "webpack-dev-server --port 3000 --host 0.0.0.0 --progress --colors --content-base ./",
+    "build": "webpack --config webpack.config.js"
   },
   "repository": {
     "type": "git",
@@ -21,7 +22,8 @@
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
     "react-flexbox-grid": "^2.0.0",
-    "webpack": "^4.0.1"
+    "webpack": "^4.0.1",
+    "whatwg-fetch": "^2.0.3"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
@@ -31,6 +33,7 @@
     "babel-preset-react": "^6.24.1",
     "css-loader": "^0.28.10",
     "style-loader": "^0.20.2",
-    "webpack-cli": "^2.0.9"
+    "webpack-cli": "^2.0.9",
+    "webpack-dev-server": "^3.1.0"
   }
 }

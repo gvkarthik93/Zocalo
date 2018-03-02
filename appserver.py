@@ -61,6 +61,19 @@ class myHandler(BaseHTTPRequestHandler):
             else:
                 print ("Invalid User")
 
+        if self.path == "/post_question":
+            # Logic
+            print ("post question")
+
+        if self.path == "/update":
+            # Logic
+            print ("Update Post")
+
+        if self.path == "/delete":
+            # Logic
+            print ("Delete Post")
+
+
 class ThreadedTCPServer(socketserver.ThreadingMixIn, socketserver.TCPServer):
     pass
 

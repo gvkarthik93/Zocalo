@@ -35,15 +35,12 @@ export default class Login extends Component {
   }
   handleChangeUsername(e) {
       this.setState({username: e.target.value});
-      console.log(this.state.username);
   }
   handleChangePassword(e) {
       this.setState({password: e.target.value});
-      console.log(this.state.password);
   }
   handleSubmit(e) {
       e.preventDefault();
-      console.log(this);
       this.sendPostRequest();
       console.log("Submitted");
   }

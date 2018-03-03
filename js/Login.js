@@ -2,12 +2,22 @@ import React, { Component } from 'react';
 import Paper from 'material-ui/Paper';
 import TextField from 'material-ui/TextField';
 import {RadioButton, RadioButtonGroup} from 'material-ui/RadioButton';
+import RaisedButton from 'material-ui/RaisedButton';
 import {Grid, Row, Col} from 'react-flexbox-grid/lib/index';
 import 'whatwg-fetch';
 
 export default class Login extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
+    this.state = {
+        username: '',
+        password: ''
+    };
+    this.handleChangeUsername = this.handleChangeUsername.bind(this);
+    this.handleChangePassword = this.handleChangePassword.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+  }
+  sendPostRequest() {
     fetch('/login', {
       credentials: 'include',
       method: 'POST',
@@ -15,12 +25,27 @@ export default class Login extends Component {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        name: 'Hubot',
-        login: 'hubot',
+        type: 'login',
+        username: this.state.username,
+        password: this.state.password
       })
     }).then(function(res) {
       console.log(res);
     })
+  }
+  handleChangeUsername(e) {
+      this.setState({username: e.target.value});
+      console.log(this.state.username);
+  }
+  handleChangePassword(e) {
+      this.setState({password: e.target.value});
+      console.log(this.state.password);
+  }
+  handleSubmit(e) {
+      e.preventDefault();
+      console.log(this);
+      this.sendPostRequest();
+      console.log("Submitted");
   }
   render() {
     return (
@@ -31,10 +56,14 @@ export default class Login extends Component {
               <h1 style={styles.title}>Login</h1>
               <TextField
                 floatingLabelText="Username"
+                value={this.state.username}
+                onChange={this.handleChangeUsername}
               /><br/>
               <TextField
                 floatingLabelText="Password"
                 type="password"
+                value={this.state.password}
+                onChange={this.handleChangePassword}
               /><br/>
               <TextField
                 floatingLabelText="Email"
@@ -56,6 +85,8 @@ export default class Login extends Component {
                   />
                 </RadioButtonGroup>
               </div>
+              <RaisedButton label="Submit" primary={true} style={styles.submitButton}
+                onClick={this.handleSubmit}/>
             </Paper>
           </Col>
           <Col md={2} lg={2}/>
@@ -79,10 +110,13 @@ const styles = {
     marginBottom: 16,
     width: '256px'
   },
+  submitButton: {
+    margin: 12
+  },
   title: {
       fontFamily: 'Nunito, sans-serif',
       fontWeight: '700',
       fontSize: '32px',
       marginTop: '10px'
   }
-};
+}

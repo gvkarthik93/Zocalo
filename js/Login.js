@@ -8,7 +8,7 @@ import 'whatwg-fetch';
 export default class Login extends Component {
   constructor() {
     super();
-    fetch('http://localhost:8080/login', {
+    fetch('/login', {
       credentials: 'include',
       method: 'POST',
       headers: {
@@ -28,6 +28,7 @@ export default class Login extends Component {
           <Col md={2} lg={2}/>
           <Col md={8} lg={8}>
             <Paper style={styles.container}>
+              <h1 style={styles.title}>Login</h1>
               <TextField
                 floatingLabelText="Username"
               /><br/>
@@ -78,4 +79,10 @@ const styles = {
     marginBottom: 16,
     width: '256px'
   },
+  title: {
+      fontFamily: 'Nunito, sans-serif',
+      fontWeight: '700',
+      fontSize: '32px',
+      marginTop: '10px'
+  }
 };

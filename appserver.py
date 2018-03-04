@@ -8,6 +8,7 @@ import cgi
 import threading
 import sqlite3
 import json
+#from validate import UserValidation
 
 PORT = int(os.environ.get('PORT', 8080))
 
@@ -40,26 +41,39 @@ class myHandler(BaseHTTPRequestHandler):
             self.send_error(404,'File Not Found: %s' % self.path)
 
     def do_POST(self):
+        if self.path == "/signup":
+            # Logic
+            dataVariable = self.headers['Content-Length']
+            #dataVariable contains the length of the variable provided in the string format
+            dataVar = int(dataVariable)
+            user_input = self.rfile.read(dataVar).decode().strip()
+            user_details = json.loads(user_input)
+            print ("user input: ", user_details)
+
+            if True:
+                #UserValidation.register(user_details)
+                print ("Registered User")
+                validation_response = {"User_Detail":"Valid"}
+                validation_response = json.dumps(validation_response)
+                print ("Sending Registration Confirmation")
+                self.send_response(200)
+                self.send_header("Content-type", "text/plain")
+                #self.send_header("Access-Control-Allow-Origin", "localhost:3000")
+                self.end_headers()
+                self.flush_headers()
+                self.wfile.write(validation_response.encode("utf-8"))
+            else:
+                print ("Invalid User")
+
+
         if self.path == "/login":
             # Logic
             dataVariable = self.headers['Content-Length']
             #dataVariable contains the length of the variable provided in the string format
             dataVar = int(dataVariable)
             user_input = self.rfile.read(dataVar).decode().strip()
-            print ("user input: ", user_input)
+            print ("Login Credentials: ", user_input)
 
-            if True:
-                validation_response = {"User_Detail":"Valid"}
-                validation_response = json.dumps(validation_response)
-                print ("Valid User")
-                self.send_response(200)
-                self.send_header("Content-type", "text/plain")
-                self.send_header("Access-Control-Allow-Origin", "localhost:3000")
-                self.end_headers()
-                self.flush_headers()
-                self.wfile.write(validation_response.encode("utf-8"))
-            else:
-                print ("Invalid User")
 
         if self.path == "/post_question":
             # Logic

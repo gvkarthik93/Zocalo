@@ -108,6 +108,7 @@ export default class Signup extends Component {
                 disabled={this.state.username == ""
                 || this.state.password == ""
                 || this.state.email == ""
+                || this.validateEmail() == false
                 || this.state.fullname == ""
                 || this.state.password != this.state.retypepass ? true : false}/>
             </Paper>

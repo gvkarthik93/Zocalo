@@ -12,11 +12,15 @@ export default class Signup extends Component {
     this.state = {
         username: '',
         password: '',
+        retypepass:'',
         email: '',
         fullname: ''
     };
     this.handleChangeUsername = this.handleChangeUsername.bind(this);
     this.handleChangePassword = this.handleChangePassword.bind(this);
+    this.handleChangeRetypePass = this.handleChangeRetypePass.bind(this);
+    this.handleChangeEmail = this.handleChangeEmail.bind(this);
+    this.handleChangeFullName = this.handleChangeFullName.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
   sendPostRequest() {
@@ -38,11 +42,18 @@ export default class Signup extends Component {
       console.log(res);
     })
   }
+  validateEmail() {
+    let re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test(this.state.email);
+  }
   handleChangeUsername(e) {
-      this.setState({username: e.target.value});
+    this.setState({username: e.target.value});
   }
   handleChangePassword(e) {
       this.setState({password: e.target.value});
+  }
+  handleChangeRetypePass(e) {
+      this.setState({retypepass: e.target.value});
   }
   handleChangeEmail(e) {
       this.setState({email: e.target.value});
@@ -74,10 +85,18 @@ export default class Signup extends Component {
                 onChange={this.handleChangePassword}
               /><br/>
               <TextField
+                floatingLabelText="Retype Password"
+                type="password"
+                value={this.state.retypepass}
+                onChange={this.handleChangeRetypePass}
+                errorText={this.state.retypepass == this.state.password || this.state.retypepass == "" ? null : "Retyped password is different from your password!"}
+              /><br/>
+              <TextField
                 floatingLabelText="Email"
                 type="email"
                 value={this.state.email}
                 onChange={this.handleChangeEmail}
+                errorText={this.validateEmail() || this.state.email == "" ? null : "Please enter a valid email."}
               /><br/>
               <TextField
                 floatingLabelText="Full name"
@@ -86,7 +105,11 @@ export default class Signup extends Component {
               /><br/>
               <RaisedButton label="Submit" primary={true} style={styles.submitButton}
                 onClick={this.handleSubmit}
-                disabled={this.state.username == "" || this.state.password == "" || this.state.email == "" || this.state.fullname == "" ? true : false}/>
+                disabled={this.state.username == ""
+                || this.state.password == ""
+                || this.state.email == ""
+                || this.state.fullname == ""
+                || this.state.password != this.state.retypepass ? true : false}/>
             </Paper>
           </Col>
           <Col md={2} lg={2}/>

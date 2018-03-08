@@ -4,7 +4,7 @@ import tornado.ioloop
 import tornado.web
 import json
 import tornado.escape
-
+from temp_data import tempData
 
 class MainHandler(tornado.web.RequestHandler):
     def get(self):
@@ -14,12 +14,21 @@ class LoginHandler(tornado.web.RequestHandler):
     def post(self):
         data = tornado.escape.json_decode(self.request.body)
         print (data)
-        self.write(json.dumps({"A":1}))
+        response = tempData()
+        self.write(json.dumps(response))
+
+class SignupHandler(tornado.web.RequestHandler):
+    def post(self):
+        data = tornado.escape.json_decode(self.request.body)
+        print (data)
+        response = tempData()
+        self.write(json.dumps(response))
 
 def main():
     application = tornado.web.Application([
         (r"/", MainHandler),
         (r"/login", LoginHandler),
+        (r"/sign_up", SignupHandler),
         (r'/(.*)', tornado.web.StaticFileHandler, {'path': './'}),
         (r"/image/*.png", tornado.web.StaticFileHandler, {'path':'./image/'}),
     ])

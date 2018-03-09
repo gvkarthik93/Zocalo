@@ -14,13 +14,19 @@ class LoginHandler(tornado.web.RequestHandler):
     def post(self):
         data = tornado.escape.json_decode(self.request.body)
         print (data)
+        print (self.request.getall())
         response = tempData()
         self.write(json.dumps(response))
 
 class SignupHandler(tornado.web.RequestHandler):
     def post(self):
         data = tornado.escape.json_decode(self.request.body)
-        print (data)
+        response = tempData()
+        self.write(json.dumps(response))
+
+class GetPostContent(tornado.web.RequestHandler):
+    def post(self):
+        data = tornado.escape.json_decode(self.request.body)
         response = tempData()
         self.write(json.dumps(response))
 

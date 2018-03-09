@@ -8,8 +8,18 @@ engine = create_engine('mysql+mysqldb://root:0529@localhost:3306/Zocalo')
 Session = sessionmaker(bind=engine)
 session = Session()
 
-class UserValidation:
+class ValidateCredentials:
+    def validate_login_details(self):
+        # Fetch Username, Password, EmailID
 
+    def validate_signup_details(self):
+        # Fetch Username, Password, EmailID
+
+class FetchCredentials:
+    def fetch_user_details(self):
+        # Fetch Username, Password, EmailID
+
+class UserCredentials:
     def login(self, u_n, pwd):
             try:
                 user = session.query(User).filter_by(user_name=u_n).one()

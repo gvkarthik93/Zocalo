@@ -25,7 +25,7 @@ export default class Signup extends Component {
   }
   sendPostRequest() {
     //Change to post to signup
-    fetch('/login', {
+    fetch('/sign_up', {
       credentials: 'include',
       method: 'POST',
       headers: {

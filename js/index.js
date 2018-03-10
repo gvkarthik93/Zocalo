@@ -1,11 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import Signup from './Signup';
+import Mainpage from './Mainpage';
 
 const App = () => (
   <MuiThemeProvider>
-    <Signup />
+    <Mainpage />
   </MuiThemeProvider>
 );
 

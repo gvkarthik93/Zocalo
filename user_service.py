@@ -21,8 +21,10 @@ class UserService:
             user = session.query(User).filter_by(user_name=u_n).one()
         except NoResultFound:
             return (-1, "No username founded")
+        except MultipleResultsFound:
+            pass
 
-        return ("Success", "") if user.password == self.hash_password(pwd) \
+        return (1, "Success") if user.password == self.hash_password(pwd) \
             else (-1, "Wrong password")
 
 
@@ -47,11 +49,12 @@ class UserService:
             user = session.query(User).filter_by(user_name=u_n).one()
         except NoResultFound:
             return (-1, "No username founded")
+        except MultipleResultsFound:
+            pass
 
         user.password = self.hash_password(pwd)
         session.commit()
-        return (1, "Success")
-        
+        return (1, "Success")   
 
     def reset_password(self):
         pass

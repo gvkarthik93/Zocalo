@@ -30,11 +30,27 @@ class GetPostContent(tornado.web.RequestHandler):
         response = tempData()
         self.write(json.dumps(response))
 
+class ChangePassword(tornado.web.RequestHandler):
+    def post(self):
+        data = tornado.escape.json_decode(self.request.body)
+        response = tempData()
+        self.write(json.dumps(response))
+
+class ResetPassword(tornado.web.RequestHandler):
+    def post(self):
+        data = tornado.escape.json_decode(self.request.body)
+        response = tempData()
+        self.write(json.dumps(response))
+
+
 def main():
     application = tornado.web.Application([
         (r"/", MainHandler),
         (r"/login", LoginHandler),
         (r"/sign_up", SignupHandler),
+        (r"/post_details", GetPostContent),
+        (r"/change_password", ChangePassword),
+        (r"/reset_password", ResetPassword),
         (r'/(.*)', tornado.web.StaticFileHandler, {'path': './'}),
         (r"/image/*.png", tornado.web.StaticFileHandler, {'path':'./image/'}),
     ])

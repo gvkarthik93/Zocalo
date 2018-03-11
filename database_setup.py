@@ -25,8 +25,8 @@ class UserCourse(Base):
     course_id = Column(Integer, ForeignKey("courses.id"), primary_key=True)
     role_id = Column(Integer, ForeignKey("role.id"), nullable=False)
     
-    u_c = relationship("User", back_populates="course")
-    c_u = relationship("Course", back_populates="user")
+    u_c = relationship("User", back_populates="courses")
+    c_u = relationship("Course", back_populates="users")
 
 
 class User(Base):
@@ -39,8 +39,8 @@ class User(Base):
     email_setting_id = Column(Integer, ForeignKey("email_setting.id"))
 
     email_setting = relationship("EmailSetting", back_populates="users")
-    course = relationship("UserCourse", back_populates="u_c")
-    replies = relationship("Reply", back_populates="users")
+    courses = relationship("UserCourse", back_populates="u_c")
+    replies = relationship("Reply", back_populates="user")
 
     def __repr__(self):
         return "<User(user_name='%s', password='%s', name='%s', email='%s')>" % (
@@ -54,8 +54,8 @@ class Course(Base):
     school_name = Column(String(100), nullable=False)
     course_title = Column(String(100), nullable=False)
 
-    user = relationship("UserCourse", back_populates="c_u")
-    posts = relationship("Course", back_populates="posts")
+    users = relationship("UserCourse", back_populates="c_u")
+    posts = relationship("Post", back_populates="course")
 
     def __repr__(self):
         return "<Course(course_name='%s', school_name='%s', course_title='%s')>" % (
@@ -116,10 +116,10 @@ class Post(Base):
     visibility_type = relationship("VisibilityType", back_populates="posts")
     post_type = relationship("PostType", back_populates="posts")
     course = relationship("Course", back_populates="posts")
-    replies = relationship("Reply", back_populates="posts")
+    replies = relationship("Reply", back_populates="post")
     
-    post_author = relationship("User", foreign_keys=[post_username], back_populates="posts")
-    answer_ta = relationship("User", foreign_keys=[answerer_username], back_populates="posts")
+    post_author = relationship("User", foreign_keys=[post_username])
+    answer_ta = relationship("User", foreign_keys=[answerer_username])
     
     def __repr__(self):
         return "<Post(header='%s', short_description='%s', description='%s', \
@@ -132,14 +132,14 @@ class Reply(Base):
     __tablename__ = 'replies'
 
     id = Column(Integer, primary_key=True)
-    post_id = Column(Integer, ForeignKey("posts.id"))    
+    post_id = Column(Integer, ForeignKey("posts.id"))
     username = Column(String(100), ForeignKey("users.user_name"))
     answer = Column(String(1000))
     create_time = Column(Time, nullable=False)
     vote_count = Column(Integer, default=0)
 
     post = relationship("Post", back_populates="replies")
-    user = relationship("User", back_populates="users")
+    user = relationship("User", back_populates="replies")
 
     def __repr__(self):
         return "<Reply(postid='%s', answer='%s', create_time='%s', \

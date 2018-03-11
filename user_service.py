@@ -20,12 +20,12 @@ class UserService:
         try:
             user = session.query(User).filter_by(user_name=u_n).one()
         except NoResultFound:
-            return (-1, "No username founded")
+            return (0, "No username founded")
         except MultipleResultsFound:
             pass
 
         return (1, "Success") if user.password == self.hash_password(pwd) \
-            else (-1, "Wrong password")
+            else (0, "Wrong password")
 
 
     def register(self, info):
@@ -48,7 +48,7 @@ class UserService:
         try:
             user = session.query(User).filter_by(user_name=u_n).one()
         except NoResultFound:
-            return (-1, "No username founded")
+            return (0, "No username founded")
         except MultipleResultsFound:
             pass
 

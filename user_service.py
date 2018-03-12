@@ -56,8 +56,5 @@ class UserService:
         session.commit()
         return (1, "Success")   
 
-    def reset_password(self):
-        pass
-
-    def check_admin(self):
+    def forget_password(self):
         pass

@@ -5,7 +5,6 @@ import {RadioButton, RadioButtonGroup} from 'material-ui/RadioButton';
 import RaisedButton from 'material-ui/RaisedButton';
 import {Grid, Row, Col} from 'react-flexbox-grid/lib/index';
 import 'whatwg-fetch';
-var toJSON = require('stream-to-json');
 
 export default class Login extends Component {
   constructor(props) {

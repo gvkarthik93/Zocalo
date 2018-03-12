@@ -4,6 +4,7 @@ import {Card, CardActions, CardHeader, CardText} from 'material-ui/Card';
 import Drawer from 'material-ui/Drawer';
 import MenuItem from 'material-ui/MenuItem';
 import Paper from 'material-ui/Paper';
+import RaisedButton from 'material-ui/RaisedButton';
 import {Grid, Row, Col} from 'react-flexbox-grid/lib/index';
 var _ = require('lodash');
 export default class Mainpage extends Component {
@@ -52,6 +53,7 @@ export default class Mainpage extends Component {
       <div>
         <AppBar
           title="Zocalo"
+          iconElementRight={<RaisedButton label="Login" style={styles.rightButton}/>}
         />
         <Drawer open={true}>
           <AppBar title="Zocalo" />
@@ -69,5 +71,8 @@ const styles = {
   },
   cardContainer: {
     padding: '10px 0px'
+  },
+  rightButton: {
+    marginTop: '6px'
   }
 }

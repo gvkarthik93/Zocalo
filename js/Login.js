@@ -5,6 +5,7 @@ import {RadioButton, RadioButtonGroup} from 'material-ui/RadioButton';
 import RaisedButton from 'material-ui/RaisedButton';
 import {Grid, Row, Col} from 'react-flexbox-grid/lib/index';
 import 'whatwg-fetch';
+var toJSON = require('stream-to-json');
 
 export default class Login extends Component {
   constructor(props) {
@@ -30,7 +31,9 @@ export default class Login extends Component {
         password: this.state.password
       })
     }).then(function(res) {
-      console.log(res);
+      return res.json();
+    }).then(function(data) {
+      console.log(data);
     })
   }
   handleChangeUsername(e) {
@@ -62,26 +65,6 @@ export default class Login extends Component {
                 value={this.state.password}
                 onChange={this.handleChangePassword}
               /><br/>
-              <TextField
-                floatingLabelText="Email"
-              /><br/>
-              <TextField
-                floatingLabelText="Full name"
-              /><br/>
-              <div>
-                <RadioButtonGroup name="Role" defaultSelected="student">
-                  <RadioButton
-                    value="student"
-                    label="Student"
-                    style={styles.radioButton}
-                  />
-                  <RadioButton
-                    value="instructor"
-                    label="Instructor"
-                    style={styles.radioButton}
-                  />
-                </RadioButtonGroup>
-              </div>
               <RaisedButton label="Submit" primary={true} style={styles.submitButton}
                 onClick={this.handleSubmit}/>
             </Paper>

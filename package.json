@@ -24,6 +24,7 @@
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
     "react-flexbox-grid": "^2.0.0",
+    "stream-to-json": "0.0.1",
     "webpack": "^4.0.1",
     "whatwg-fetch": "^2.0.3"
   },

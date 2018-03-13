@@ -24,7 +24,43 @@ class SignupHandler(tornado.web.RequestHandler):
         response = tempData()
         self.write(json.dumps(response))
 
-class GetPostContent(tornado.web.RequestHandler):
+class PostNewQuestion(tornado.web.RequestHandler):
+    def post(self):
+        data = tornado.escape.json_decode(self.request.body)
+        response = tempData()
+        self.write(json.dumps(response))
+
+class PostNewAnswer(tornado.web.RequestHandler):
+    def post(self):
+        data = tornado.escape.json_decode(self.request.body)
+        response = tempData()
+        self.write(json.dumps(response))
+
+class GetSpecificPostContent(tornado.web.RequestHandler):
+    def post(self):
+        data = tornado.escape.json_decode(self.request.body)
+        response = tempData()
+        self.write(json.dumps(response))
+
+class EditSpecificPost(tornado.web.RequestHandler):
+    def post(self):
+        data = tornado.escape.json_decode(self.request.body)
+        response = tempData()
+        self.write(json.dumps(response))
+
+class DeleteSpecificPost(tornado.web.RequestHandler):
+    def post(self):
+        data = tornado.escape.json_decode(self.request.body)
+        response = tempData()
+        self.write(json.dumps(response))
+
+class EditSpecificPostContent(tornado.web.RequestHandler):
+    def post(self):
+        data = tornado.escape.json_decode(self.request.body)
+        response = tempData()
+        self.write(json.dumps(response))
+
+class DeleteSpecificPostContent(tornado.web.RequestHandler):
     def post(self):
         data = tornado.escape.json_decode(self.request.body)
         response = tempData()
@@ -42,6 +78,11 @@ class ResetPassword(tornado.web.RequestHandler):
         response = tempData()
         self.write(json.dumps(response))
 
+class ChangeDisplayName(tornado.web.RequestHandler):
+    def post(self):
+        data = tornado.escape.json_decode(self.request.body)
+        response = tempData()
+        self.write(json.dumps(response))
 
 def main():
     application = tornado.web.Application([

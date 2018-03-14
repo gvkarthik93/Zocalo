@@ -1,4 +1,5 @@
 from sqlalchemy import create_engine
+from sqlalchemy import exists
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.orm.exc import MultipleResultsFound
@@ -13,8 +14,13 @@ class UserService:
     def hash_password(self, pwd):
         return pwd
 
-    def check_valid():
-        pass
+    def check_valid(self, input_email):
+        #use exist because we are just trying to find if input_email exist already, can switch back to try, except clause
+        exist = session.query(exists().where(User.email==input_email)).scalar()
+        if exist:
+            return (1, "This e-mail is already in the database")
+        else:
+            return(0, "This e-mail is not in the database")
 
     def login(self, u_n, pwd):
         try:

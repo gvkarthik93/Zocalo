@@ -1,5 +1,5 @@
 from sqlalchemy import create_engine
-from sqlalchemy import Column, String, Integer, Time, ForeignKey
+from sqlalchemy import Column, String, Integer, DateTime, ForeignKey, UniqueConstraint, func
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
 
@@ -54,6 +54,8 @@ class Course(Base):
     school_name = Column(String(100), nullable=False)
     course_title = Column(String(100), nullable=False)
 
+    # UniqueConstraint('course_name', 'school_name', )
+
     users = relationship("UserCourse", back_populates="c_u")
     posts = relationship("Post", back_populates="course")
 
@@ -103,9 +105,10 @@ class Post(Base):
 
     id = Column(Integer, primary_key=True)
     header = Column(String(100), nullable=False)
-    short_description = Column(String(500))
+    summary = Column(String(500))
     description = Column(String(1000))
-    create_time = Column(Time, nullable=False)
+    create_time = Column(DateTime, default=func.now())
+    tag = Column(String(100))
     vote_count = Column(Integer, default=0)
     post_username = Column(String(100), ForeignKey("users.user_name"))
     answerer_username = Column(String(100), ForeignKey("users.user_name"))
@@ -122,9 +125,9 @@ class Post(Base):
     answer_ta = relationship("User", foreign_keys=[answerer_username])
     
     def __repr__(self):
-        return "<Post(header='%s', short_description='%s', description='%s', \
+        return "<Post(header='%s', summary='%s', description='%s', \
                 create_time='%s', post_username='%s', answer='%s', vote_count='%s')>" % (
-                    self.header, self.short_description, self.description, \
+                    self.header, self.summary, self.description, \
                     self.create_time, self.post_username, self.answerer_username, 
                     self.vote_count)
 
@@ -135,7 +138,7 @@ class Reply(Base):
     post_id = Column(Integer, ForeignKey("posts.id"))
     username = Column(String(100), ForeignKey("users.user_name"))
     answer = Column(String(1000))
-    create_time = Column(Time, nullable=False)
+    create_time = Column(DateTime, default=func.now())
     vote_count = Column(Integer, default=0)
 
     post = relationship("Post", back_populates="replies")

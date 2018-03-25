@@ -16,13 +16,17 @@ export default class Mainpage extends Component {
     super(props);
     this.state = {
       filter: "All",
-      open: false,
+      openDetailDialog: false,
+      openCommentDialog: false,
       currentPost: null
     };
     this.handleFilter = this.handleFilter.bind(this);
     this.getFilteredData = this.getFilteredData.bind(this);
-    this.handleOpen = this.handleOpen.bind(this);
-    this.handleClose = this.handleClose.bind(this);
+    this.handleOpenDetailDialog = this.handleOpenDetailDialog.bind(this);
+    this.handleCloseDetailDialog = this.handleCloseDetailDialog.bind(this);
+    this.handleOpenCommentDialog = this.handleOpenCommentDialog.bind(this);
+    this.handleCloseCommentDialog = this.handleCloseCommentDialog.bind(this);
+    this.handleAddComment = this.handleAddComment.bind(this);
   }
   getTempData() {
     var data = {"ID1":{"Post": "Is there an exam tomorrow?" ,"Desc": "I am having a conflict. Do we have an exam tomorrow?", "TAG": "Exam", "VOTE": 10, "Time":"03-08-2018", "Author": "Alice"},
@@ -50,14 +54,25 @@ export default class Mainpage extends Component {
     this.setState({filter: tag});
     console.log(tag);
   }
-  handleOpen(post, e) {
+  handleOpenDetailDialog(post, e) {
     e.preventDefault();
-    this.setState({open: true});
+    this.setState({openDetailDialog: true});
     this.setState({currentPost: post})
   }
-  handleClose(e) {
-    this.setState({open: false});
+  handleCloseDetailDialog(e) {
+    this.setState({openDetailDialog: false});
     this.setState({currentPost: null});
+  }
+  handleOpenCommentDialog(e) {
+    e.preventDefault();
+    this.setState({openCommentDialog: true});
+  }
+  handleCloseCommentDialog(e) {
+    e.preventDefault();
+    this.setState({openCommentDialog: false});
+  }
+  handleAddComment() {
+    console.log("Comment added.");
   }
   render() {
     var posts = [];
@@ -77,7 +92,7 @@ export default class Mainpage extends Component {
               {value.Desc}
             </CardText>
             <CardActions>
-              <RaisedButton label="more" primary={true} onClick={this.handleOpen.bind(this, value)} style={styles.rightButton}/>
+              <RaisedButton label="more" primary={true} onClick={this.handleOpenDetailDialog.bind(this, value)} style={styles.rightButton}/>
             </CardActions>
           </Card>
         </div>
@@ -98,16 +113,29 @@ export default class Mainpage extends Component {
         </div>
       </div>);
 
-    const actions = [
+    const detailActions = [
       <FlatButton
         label="Add comment"
         primary={true}
-        onClick={this.handleClose}
+        onClick={this.handleOpenCommentDialog}
       />,
       <FlatButton
         label="Close"
         primary={true}
-        onClick={this.handleClose}
+        onClick={this.handleCloseDetailDialog}
+      />,
+    ];
+
+    const commentActions = [
+      <FlatButton
+        label="OK"
+        primary={true}
+        onClick={this.handleAddComment}
+      />,
+      <FlatButton
+        label="Cancel"
+        primary={true}
+        onClick={this.handleCloseCommentDialog}
       />,
     ];
 
@@ -126,13 +154,22 @@ export default class Mainpage extends Component {
         </div>
         <Dialog
           title= {this.state.currentPost == null ? "Post" : this.state.currentPost.Post}
-          actions={actions}
+          actions={detailActions}
           modal={false}
-          open={this.state.open}
-          onRequestClose={this.handleClose}
+          open={this.state.openDetailDialog}
+          onRequestClose={this.handleCloseDetailDialog}
           autoScrollBodyContent={true}
         >
           <p>{this.state.currentPost == null ? "Details" : this.state.currentPost.Desc}</p>
+        </Dialog>
+        <Dialog
+          title= {this.state.currentPost == null ? "Post" : this.state.currentPost.Post}
+          actions={commentActions}
+          modal={false}
+          open={this.state.openCommentDialog}
+          onRequestClose={this.handleCloseCommentDialog}
+        >
+          <p>Add comment</p>
         </Dialog>
       </div>
 

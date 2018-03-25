@@ -9,21 +9,16 @@ import RaisedButton from 'material-ui/RaisedButton';
 import {Grid, Row, Col} from 'react-flexbox-grid/lib/index';
 //import 'react-sticky-header/styles.css';
 //import StickyHeader from 'react-sticky-header';
-import {ScrollBox, ScrollAxes, FastTrack} from 'react-scroll-box';
 import SearchBar from './SearchBar';
 var _ = require('lodash');
 export default class Mainpage extends Component {
   constructor(props) {
     super(props);
     this.state = {
-
+      filter: "All"
     };
-    // this.handleChangeUsername = this.handleChangeUsername.bind(this);
-    // this.handleChangePassword = this.handleChangePassword.bind(this);
-    // this.handleChangeRetypePass = this.handleChangeRetypePass.bind(this);
-    // this.handleChangeEmail = this.handleChangeEmail.bind(this);
-    // this.handleChangeFullName = this.handleChangeFullName.bind(this);
-    // this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleFilter = this.handleFilter.bind(this);
+    this.getFilteredData = this.getFilteredData.bind(this);
   }
   getTempData() {
     var data = {"ID1":{"Post": "Is there an exam tomorrow?" ,"Desc": "I am having a conflict. Do we have an exam tomorrow?", "TAG": "Exam", "VOTE": 10, "Time":"03-08-2018", "Author": "Alice"},
@@ -35,14 +30,34 @@ export default class Mainpage extends Component {
   	"ID7":{"Post": "Should I join Google or GS?" ,"Desc": "I am confused!!!", "TAG": "Just Alice Things", "VOTE": 10, "Time":"03-01-2018", "Author": "Alice"}}
     return data;
   }
+  getFilteredData() {
+    var data = _.values(this.getTempData());
+    if (this.state.filter == "All") return data;
+    var data = [];
+    _.forEach (this.getTempData(), function(value, key) {
+      if (value.TAG == this.state.filter) {
+        data.push(value);
+      };
+    }.bind(this));
+    // var data = _.filter(getTempData(), function(o) {
+    //   return o.TAG == this.state.filter;
+    // });
+    return data;
+  }
+  handleFilter(tag, e) {
+    e.preventDefault();
+    this.setState({filter: tag});
+    console.log(tag);
+  }
   render() {
     console.log("Changed");
     // <CardActions>
     //   <RaisedButton label="more" style={styles.rightButton}/>
     // </CardActions>
-    var posts = _.map(this.getTempData(), function(value, key) {
+    var posts = [];
+    _.forEach(this.getFilteredData(), function(value) {
       var ava = <Avatar>{value.Author[0]}</Avatar>
-      return (
+      posts.push (
         <div style={styles.cardContainer}>
           <Card>
             <CardHeader
@@ -63,8 +78,9 @@ export default class Mainpage extends Component {
       return value.TAG;
     });
     var tags = _.uniq(tags);
-    var tagButtons = tags.map((tag)=>(<RaisedButton label={tag} primary={true} style={styles.tagButton} />));
-    var tagItems = tags.map((tag)=>(<MenuItem>{tag}</MenuItem>));
+    var tagButtons = tags.map((tag)=>(<RaisedButton label={tag} primary={true} onClick={this.handleFilter.bind(this, tag)} style={styles.tagButton} />));
+    tagButtons.unshift(<RaisedButton label="All" primary={true} onClick={this.handleFilter.bind(this, "All")} style={styles.tagButton} />)
+    // var tagItems = tags.map((tag)=>(<MenuItem>{tag}</MenuItem>));
     // <Drawer open={true} zDepth={0}>
     //   <AppBar
     //     title="Zocalo"

@@ -2,23 +2,27 @@ import React, { Component } from 'react';
 import AppBar from 'material-ui/AppBar';
 import Avatar from 'material-ui/Avatar';
 import {Card, CardActions, CardHeader, CardText} from 'material-ui/Card';
+import Dialog from 'material-ui/Dialog';
 import Drawer from 'material-ui/Drawer';
+import FlatButton from 'material-ui/FlatButton';
 import MenuItem from 'material-ui/MenuItem';
 import Paper from 'material-ui/Paper';
 import RaisedButton from 'material-ui/RaisedButton';
 import {Grid, Row, Col} from 'react-flexbox-grid/lib/index';
-//import 'react-sticky-header/styles.css';
-//import StickyHeader from 'react-sticky-header';
 import SearchBar from './SearchBar';
 var _ = require('lodash');
 export default class Mainpage extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      filter: "All"
+      filter: "All",
+      open: false,
+      currentPost: null
     };
     this.handleFilter = this.handleFilter.bind(this);
     this.getFilteredData = this.getFilteredData.bind(this);
+    this.handleOpen = this.handleOpen.bind(this);
+    this.handleClose = this.handleClose.bind(this);
   }
   getTempData() {
     var data = {"ID1":{"Post": "Is there an exam tomorrow?" ,"Desc": "I am having a conflict. Do we have an exam tomorrow?", "TAG": "Exam", "VOTE": 10, "Time":"03-08-2018", "Author": "Alice"},
@@ -39,9 +43,6 @@ export default class Mainpage extends Component {
         data.push(value);
       };
     }.bind(this));
-    // var data = _.filter(getTempData(), function(o) {
-    //   return o.TAG == this.state.filter;
-    // });
     return data;
   }
   handleFilter(tag, e) {
@@ -49,11 +50,16 @@ export default class Mainpage extends Component {
     this.setState({filter: tag});
     console.log(tag);
   }
+  handleOpen(post, e) {
+    e.preventDefault();
+    this.setState({open: true});
+    this.setState({currentPost: post})
+  }
+  handleClose(e) {
+    this.setState({open: false});
+    this.setState({currentPost: null});
+  }
   render() {
-    console.log("Changed");
-    // <CardActions>
-    //   <RaisedButton label="more" style={styles.rightButton}/>
-    // </CardActions>
     var posts = [];
     _.forEach(this.getFilteredData(), function(value) {
       var ava = <Avatar>{value.Author[0]}</Avatar>
@@ -70,23 +76,20 @@ export default class Mainpage extends Component {
             <CardText expandable={false}>
               {value.Desc}
             </CardText>
+            <CardActions>
+              <RaisedButton label="more" primary={true} onClick={this.handleOpen.bind(this, value)} style={styles.rightButton}/>
+            </CardActions>
           </Card>
         </div>
       )
-    });
+    }.bind(this));
     var tags = _.map(this.getTempData(), function(value, key) {
       return value.TAG;
     });
     var tags = _.uniq(tags);
     var tagButtons = tags.map((tag)=>(<RaisedButton label={tag} primary={true} onClick={this.handleFilter.bind(this, tag)} style={styles.tagButton} />));
     tagButtons.unshift(<RaisedButton label="All" primary={true} onClick={this.handleFilter.bind(this, "All")} style={styles.tagButton} />)
-    // var tagItems = tags.map((tag)=>(<MenuItem>{tag}</MenuItem>));
-    // <Drawer open={true} zDepth={0}>
-    //   <AppBar
-    //     title="Zocalo"
-    //   />
-    //   {tagItems}
-    // </Drawer>
+
     const customTitle = (
       <div>
         <h1 style={styles.title}>Zocalo</h1>
@@ -94,6 +97,20 @@ export default class Mainpage extends Component {
           <SearchBar />
         </div>
       </div>);
+
+    const actions = [
+      <FlatButton
+        label="Add comment"
+        primary={true}
+        onClick={this.handleClose}
+      />,
+      <FlatButton
+        label="Close"
+        primary={true}
+        onClick={this.handleClose}
+      />,
+    ];
+
     return (
       <div>
         <AppBar
@@ -107,6 +124,16 @@ export default class Mainpage extends Component {
         <div style={styles.postBoard}>
           {posts}
         </div>
+        <Dialog
+          title= {this.state.currentPost == null ? "Post" : this.state.currentPost.Post}
+          actions={actions}
+          modal={false}
+          open={this.state.open}
+          onRequestClose={this.handleClose}
+          autoScrollBodyContent={true}
+        >
+          <p>{this.state.currentPost == null ? "Details" : this.state.currentPost.Desc}</p>
+        </Dialog>
       </div>
 
     )

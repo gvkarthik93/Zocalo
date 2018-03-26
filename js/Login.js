@@ -32,6 +32,24 @@ export default class Login extends Component {
     }).then(function(res) {
       return res.json();
     }).then(function(data) {
+      console.log("/login");
+      console.log(data);
+    })
+    fetch('/login/42', {
+      credentials: 'include',
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        type: 'login',
+        username: this.state.username,
+        password: this.state.password
+      })
+    }).then(function(res) {
+      return res.json();
+    }).then(function(data) {
+      console.log("/login/42");
       console.log(data);
     })
   }

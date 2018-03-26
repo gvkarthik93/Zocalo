@@ -39,7 +39,7 @@ def main():
         (r"/", MainHandler),
         (r"/login", LoginHandler),
         (r"/sign_up", SignupHandler),
-        (r"/display", SignupHandler),
+        (r"/display", DisplayContent),
         (r'/(.*)', tornado.web.StaticFileHandler, {'path': './'}),
         (r"/image/*.png", tornado.web.StaticFileHandler, {'path':'./image/'}),
     ])

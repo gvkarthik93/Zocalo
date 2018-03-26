@@ -8,6 +8,7 @@ from temp_data import tempData
 
 class MainHandler(tornado.web.RequestHandler):
     def get(self):
+        print ("Main")
         self.render('./index.html')
 
 # Handle the login requests
@@ -15,6 +16,7 @@ class LoginHandler(tornado.web.RequestHandler):
     def post(self):
         data = tornado.escape.json_decode(self.request.body)
         print (data)
+        print ("Login")
         response = tempData()
         self.write(json.dumps(response))
 
@@ -22,6 +24,7 @@ class SignupHandler(tornado.web.RequestHandler):
     def post(self):
         data = tornado.escape.json_decode(self.request.body)
         response = tempData()
+        print ("Signup")
         self.write(json.dumps(response))
 
 class DisplayContent(tornado.web.RequestHandler):

@@ -51,17 +51,29 @@ class Course(Base):
 
     id = Column(Integer, primary_key=True)
     course_name = Column(String(100), nullable=False)
-    school_name = Column(String(100), nullable=False)
+    school_id = Column(Integer, ForeignKey("schools.id"))
     course_title = Column(String(100), nullable=False)
-
-    # UniqueConstraint('course_name', 'school_name', )
 
     users = relationship("UserCourse", back_populates="c_u")
     posts = relationship("Post", back_populates="course")
 
+    school = relationship("School", back_populates="courses")
+
     def __repr__(self):
-        return "<Course(course_name='%s', school_name='%s', course_title='%s')>" % (
-                self.course_name, self.school_name, self.course_title)
+        return "<Course(course_name='%s', school_id='%s', course_title='%s')>" % (
+                self.course_name, self.school_id, self.course_title)
+
+class School(Base):
+    __tablename__ = 'schools'
+
+    id = Column(Integer, primary_key=True)
+    school_name = Column(String(100), nullable=False)
+
+    courses = relationship("Course", back_populates="school")
+
+    def __repr__(self):
+        return "<School(id='%s', school_name='%s')>" % (
+                self.id, self.school_name)
 
 class Role(Base):
     __tablename__ = 'role'

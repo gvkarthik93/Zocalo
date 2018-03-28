@@ -35,9 +35,7 @@ class UserService:
 
 
     def register(self, info):
-        
         # check validate
-
         pwd = self.hash_password(info["password"])
         new_user = User(
             user_name=info["user_name"], 

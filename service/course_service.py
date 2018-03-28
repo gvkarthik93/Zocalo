@@ -12,7 +12,6 @@ session = Session()
 
 class CourseService:
     def createCourse(self, c_name, s_name, c_title, c_id):
-        
         #might have to create a table for schools, so we know whether or not it is a valid school before creating a course 
         #check if c_id is already used
         course_exist = session.query(exists().where(Course.id == c_id)).scalar()

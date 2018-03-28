@@ -17,11 +17,9 @@ export default class Login extends Component {
     this.handleChangePassword = this.handleChangePassword.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.sendPostRequest = this.sendPostRequest.bind(this);
-    this.sendPostRequest2 = this.sendPostRequest2.bind(this);
-    this.sendPostRequest3 = this.sendPostRequest3.bind(this);
   }
   sendPostRequest() {
-    fetch('/login', {
+    fetch('access/login', {
       credentials: 'include',
       method: 'POST',
       headers: {
@@ -36,44 +34,6 @@ export default class Login extends Component {
       return res.json();
     }).then(function(data) {
       console.log("/login");
-      console.log(data);
-    })
-  }
-  sendPostRequest2() {
-    fetch('/login/50', {
-      credentials: 'include',
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        type: 'login',
-        username: this.state.username,
-        password: this.state.password
-      })
-    }).then(function(res) {
-      return res.json();
-    }).then(function(data) {
-      console.log("/login/50");
-      console.log(data);
-    })
-  }
-  sendPostRequest3() {
-    fetch('/login/50/60', {
-      credentials: 'include',
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        type: 'login',
-        username: this.state.username,
-        password: this.state.password
-      })
-    }).then(function(res) {
-      return res.json();
-    }).then(function(data) {
-      console.log("/login/50/60");
       console.log(data);
     })
   }
@@ -107,11 +67,7 @@ export default class Login extends Component {
                 onChange={this.handleChangePassword}
               /><br/>
               <RaisedButton label="login" primary={true} style={styles.submitButton}
-                onClick={this.sendPostRequest}/>
-              <RaisedButton label="login/50" primary={true} style={styles.submitButton}
-                onClick={this.sendPostRequest2}/>
-              <RaisedButton label="login/50/60" primary={true} style={styles.submitButton}
-                onClick={this.sendPostRequest3}/>
+                onClick={this.handleSubmit}/>
             </Paper>
           </Col>
           <Col md={2} lg={2}/>

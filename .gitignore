@@ -1,24 +1,6 @@
-Skip to content
-This repository
-Search
-Pull requests
-Issues
-Marketplace
-Explore
- @SihanC
-Sign out
-2,477
-63,480 29,025 github/gitignore
- Code  Pull requests 165  Projects 0  Insights
-gitignore/Python.gitignore
-2eba0d6  16 days ago
-@shiftkey shiftkey Merge pull request #2612 from jtogrul/master
-@arcresu @shiftkey @Lucretiel @Harrison-G @jwg4 @Metallicow @misaelnieto @pmsosa @svkampen @vltr @matheussl @hugovk @ghisvail @EvandroLG @DSIW @toanant @2Cubed @weinihou @Visgean @nvie @skuschel @sigo @borntyping @roll @rmax @Cadmus
-     
 # mac
 .DS_Store
 
-105 lines (84 sloc)  1.17 KB
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -123,16 +105,3 @@ venv.bak/
 
 # mypy
 .mypy_cache/
-© 2018 GitHub, Inc.
-Terms
-Privacy
-Security
-Status
-Help
-Contact GitHub
-API
-Training
-Shop
-Blog
-About
-Press h to open a hovercard with more details.

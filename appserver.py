@@ -34,6 +34,22 @@ class AccessHandler(tornado.web.RequestHandler):
         elif param == "delete":
             print ("Delete the credential")
 
+# Handle the requests associated with posts
+class PostsHandler(tornado.web.RequestHandler):
+    def post(self, param=None):
+        if param is None:
+            print ("Send all the posts from the database")
+        else:
+            data = tornado.escape.json_decode(self.request.body)
+            print (data)
+            print ("Send specific post")
+
+    def delete(self, param=None):
+        if param is None:
+            print ("Need to provide specific post details")
+        else:
+            print ("Delete specific post")
+
 # /edits/Post
 # /edits/Content
 # /edits/Comments
@@ -44,6 +60,9 @@ def main():
         
         (r"/access/(.*)", AccessHandler),
         (r"/access", AccessHandler),
+
+        (r"/posts/(.*)", PostsHandler),
+        (r"/posts", PostsHandler),
 
 
         (r'/(.*)', tornado.web.StaticFileHandler, {'path': './'}),

@@ -4,44 +4,35 @@ import tornado.ioloop
 import tornado.web
 import json
 import tornado.escape
-from temp_data import tempData
+#from temp_data import tempData
 
 class MainHandler(tornado.web.RequestHandler):
     def get(self):
-        print ("Main")
         self.render('./index.html')
 
-# Handle the login requests
-class LoginHandler(tornado.web.RequestHandler):
-    def post(self, p1=None, p2=None):
-        data = tornado.escape.json_decode(self.request.body)
-        print (data)
-        print ("param: ",p1)
-        print ("param: ",p2)
-        print ("Login")
-        response = tempData()
-        self.write(json.dumps(response))
+# Handle the access requests
+class AccessHandler(tornado.web.RequestHandler):
+    def post(self, param=None):
+        if param is None:
+            print ("Send No Access Code")
+        elif param == "login":
+            data = tornado.escape.json_decode(self.request.body)
+            print (data)
+            # Login Function
+        elif param == "signup":
+            data = tornado.escape.json_decode(self.request.body)
+            print (data)
+            # Signup Function
+        else:
+            print ("Error 404")
+        #response = tempData()
+        #self.write(json.dumps(response))
 
-    def get(self, param, p2):
-        data = tornado.escape.json_decode(self.request.body)
-        print (data)
-        print ("param: ",param)
-        print ("Login")
-        response = tempData()
-        self.write(json.dumps(response))
-
-    def delete(self):
-        print ("Delete")
-
-    def put(self):
-        print ("PUT")
-
-class SignupHandler(tornado.web.RequestHandler):
-    def post(self):
-        data = tornado.escape.json_decode(self.request.body)
-        response = tempData()
-        print ("Signup")
-        self.write(json.dumps(response))
+    def delete(self, param=None):
+        if param is None:
+            print ("Send No access Code")
+        elif param == "delete":
+            print ("Delete the credential")
 
 # /edits/Post
 # /edits/Content
@@ -51,12 +42,10 @@ def main():
     application = tornado.web.Application([
         (r"/", MainHandler),
         
-        (r"/login/(.*)/(.*)", LoginHandler),
-        (r"/login/(.*)", LoginHandler),
-        (r"/login", LoginHandler),
+        (r"/access/(.*)", AccessHandler),
+        (r"/access", AccessHandler),
 
-        (r"/sign_up", SignupHandler),
-        (r"/display", DisplayContent),
+
         (r'/(.*)', tornado.web.StaticFileHandler, {'path': './'}),
         (r"/image/*.png", tornado.web.StaticFileHandler, {'path':'./image/'}),
 

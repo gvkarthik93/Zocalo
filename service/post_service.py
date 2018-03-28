@@ -14,10 +14,10 @@ session = Session()
 
 class PostService:
 
-    def get_questions(self, s_id, c_name):
+    def get_questions(self, s_name, c_name):
         try:
             course = session.query(Course).\
-            filter_by(school_id=s_id).filter_by(course_name=c_name).one()
+            filter_by(school_name=s_name).filter_by(course_name=c_name).one()
         except NoResultFound:
             return (0, "No post founded")
         except MultipleResultsFound:
@@ -112,4 +112,7 @@ class PostService:
         session.add(new_reply)
         session.commit()
         return (1, "Success")
+
+
+
 

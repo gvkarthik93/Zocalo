@@ -8,7 +8,6 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.orm.exc import MultipleResultsFound
 from Zocalo.db.database_setup import *
-# from database_setup import Base, Course, Role, UserCourse, User
 
 engine = create_engine('sqlite:///../db/Zocalo.db')
 Session = sessionmaker(bind=engine)
@@ -16,7 +15,6 @@ session = Session()
 
 class CourseService:
     def createCourse(self, c_name, s_name, c_title, c_id):
-        
         #might have to create a table for schools, so we know whether or not it is a valid school before creating a course 
         #check if c_id is already used
         course_exist = session.query(exists().where(Course.id == c_id)).scalar()

@@ -7,9 +7,8 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.orm.exc import MultipleResultsFound
 from Zocalo.db.database_setup import *
-# from database_setup import User, Base
 
-engine = create_engine('sqlite:///../db/Zocalo.db')
+engine = create_engine('sqlite:///../database/Zocalo.db')
 Session = sessionmaker(bind=engine)
 session = Session()
 
@@ -39,9 +38,7 @@ class UserService:
 
 
     def register(self, info):
-        
         # check validate
-
         pwd = self.hash_password(info["password"])
         new_user = User(
             user_name=info["user_name"], 

@@ -1,5 +1,6 @@
 import sys
 import os
+import bcrypt
 sys.path.append(os.path.join(os.path.dirname(__file__), "..", ".."))
 from sqlalchemy import create_engine
 from sqlalchemy import exists
@@ -15,7 +16,8 @@ session = Session()
 class UserService:
 
     def hash_password(self, pwd):
-        return pwd
+        hashed_pwd = bcrypt.hashpw(pwd, bcrypt.gensalt())
+        return hashed_pwd
 
     def check_valid(self, input_email):
         #use exist because we are just trying to find if input_email exist already, can switch back to try, except clause

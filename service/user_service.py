@@ -7,7 +7,7 @@ from sqlalchemy import exists
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.orm.exc import MultipleResultsFound
-from Zocalo.db.database_setup import *
+from Zocalo.database.database_setup import *
 
 engine = create_engine('sqlite:///../database/Zocalo.db')
 Session = sessionmaker(bind=engine)
@@ -35,9 +35,9 @@ class UserService:
         except MultipleResultsFound:
             pass
 
+        # (1, "Success", [list of course id])
         return (1, "Success") if user.password == self.hash_password(pwd) \
             else (0, "Wrong password")
-
 
     def register(self, info):
         # check validate

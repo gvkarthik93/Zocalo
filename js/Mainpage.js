@@ -5,6 +5,7 @@ import {Card, CardActions, CardHeader, CardText} from 'material-ui/Card';
 import Dialog from 'material-ui/Dialog';
 import Drawer from 'material-ui/Drawer';
 import FlatButton from 'material-ui/FlatButton';
+import { Link, Router } from 'react-router-dom';
 import MenuItem from 'material-ui/MenuItem';
 import Paper from 'material-ui/Paper';
 import RaisedButton from 'material-ui/RaisedButton';
@@ -143,7 +144,7 @@ export default class Mainpage extends Component {
       <div>
         <AppBar
           title={customTitle}
-          iconElementRight={<RaisedButton label="Login" style={styles.rightButton}/>}
+          iconElementRight={<RaisedButton label="Login" onClick={()=>{this.props.history.push('/Login');}} style={styles.rightButton}/>}
           style={styles.appbar}
         />
         <div style={styles.tagPanel}>

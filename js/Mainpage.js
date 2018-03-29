@@ -144,7 +144,7 @@ export default class Mainpage extends Component {
       <div>
         <AppBar
           title={customTitle}
-          iconElementRight={<RaisedButton label="Login" style={styles.rightButton}/>}
+          iconElementRight={<RaisedButton label="Login" onClick={()=>{this.props.history.push('/Login');}} style={styles.rightButton}/>}
           style={styles.appbar}
         />
         <div style={styles.tagPanel}>

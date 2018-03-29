@@ -24,6 +24,8 @@
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
     "react-flexbox-grid": "^2.0.0",
+    "react-router": "^4.2.0",
+    "react-router-dom": "^4.2.2",
     "react-scroll-box": "^0.3.5",
     "react-sticky": "^6.0.1",
     "react-sticky-header": "^0.1.9",

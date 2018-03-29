@@ -4,6 +4,7 @@ import TextField from 'material-ui/TextField';
 import {RadioButton, RadioButtonGroup} from 'material-ui/RadioButton';
 import RaisedButton from 'material-ui/RaisedButton';
 import {Grid, Row, Col} from 'react-flexbox-grid/lib/index';
+import { BrowserRouter as Router } from 'react-router-dom';
 import 'whatwg-fetch';
 
 export default class Login extends Component {
@@ -46,9 +47,12 @@ export default class Login extends Component {
   handleSubmit(e) {
       e.preventDefault();
       this.sendPostRequest();
+      this.props.history.push('/MainPage');
       console.log("Submitted");
   }
   render() {
+    //console.log(this.props);
+    const { match, location, history } = this.props;
     return (
       <Row>
           <Col md={2} lg={2}/>

@@ -16,7 +16,7 @@ session = Session()
 class UserService:
 
     def hash_password(self, pwd):
-        hashed_pwd = bcrypt.hashpw(pwd, bcrypt.gensalt())
+        hashed_pwd = bcrypt.hashpw(pwd, bcrypt.gensalt(17))
         return hashed_pwd
 
     def check_valid(self, input_email):

@@ -15,16 +15,23 @@ class MainHandler(tornado.web.RequestHandler):
 class AccessHandler(tornado.web.RequestHandler):
     def post(self, param=None):
         if param is None:
-            print ("Send No Access Code")
+            self.write(json.dumps({0:"Access Denied"}))
+        
         elif param == "login":
             try:
                 data = tornado.escape.json_decode(self.request.body)
             except:
                 self.write(json.dumps({0:"invalid json format"}))
                 return
-            us = UserService()
-            result = us.login(data)
-            self.write(json.dumps(result))
+            userService = UserService()
+            result = userService.login(data)
+            if result[0]:
+                postService = PostService()
+                response = postService.get_questions()
+                self.write(json.dumps(response))
+            else:
+                self.write(json.dumps({0:"Invald User"}))
+
         elif param == "signup":
             try:
                 data = tornado.escape.json_decode(self.request.body)
@@ -33,7 +40,13 @@ class AccessHandler(tornado.web.RequestHandler):
                 return
             us = UserService()
             result = us.register(data)
-            self.write(json.dumps(result))
+            if result[0]:
+                postService = PostService()
+                response = postService.get_questions()
+                self.write(json.dumps(response))
+            else:
+                self.write(json.dumps({0:"Registration Failed"}))
+
         elif param == "changepwd":
             try:
                 data = tornado.escape.json_decode(self.request.body)
@@ -43,9 +56,11 @@ class AccessHandler(tornado.web.RequestHandler):
             us = UserService()
             result = us.change_password(data)
             self.write(json.dumps(result))
+
         elif param == "forgotpwd":
             data = tornado.escape.json_decode(self.request.body)
             print (data)
+
     def delete(self, param=None):
         if param is None:
             print ("Send No access Code")

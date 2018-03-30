@@ -24,10 +24,7 @@ class AccessHandler(tornado.web.RequestHandler):
                 return
             us = UserService()
             result = us.login(data)
-            if result[0]:
-                self.write(json.dumps({result[0]:result[2]}))
-            else:
-                self.write(json.dumps({result[0]:result[1]}))
+            self.write(json.dumps(result))
         elif param == "signup":
             try:
                 data = tornado.escape.json_decode(self.request.body)

@@ -21,7 +21,7 @@ class AccessHandler(tornado.web.RequestHandler):
             try:
                 data = tornado.escape.json_decode(self.request.body)
             except:
-                self.write(json.dumps({0:"invalid json format"}))
+                self.write(json.dumps({0:"Invalid json format"}))
                 return
             userService = UserService()
             result = userService.login(data)
@@ -36,7 +36,7 @@ class AccessHandler(tornado.web.RequestHandler):
             try:
                 data = tornado.escape.json_decode(self.request.body)
             except:
-                self.write(json.dumps({0:"invalid json format"}))
+                self.write(json.dumps({0:"Invalid json format"}))
                 return
             us = UserService()
             result = us.register(data)
@@ -51,7 +51,7 @@ class AccessHandler(tornado.web.RequestHandler):
             try:
                 data = tornado.escape.json_decode(self.request.body)
             except:
-                self.write(json.dumps({0:"invalid json format"}))
+                self.write(json.dumps({0:"Invalid json format"}))
                 return
             us = UserService()
             result = us.change_password(data)

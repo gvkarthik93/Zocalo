@@ -7,7 +7,7 @@ from sqlalchemy import create_engine, and_
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.orm.exc import MultipleResultsFound
-from Zocalo.db.database_setup import *
+from Zocalo.database.database_setup import *
 
 engine = create_engine('sqlite:///../db/Zocalo.db')
 Session = sessionmaker(bind=engine)

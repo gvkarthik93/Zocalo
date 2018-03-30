@@ -4,8 +4,8 @@ import tornado.ioloop
 import tornado.web
 import json
 import tornado.escape
-import service.user_service as userService
-import service.post_service as postService
+from service.user_service import UserService
+from service.post_service import PostService
 
 class MainHandler(tornado.web.RequestHandler):
     def get(self):
@@ -18,27 +18,32 @@ class AccessHandler(tornado.web.RequestHandler):
             print ("Send No Access Code")
         elif param == "login":
             data = tornado.escape.json_decode(self.request.body)
-            result = userService.login(data)
+            result = UserService.login(data)
             if result[0]:
-                self.write(json.dumps(result[2]))
+                self.write(json.dumps({result[0]:result[2]}))
             else:
                 self.write(json.dumps({result[0]:result[1]}))
-
-
         elif param == "signup":
-            data = tornado.escape.json_decode(self.request.body)
-            result = userService.register(data)
+            try:
+                data = tornado.escape.json_decode(self.request.body)
+            except:
+                self.write(json.dumps({0:"invalid json format"}))
+                return
+            us = UserService()
+            result = us.register(data)
             self.write(json.dumps({result[0]:result[1]}))
-
         elif param == "changepwd":
-            data = tornado.escape.json_decode(self.request.body)
-            userService.change_password(data)
+            try:
+                data = tornado.escape.json_decode(self.request.body)
+            except:
+                self.write(json.dumps({0:"invalid json format"}))
+                return
+            us = UserService()
+            result = us.change_password(data)
             self.write(json.dumps({result[0]:result[1]}))
-
         elif param == "forgotpwd":
             data = tornado.escape.json_decode(self.request.body)
             print (data)
-
     def delete(self, param=None):
         if param is None:
             print ("Send No access Code")

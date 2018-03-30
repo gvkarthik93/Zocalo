@@ -4,7 +4,11 @@ import os
 sys.path.append(os.path.join(os.path.dirname(__file__), "..", ".."))
 from Zocalo.service.post_service import PostService
 
+# Create post
 ps1 = PostService()
+# ps1 = 
+
+
 tp = ps1.get_questions(1, "CS 5412")
 print(tp[0])
 d = json.loads(tp[1])

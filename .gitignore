@@ -1,7 +1,10 @@
+# MySQL Schema file
+*.mwb
+
 # mac
 .DS_Store
 
-#Node
+# Node
 node_modules
 
 # Byte-compiled / optimized / DLL files

@@ -33,7 +33,7 @@ class AccessHandler(tornado.web.RequestHandler):
                 return
             us = UserService()
             result = us.register(data)
-            self.write(json.dumps({result[0]:result[1]}))
+            self.write(json.dumps(result))
         elif param == "changepwd":
             try:
                 data = tornado.escape.json_decode(self.request.body)
@@ -42,7 +42,7 @@ class AccessHandler(tornado.web.RequestHandler):
                 return
             us = UserService()
             result = us.change_password(data)
-            self.write(json.dumps({result[0]:result[1]}))
+            self.write(json.dumps(result))
         elif param == "forgotpwd":
             data = tornado.escape.json_decode(self.request.body)
             print (data)

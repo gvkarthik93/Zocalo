@@ -17,8 +17,13 @@ class AccessHandler(tornado.web.RequestHandler):
         if param is None:
             print ("Send No Access Code")
         elif param == "login":
-            data = tornado.escape.json_decode(self.request.body)
-            result = UserService.login(data)
+            try:
+                data = tornado.escape.json_decode(self.request.body)
+            except:
+                self.write(json.dumps({0:"invalid json format"}))
+                return
+            us = UserService()
+            result = us.login(data)
             if result[0]:
                 self.write(json.dumps({result[0]:result[2]}))
             else:

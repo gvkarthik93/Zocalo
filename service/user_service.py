@@ -30,13 +30,13 @@ class UserService:
             pass
 
         try:
+            print('sssss', user.user_name)
+            print(',..', self.hash_password(data["password"]))
+            print('what is should be', user.password)
             if user.password != self.hash_password(data["password"]):
                 return (0, "Wrong password")
         except KeyError:
             return (0, "Invalid JSON field")
-
-        # (1, "Success", [list of course id])
-        # get the questions associate with the user
 
         return (1, "Success")
         

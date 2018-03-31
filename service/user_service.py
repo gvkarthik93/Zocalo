@@ -23,34 +23,31 @@ class UserService:
             user = session.query(User).filter_by(
                 user_name=data["username"]).one()
         except KeyError:
-            return (0, "Invalid JSON field")
+            return {"status":0, "message":"Invalid JSON field"}
         except NoResultFound:
-            return (0, "No username founded")
+            return {"status":0, "message":"No username found"}
         except MultipleResultsFound:
             pass
 
         try:
-            print('sssss', user.user_name)
-            print(',..', self.hash_password(data["password"]))
-            print('what is should be', user.password)
-            if user.password != self.hash_password(data["password"]):
-                return (0, "Wrong password")
+            if not bcrypt.checkpw(data["password"], user.password):
+            # if user.password != self.hash_password(data["password"]):
+                return {"status":0, "message":"Wrong password"}
         except KeyError:
-            return (0, "Invalid JSON field")
+            return {"status":0, "message":"Invalid JSON field"}
 
-        return (1, "Success")
+        return {"status":1, "message":"Success"}
         
 
     def register(self, data):
-
         # check duplicate email and username
         try:
             if session.query(
                 exists().where(User.user_name==data["username"])).scalar():
-                return (0, "username existed")
+                return {"status":0, "message":"Username existed"}
             if session.query(
                 exists().where(User.email==data["email"])).scalar():
-                return (0, "email existed")
+                return {"status":0, "message:""Email existed"}
             pwd = self.hash_password(data["password"])
             new_user = User(
                 user_name=data["username"], 
@@ -59,30 +56,30 @@ class UserService:
                 email=data["email"]
             )
         except KeyError:
-            return (0, "Invalid JSON field")
+            return {"status":0, "message":"Invalid JSON field"}
 
         session.add(new_user)
         session.commit()
-        return (1, "Success")
+        return {"status":1, "message":"Success"}
 
     def change_password(self, data): 
         try:
             user = session.query(User).filter_by(
                 user_name=data["username"]).one()
         except KeyError:
-            return (0, "Invalid JSON field")
+            return {"status":0, "message":"Invalid JSON field"}
         except NoResultFound:
-            return (0, "No username founded")
+            return {"status":0, "message":"No username founded"}
         except MultipleResultsFound:
             pass
 
         try:
             user.password = self.hash_password(data["password"])
         except KeyError:
-            return (0, "Invalid JSON field")
+            return {"status":0, "message":"Invalid JSON field"}
 
         session.commit()
-        return (1, "Success")   
+        return {"status":1, "message":"Success"}
 
     def forget_password(self):
         pass

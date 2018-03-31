@@ -15,47 +15,54 @@ class MainHandler(tornado.web.RequestHandler):
 class AccessHandler(tornado.web.RequestHandler):
     def post(self, param=None):
         if param is None:
-            self.write(json.dumps({0:"Access Denied"}))
+            self.write(json.dumps(
+                {"status":0, "message":"Access Denied"}))
         
         elif param == "login":
             try:
                 data = tornado.escape.json_decode(self.request.body)
             except:
-                self.write(json.dumps({0:"Invalid json format"}))
+                self.write(json.dumps(
+                    {"status":0, "message":"Invalid json format"}))
                 return
-            userService = UserService()
-            result = userService.login(data)
-            if result[0]:
-                postService = PostService()
-                response = postService.get_questions()
+            us = UserService()
+            result = us.login(data)
+            if result["status"]:
+                ps = PostService()
+                response = ps.get_questions()
                 self.write(json.dumps(response))
             else:
-                self.write(json.dumps({0:"Invald User"}))
+                self.write(json.dumps(
+                    {"status":0, "message":result["message"]}))
 
         elif param == "signup":
             try:
                 data = tornado.escape.json_decode(self.request.body)
             except:
-                self.write(json.dumps({0:"Invalid json format"}))
+                self.write(json.dumps(
+                    {"status":0, "message":"Invalid json format"}))
                 return
             us = UserService()
             result = us.register(data)
-            if result[0]:
-                postService = PostService()
-                response = postService.get_questions()
+            if result["status"]:
+                ps = PostService()
+                response = ps.get_questions()
                 self.write(json.dumps(response))
             else:
-                self.write(json.dumps({0:"Registration Failed"}))
+                self.write(json.dumps(
+                    {"status":0, "message":result["message"]}))
 
         elif param == "changepwd":
             try:
                 data = tornado.escape.json_decode(self.request.body)
             except:
-                self.write(json.dumps({0:"Invalid json format"}))
+                self.write(json.dumps(
+                    {"status":0, "message":"Invalid json format"}))
                 return
             us = UserService()
             result = us.change_password(data)
-            self.write(json.dumps(result))
+            self.write(json.dumps(
+                {"status":result["status"], "message":result["message"]}))
 
         elif param == "forgotpwd":
             data = tornado.escape.json_decode(self.request.body)

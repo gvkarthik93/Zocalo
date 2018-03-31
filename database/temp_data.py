@@ -14,6 +14,7 @@ def tempPostData():
 	"pid":52, 
 	"post":"When is the exam and where is it?",
 	"description":"I need the exact date and location for the exam.",
+	"tags":["Exam","Logistics","Other"],
 	"replies":
 	{{"rid":0, "author":"Sihan", "time": "2018-03-31 20:40:00", "vote": 3, "answer":"Today is a good day for exam."}
 	{"rid":1, "author":"Jack", "time": "2018-03-31 21:40:00", "vote": 5, "answer":"I believe it's in Gates G01, maybe I am wrong, can some TA confirm this?"}

@@ -1,17 +1,18 @@
 def tempData():
-	data = {"ID1":{"Post": "Is there an exam tomorrow?" ,"Desc": "I am having a conflict. Do we have an exam tomorrow?", "TAG": "Exam", "VOTE": 10, "Time":"03-08-2018", "Author": "Alice"},
-	"ID2":{"Post": "What's SQLITE?" ,"Desc": "What's the best resource?", "TAG": "Project 1", "VOTE": 10, "Time":"03-06-2018", "Author": "Sihan"},
-	"ID3":{"Post": "Can we use Sqlite?" ,"Desc": "Wondering if we can use it or not", "TAG": "Project 1", "VOTE": 10, "Time":"03-05-2018", "Author": "Karthik"},
-	"ID4":{"Post": "What's difference betwen MongoDb and Sqlite?" ,"Desc": "Both seems cool.", "TAG": "Project 1", "VOTE": 10, "Time":"03-04-2018", "Author": "Miles"},
-	"ID5":{"Post": "Do we need to finish it before due date?" ,"Desc": "I am lazy.", "TAG": "Exam", "VOTE": 10, "Time":"03-03-2018", "Author": "Alice"},
-	"ID6":{"Post": "Is it necessary to do epic frontend for project?" ,"Desc": "I am a React fan.", "TAG": "Just Alice Things", "VOTE": 10, "Time":"03-02-2018", "Author": "Alice"},
-	"ID7":{"Post": "Should I join Google or GS?" ,"Desc": "I am confused!!!", "TAG": "Just Alice Things", "VOTE": 10, "Time":"03-01-2018", "Author": "Alice"}}
+	data = {{"pid":41,"post": "Is there an exam tomorrow?" ,"description": "I am having a conflict. Do we have an exam tomorrow?", "tag": "Exam", "vote": 10, "time":"03-08-2018", "author": "Alice"},
+	{"pid":51, "post": "What's SQLITE?" ,"description": "What's the best resource?", "tag": "Project 1", "vote": 10, "time":"03-06-2018", "author": "Sihan"},
+	{"pid":63, "post": "Can we use Sqlite?" ,"description": "Wondering if we can use it or not", "tag": "Project 1", "vote": 10, "time":"03-05-2018", "author": "Karthik"},
+	{"pid":67, "post": "What's difference betwen MongoDb and Sqlite?" ,"description": "Both seems cool.", "tag": "Project 1", "vote": 10, "time":"03-04-2018", "author": "Miles"},
+	{"pid":12, "post": "Do we need to finish it before due date?" ,"description": "I am lazy.", "tag": "Exam", "vote": 10, "time":"03-03-2018", "author": "Alice"},
+	{"pid":44, "post": "Is it necessary to do epic frontend for project?" ,"description": "I am a React fan.", "tag": "Just Alice Things", "vote": 10, "time":"03-02-2018", "author": "Alice"},
+	{"pid":21, "post": "Should I join Google or GS?" ,"description": "I am confused!!!", "tag": "Just Alice Things", "vote": 10, "time":"03-01-2018", "author": "Alice"}}
 
 	return data
 
 def tempPostData():
 	data = {
 	"pid":52, 
+	"post":"When is the exam and where is it?",
 	"description":"I need the exact date and location for the exam.",
 	"replies":
 	{{"rid":0, "author":"Sihan", "time": "2018-03-31 20:40:00", "vote": 3, "answer":"Today is a good day for exam."}

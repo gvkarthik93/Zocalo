@@ -12,7 +12,8 @@ const App = () => (
       <Switch>
         <Route path="/SignupPage" component={Signup} />
         <Route path="/MainPage" component={Mainpage} />
-        <Route path="/" component={Login} />
+        <Route path="/LoginPage" component={Login} />
+        <Route path="/" component={Mainpage} />
       </Switch>
     </Router>
   </MuiThemeProvider>

@@ -22,6 +22,7 @@ export default class Mainpage extends Component {
       currentPost: null
     };
     this.handleFilter = this.handleFilter.bind(this);
+    this.getPostData = this.getPostData.bind(this);
     this.getFilteredData = this.getFilteredData.bind(this);
     this.handleOpenDetailDialog = this.handleOpenDetailDialog.bind(this);
     this.handleCloseDetailDialog = this.handleCloseDetailDialog.bind(this);
@@ -29,26 +30,47 @@ export default class Mainpage extends Component {
     this.handleCloseCommentDialog = this.handleCloseCommentDialog.bind(this);
     this.handleAddComment = this.handleAddComment.bind(this);
   }
-  getTempData() {
-    var data = {"ID1":{"Post": "Is there an exam tomorrow?" ,"Desc": "I am having a conflict. Do we have an exam tomorrow?", "TAG": "Exam", "VOTE": 10, "Time":"03-08-2018", "Author": "Alice"},
-  	"ID2":{"Post": "What's SQLITE?" ,"Desc": "What's the best resource?", "TAG": "Project 1", "VOTE": 10, "Time":"03-06-2018", "Author": "Sihan"},
-  	"ID3":{"Post": "Can we use Sqlite?" ,"Desc": "Wondering if we can use it or not", "TAG": "Project 1", "VOTE": 10, "Time":"03-05-2018", "Author": "Karthik"},
-  	"ID4":{"Post": "What's difference betwen MongoDb and Sqlite?" ,"Desc": "Both seems cool.", "TAG": "Project 1", "VOTE": 10, "Time":"03-04-2018", "Author": "Miles"},
-  	"ID5":{"Post": "Do we need to finish it before due date?" ,"Desc": "I am lazy.", "TAG": "Exam", "VOTE": 10, "Time":"03-03-2018", "Author": "Alice"},
-  	"ID6":{"Post": "Is it necessary to do epic frontend for project?" ,"Desc": "I am a React fan.", "TAG": "Just Alice Things", "VOTE": 10, "Time":"03-02-2018", "Author": "Alice"},
-  	"ID7":{"Post": "Should I join Google or GS?" ,"Desc": "I am confused!!!", "TAG": "Just Alice Things", "VOTE": 10, "Time":"03-01-2018", "Author": "Alice"}}
-    return data;
+  getPostData() {
+    var data = {
+  	"posts":
+  	[{"pid":41,"post": "Is there an exam tomorrow?" ,"description": "I am having a conflict. Do we have an exam tomorrow?", "tag": "Exam", "vote": 10, "time":"03-08-2018", "author": "Alice"},
+  	{"pid":51, "post": "What's SQLITE?" ,"description": "What's the best resource?", "tag": "Project 1", "vote": 10, "time":"03-06-2018", "author": "Sihan"},
+  	{"pid":63, "post": "Can we use Sqlite?" ,"description": "Wondering if we can use it or not", "tag": "Project 1", "vote": 10, "time":"03-05-2018", "author": "Karthik"},
+  	{"pid":67, "post": "What's difference betwen MongoDb and Sqlite?" ,"description": "Both seems cool.", "tag": "Project 1", "vote": 10, "time":"03-04-2018", "author": "Miles"},
+  	{"pid":12, "post": "Do we need to finish it before due date?" ,"description": "I am lazy.", "tag": "Exam", "vote": 10, "time":"03-03-2018", "author": "Alice"},
+  	{"pid":44, "post": "Is it necessary to do epic frontend for project?" ,"description": "I am a React fan.", "tag": "Just Alice Things", "vote": 10, "time":"03-02-2018", "author": "Alice"},
+  	{"pid":21, "post": "Should I join Google or GS?" ,"description": "I am confused!!!", "tag": "Just Alice Things", "vote": 10, "time":"03-01-2018", "author": "Alice"}]}
+
+  	return data;
   }
   getFilteredData() {
-    var data = _.values(this.getTempData());
+    var data = this.getPostData().posts;
     if (this.state.filter == "All") return data;
     var data = [];
-    _.forEach (this.getTempData(), function(value, key) {
-      if (value.TAG == this.state.filter) {
+    _.forEach (this.getPostData().posts, function(value) {
+      console.log(value);
+      if (value.tag == this.state.filter) {
         data.push(value);
       };
     }.bind(this));
     return data;
+  }
+  getPostDetailData() {
+    var data = {
+  	"pid":52,
+  	"post":"When is the exam and where is it?",
+  	"description":"I need the exact date and location for the exam.",
+  	"tags":["Exam","Logistics","Other"],
+  	"replies":
+  	[{"rid":0, "author":"Sihan", "time": "2018-03-31 20:40:00", "vote": 3, "answer":"Today is a good day for exam."},
+  	{"rid":1, "author":"Jack", "time": "2018-03-31 21:40:00", "vote": 5, "answer":"I believe it's in Gates G01, maybe I am wrong, can some TA confirm this?"},
+  	{"rid":2, "author":"Jane", "time": "2018-03-31 22:40:00", "vote": 11, "answer":"Disagree with the last post, I believe it's in startler 101. Correct me if I am wrong."},
+  	{"rid":3, "author":"Peter", "time": "2018-03-31 23:40:00", "vote": 22, "answer":"Disagree again with the reply above. It's a take home exam."},
+  	{"rid":4, "author":"Dan", "time": "2018-03-31 23:41:00", "vote": 0, "answer":"I don't know"},
+  	{"rid":5, "author":"Lilly", "time": "2018-03-31 23:46:22", "vote": 1, "answer":"Agree with floor 4."}]
+  	}
+
+  	return data
   }
   handleFilter(tag, e) {
     e.preventDefault();
@@ -57,8 +79,9 @@ export default class Mainpage extends Component {
   }
   handleOpenDetailDialog(post, e) {
     e.preventDefault();
+    var postDetail = this.getPostDetailData();
     this.setState({openDetailDialog: true});
-    this.setState({currentPost: post})
+    this.setState({currentPost: postDetail});
   }
   handleCloseDetailDialog(e) {
     this.setState({openDetailDialog: false});
@@ -78,19 +101,19 @@ export default class Mainpage extends Component {
   render() {
     var posts = [];
     _.forEach(this.getFilteredData(), function(value) {
-      var ava = <Avatar>{value.Author[0]}</Avatar>
+      var ava = <Avatar>{value.author[0]}</Avatar>
       posts.push (
         <div style={styles.cardContainer}>
           <Card>
             <CardHeader
-              title={value.Post}
-              subtitle={value.VOTE + " votes • " + value.Time}
+              title={value.post}
+              subtitle={value.vote + " votes • " + value.time}
               avatar={ava}
               actAsExpander={false}
               showExpandableButton={false}
             />
             <CardText expandable={false}>
-              {value.Desc}
+              {value.description}
             </CardText>
             <CardActions>
               <RaisedButton label="more" primary={true} onClick={this.handleOpenDetailDialog.bind(this, value)} style={styles.rightButton}/>
@@ -99,8 +122,10 @@ export default class Mainpage extends Component {
         </div>
       )
     }.bind(this));
-    var tags = _.map(this.getTempData(), function(value, key) {
-      return value.TAG;
+    var tags = [];
+    _.forEach(this.getPostData().posts, function(value) {
+      console.log(value);
+      tags.push(value.tag);
     });
     var tags = _.uniq(tags);
     var tagButtons = tags.map((tag)=>(<RaisedButton label={tag} primary={true} onClick={this.handleFilter.bind(this, tag)} style={styles.tagButton} />));
@@ -154,17 +179,17 @@ export default class Mainpage extends Component {
           {posts}
         </div>
         <Dialog
-          title= {this.state.currentPost == null ? "Post" : this.state.currentPost.Post}
+          title= {this.state.currentPost == null ? "Post" : this.state.currentPost.post}
           actions={detailActions}
           modal={false}
           open={this.state.openDetailDialog}
           onRequestClose={this.handleCloseDetailDialog}
           autoScrollBodyContent={true}
         >
-          <p>{this.state.currentPost == null ? "Details" : this.state.currentPost.Desc}</p>
+          <p>{this.state.currentPost == null ? "Details" : this.state.currentPost.description}</p>
         </Dialog>
         <Dialog
-          title= {this.state.currentPost == null ? "Post" : this.state.currentPost.Post}
+          title= {this.state.currentPost == null ? "Post" : this.state.currentPost.post}
           actions={commentActions}
           modal={false}
           open={this.state.openCommentDialog}

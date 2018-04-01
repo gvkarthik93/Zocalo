@@ -38,13 +38,7 @@ class AccessHandler(tornado.web.RequestHandler):
                 return
             us = UserService()
             result = us.register(data)
-            if result["status"]:
-                ps = PostService()
-                response = ps.get_questions()
-                self.write(json.dumps(response))
-            else:
-                self.write(json.dumps(
-                    {"status":0, "message":result["message"]}))
+            self.write(json.dumps(result)))
 
         elif param == "changepwd":
             try:

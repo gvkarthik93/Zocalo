@@ -22,7 +22,7 @@ class UserService:
     def login(self, data):
         try:
             user = session.query(User).filter_by(
-                user_name=data["username"]).one()
+                username=data["username"]).one()
         except KeyError:
             return {"status":0, "message":"Invalid JSON field", "courses":[]}
         except NoResultFound:
@@ -39,7 +39,8 @@ class UserService:
 
         # get all the course id associated with the user
         course_list = []
-        for c in user.courses:
+        for uc in user.courses:
+            c = uc.u_c
             d = {}
             d["course_id"] = c.id
             d["course_name"] = c.course_name
@@ -50,17 +51,18 @@ class UserService:
         
 
     def register(self, data):
+
         # check duplicate email and username
         try:
             if session.query(
-                exists().where(User.user_name==data["username"])).scalar():
+                exists().where(User.username==data["username"])).scalar():
                 return {"status":0, "message":"Username existed"}
             if session.query(
                 exists().where(User.email==data["email"])).scalar():
-                return {"status":0, "message:""Email existed"}
+                return {"status":0, "message":"Email existed"}
             pwd = self.hash_password(data["password"])
             new_user = User(
-                user_name=data["username"], 
+                username=data["username"], 
                 password=pwd,
                 name=data["name"], 
                 email=data["email"]
@@ -75,7 +77,7 @@ class UserService:
     def change_password(self, data): 
         try:
             user = session.query(User).filter_by(
-                user_name=data["username"]).one()
+                username=data["username"]).one()
         except KeyError:
             return {"status":0, "message":"Invalid JSON field"}
         except NoResultFound:

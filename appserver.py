@@ -77,7 +77,7 @@ class PostsHandler(tornado.web.RequestHandler):
             response = ps.get_questions(data)
             self.write(json.dumps(response))
 
-        elif param1 is not None:
+        else:
             try:
                 data = tornado.escape.json_decode(self.request.body)
             except:
@@ -86,20 +86,14 @@ class PostsHandler(tornado.web.RequestHandler):
                 return
 
             ps = PostService()
-            response = ps.get_post(data["pid"])
+            response = ps.get_post(param1)
             self.write(json.dumps(response))
 
     def delete(self, param1=None, param2=None, param3=None):
-        if param1 is None and param2 is None and param3 is None:
-            print ("Need to provide specific post details")
-        elif param1 is not None:
+        if param1 and not param2 and not param3:
             print ("Delete specific post")
-        elif param1 is not None and param2 is not None and param3 is not None:
+        elif param1 and param2 and param3:
             print ("Delete specific specific answer related to specific post")
-
-# /edits/Post
-# /edits/Content
-# /edits/Comments
 
 def main():
     application = tornado.web.Application([
@@ -112,7 +106,6 @@ def main():
         (r"/posts/(.*)/(.*)", PostsHandler),
         (r"/posts/(.*)", PostsHandler),
         (r"/posts", PostsHandler),
-
 
         (r'/(.*)', tornado.web.StaticFileHandler, {'path': './'}),
         (r"/image/*.png", tornado.web.StaticFileHandler, {'path':'./image/'}),

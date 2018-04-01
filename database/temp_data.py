@@ -26,7 +26,7 @@ def tempPostDetailData():
 	    "message":"Success",
 		"post": {
 			"pid":52,
-			"post":"When is the exam and where is it?",
+			"header":"When is the exam and where is it?",
 			"description":"(D)I need the exact date and location for the exam.",
 			"tags":["Exam","Logistics","Other"],
 			"replies":

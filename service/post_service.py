@@ -23,6 +23,12 @@ class PostService:
         except MultipleResultsFound:
             print("should not happen")
 
+        if not session.query(
+            exists().where(and_(UserCourse.user_name==data["username"], 
+                UserCourse.course_id==data["course_id"])))
+                .scalar():
+            return {"status":0, "message":"User not registed", "posts":[]}
+
         post_list = []
         for p in course.posts:
             d = {}
@@ -37,13 +43,19 @@ class PostService:
 
         return {"status":1, "message":"Success", "posts":post_list}
 
-    def get_post(self, data):
+    def get_post(self, pid, data):
         try:
-            post = session.query(Post).filter_by(id=data["pid"]).one()
+            post = session.query(Post).filter_by(id=pid).one()
         except NoResultFound:
             return {"status":0, "message":"No post founded", "post":[]}
         except MultipleResultsFound:
             print("should not happen")
+
+        if not session.query(
+            exists().where(and_(UserCourse.user_name==data["username"], 
+                UserCourse.course_id==data["course_id"])))
+                .scalar():
+            return {"status":0, "message":"User not registed", "posts":[]}
 
         p = {}
         p["pid"] = post.id

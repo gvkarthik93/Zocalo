@@ -38,7 +38,7 @@ class AccessHandler(tornado.web.RequestHandler):
                 return
             us = UserService()
             result = us.register(data)
-            self.write(json.dumps(result)))
+            self.write(json.dumps(result))
 
         elif param == "changepwd":
             try:

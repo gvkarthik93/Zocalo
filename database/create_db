@@ -1,0 +1,10 @@
+#!/bin/bash
+
+# setup database schema
+python database_setup.py
+
+# create lookup table data
+python lookup_data.py
+
+# testing data
+python create_tmp_data.py

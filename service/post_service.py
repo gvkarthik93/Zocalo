@@ -2,7 +2,7 @@ import sys
 import json
 import os
 sys.path.append(os.path.join(os.path.dirname(__file__), "..", ".."))
-from sqlalchemy import create_engine, and_
+from sqlalchemy import create_engine, and_, exists
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.orm.exc import MultipleResultsFound
@@ -16,14 +16,15 @@ class PostService:
 
     def get_questions(self, data):
         try:
-            course = session.query(Course).filter_by(course_id=data["course_id"]).one()
+            course = session.query(Course).\
+                filter_by(id=data["course_id"]).one()
         except NoResultFound:
             return {"status":0, "message":"No post founded", "posts":[]}
         except MultipleResultsFound:
             print("should not happen")
 
         if not session.query(
-            exists().where(and_(UserCourse.user_name==data["username"], 
+            exists().where(and_(UserCourse.username==data["username"], \
                 UserCourse.course_id==data["course_id"]))).scalar():
             return {"status":0, "message":"User not registed", "posts":[]}
 
@@ -50,7 +51,7 @@ class PostService:
             print("should not happen")
 
         if not session.query(
-            exists().where(and_(UserCourse.user_name==data["username"], 
+            exists().where(and_(UserCourse.username==data["username"], \
                 UserCourse.course_id==data["course_id"]))).scalar():
             return {"status":0, "message":"User not registed", "posts":[]}
 

@@ -21,30 +21,30 @@ class EmailSetting(Base):
 class UserCourse(Base):
     __tablename__ = 'user_course'
 
-    user_name = Column(String(100), ForeignKey("users.user_name"), primary_key=True)
+    username = Column(String(100), ForeignKey("users.username"), primary_key=True)
     course_id = Column(Integer, ForeignKey("courses.id"), primary_key=True)
     role_id = Column(Integer, ForeignKey("role.id"), nullable=False)
     
-    u_c = relationship("User", back_populates="courses")
-    c_u = relationship("Course", back_populates="users")
+    c_u = relationship("User", back_populates="courses")
+    u_c = relationship("Course", back_populates="users")
 
 
 class User(Base):
     __tablename__ = 'users'
 
-    user_name = Column(String(100), primary_key=True)
+    username = Column(String(100), primary_key=True)
     password = Column(String(100), nullable=False)
     name = Column(String(100), nullable=False)
     email = Column(String(100), nullable=False) 
     email_setting_id = Column(Integer, ForeignKey("email_setting.id"))
 
     email_setting = relationship("EmailSetting", back_populates="users")
-    courses = relationship("UserCourse", back_populates="u_c")
+    courses = relationship("UserCourse", back_populates="c_u")
     replies = relationship("Reply", back_populates="user")
 
     def __repr__(self):
-        return "<User(user_name='%s', password='%s', name='%s', email='%s')>" % (
-                self.user_name, self.name, self.password, self.email)
+        return "<User(username='%s', password='%s', name='%s', email='%s')>" % (
+                self.username, self.name, self.password, self.email)
 
 class Course(Base):
     __tablename__ = 'courses'
@@ -54,7 +54,7 @@ class Course(Base):
     school_id = Column(Integer, ForeignKey("schools.id"))
     course_title = Column(String(100), nullable=False)
 
-    users = relationship("UserCourse", back_populates="c_u")
+    users = relationship("UserCourse", back_populates="u_c")
     posts = relationship("Post", back_populates="course")
 
     school = relationship("School", back_populates="courses")
@@ -122,8 +122,8 @@ class Post(Base):
     create_time = Column(DateTime, default=func.now())
     tag = Column(String(100))
     vote_count = Column(Integer, default=0)
-    post_username = Column(String(100), ForeignKey("users.user_name"))
-    answerer_username = Column(String(100), ForeignKey("users.user_name"))
+    post_username = Column(String(100), ForeignKey("users.username"))
+    answerer_username = Column(String(100), ForeignKey("users.username"))
     course_id = Column(Integer, ForeignKey("courses.id"))
     post_type_id = Column(Integer, ForeignKey("post_type.id"))
     visibility_type_id = Column(Integer, ForeignKey("visibility_type.id"))
@@ -148,7 +148,7 @@ class Reply(Base):
 
     id = Column(Integer, primary_key=True)
     post_id = Column(Integer, ForeignKey("posts.id"))
-    username = Column(String(100), ForeignKey("users.user_name"))
+    username = Column(String(100), ForeignKey("users.username"))
     answer = Column(String(1000))
     create_time = Column(DateTime, default=func.now())
     vote_count = Column(Integer, default=0)

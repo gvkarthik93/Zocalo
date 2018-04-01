@@ -1,19 +1,33 @@
-def tempData():
+def tempLoginReplyData():
 	data = { "status":1,
     "message":"Success",
-	{"pid":41,"post": "Is there an exam tomorrow?" ,"description": "I am having a conflict. Do we have an exam tomorrow?", "tag": "Exam", "vote": 10, "time":"03-08-2018", "author": "Alice"},
+	"posts":
+	[{"pid":41,"post": "Is there an exam tomorrow?" ,"description": "I am having a conflict. Do we have an exam tomorrow?", "tag": "Exam", "vote": 10, "time":"03-08-2018", "author": "Alice"},
 	{"pid":51, "post": "What's SQLITE?" ,"description": "What's the best resource?", "tag": "Project 1", "vote": 10, "time":"03-06-2018", "author": "Sihan"},
 	{"pid":63, "post": "Can we use Sqlite?" ,"description": "Wondering if we can use it or not", "tag": "Project 1", "vote": 10, "time":"03-05-2018", "author": "Karthik"},
 	{"pid":67, "post": "What's difference betwen MongoDb and Sqlite?" ,"description": "Both seems cool.", "tag": "Project 1", "vote": 10, "time":"03-04-2018", "author": "Miles"},
 	{"pid":12, "post": "Do we need to finish it before due date?" ,"description": "I am lazy.", "tag": "Exam", "vote": 10, "time":"03-03-2018", "author": "Alice"},
 	{"pid":44, "post": "Is it necessary to do epic frontend for project?" ,"description": "I am a React fan.", "tag": "Just Alice Things", "vote": 10, "time":"03-02-2018", "author": "Alice"},
-	{"pid":21, "post": "Should I join Google or GS?" ,"description": "I am confused!!!", "tag": "Just Alice Things", "vote": 10, "time":"03-01-2018", "author": "Alice"}}
+	{"pid":21, "post": "Should I join Google or GS?" ,"description": "I am confused!!!", "tag": "Just Alice Things", "vote": 10, "time":"03-01-2018", "author": "Alice"}]}
 
 	return data
 
 def tempPostData():
 	data = {
-	"pid":52, 
+	"posts":
+	[{"pid":41,"post": "Is there an exam tomorrow?" ,"description": "I am having a conflict. Do we have an exam tomorrow?", "tag": "Exam", "vote": 10, "time":"03-08-2018", "author": "Alice"},
+	{"pid":51, "post": "What's SQLITE?" ,"description": "What's the best resource?", "tag": "Project 1", "vote": 10, "time":"03-06-2018", "author": "Sihan"},
+	{"pid":63, "post": "Can we use Sqlite?" ,"description": "Wondering if we can use it or not", "tag": "Project 1", "vote": 10, "time":"03-05-2018", "author": "Karthik"},
+	{"pid":67, "post": "What's difference betwen MongoDb and Sqlite?" ,"description": "Both seems cool.", "tag": "Project 1", "vote": 10, "time":"03-04-2018", "author": "Miles"},
+	{"pid":12, "post": "Do we need to finish it before due date?" ,"description": "I am lazy.", "tag": "Exam", "vote": 10, "time":"03-03-2018", "author": "Alice"},
+	{"pid":44, "post": "Is it necessary to do epic frontend for project?" ,"description": "I am a React fan.", "tag": "Just Alice Things", "vote": 10, "time":"03-02-2018", "author": "Alice"},
+	{"pid":21, "post": "Should I join Google or GS?" ,"description": "I am confused!!!", "tag": "Just Alice Things", "vote": 10, "time":"03-01-2018", "author": "Alice"}]}
+
+	return data
+
+def tempPostDetailData():
+	data = {
+	"pid":52,
 	"post":"When is the exam and where is it?",
 	"description":"I need the exact date and location for the exam.",
 	"tags":["Exam","Logistics","Other"],
@@ -26,4 +40,4 @@ def tempPostData():
 	{"rid":5, "author":"Lilly", "time": "2018-03-31 23:46:22", "vote": 1, "answer":"Agree with floor 4."}]
 	}
 
-	return data	
+	return data

@@ -34,7 +34,6 @@ export default class Login extends Component {
     }).then(function(res) {
       return res.json();
     }).then(function(data) {
-      console.log("/login");
       console.log(data);
     })
   }

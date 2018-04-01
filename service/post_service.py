@@ -14,45 +14,53 @@ session = Session()
 
 class PostService:
 
-    def get_questions(self, s_name, c_name):
+    def get_questions(self, data):
         try:
-            course = session.query(Course).\
-            filter_by(school_name=s_name).filter_by(course_name=c_name).one()
+            course = session.query(Course).
+                filter_by(course_id=data["course_id"]).one()
         except NoResultFound:
-            return (0, "No post founded")
+            return {"status":0, "message":"No post founded", "posts":[]}
         except MultipleResultsFound:
             print("should not happen")
 
-        resp = {}
+        post_list = []
         for p in course.posts:
-            resp[p.id] = {}
-            resp[p.id]["header"] = p.header
-            resp[p.id]["summary"] = p.summary
-            resp[p.id]["tag"] = p.tag
-            resp[p.id]["vote"] = p.vote_count
-            resp[p.id]["time"] = str(p.create_time)
-            resp[p.id]["author"] = p.post_username
+            d = {}
+            d["pid"] = p.id
+            d["header"] = p.header
+            d["summary"] = p.summary
+            d["tag"] = p.tag
+            d["vote"] = p.vote_count
+            d["time"] = str(p.create_time)
+            d["author"] = p.post_username
+            post_list.append(d)
 
-        return (1, json.dumps(resp))
+        return {"status":1, "message":"Success", "posts":post_list}
 
-    def get_post(self, p_id):
+    def get_post(self, data):
         try:
-            post = session.query(Post).filter_by(id=p_id).one()
+            post = session.query(Post).filter_by(id=data["pid"]).one()
         except NoResultFound:
-            return (0, "Post does not exist")
+            return {"status":0, "message":"No post founded", "post":[]}
         except MultipleResultsFound:
             print("should not happen")
 
-        resp = {}
-        resp["post_desc"] = post.description 
+        p = {}
+        p["pid"] = post.id
+        p["header"] = post.header
+        p["summary"] = post.summary
+        p["tag"] = post.tag
+        p["replies"] = []
         for r in post.replies:
-            resp[r.id] = {}
-            resp[r.id]["answer"] = r.answer
-            resp[r.id]["vote"] = r.vote_count
-            resp[r.id]["time"] = str(r.create_time)
-            resp[r.id]["author"] = r.username
+            rd = {}
+            rd["rid"] = r.id
+            rd["author"] = r.username
+            rd["time"] = str(r.create_time)
+            rd["vote"] = r.vote_count
+            rd["answer"] = r.answer
+            p["replies"].append(rd)
 
-        return (1, json.dumps(resp))
+        return {"status":1, "message":"Success", "post":p}
 
     def delete_post(self, p_id):
         count = session.query(Post).filter_by(id=p_id).delete()
@@ -73,7 +81,6 @@ class PostService:
             print("should not happen")
 
         # Need a way to check if keys in d is ok
-
 
     def edit_reply(self, r_id, d):
         try:

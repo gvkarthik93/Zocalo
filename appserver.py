@@ -38,13 +38,7 @@ class AccessHandler(tornado.web.RequestHandler):
                 return
             us = UserService()
             result = us.register(data)
-            if result["status"]:
-                ps = PostService()
-                response = ps.get_questions()
-                self.write(json.dumps(response))
-            else:
-                self.write(json.dumps(
-                    {"status":0, "message":result["message"]}))
+            self.write(json.dumps(result))
 
         elif param == "changepwd":
             try:
@@ -55,8 +49,7 @@ class AccessHandler(tornado.web.RequestHandler):
                 return
             us = UserService()
             result = us.change_password(data)
-            self.write(json.dumps(
-                {"status":result["status"], "message":result["message"]}))
+            self.write(json.dumps(result))
 
         elif param == "forgotpwd":
             data = tornado.escape.json_decode(self.request.body)
@@ -92,7 +85,7 @@ class PostsHandler(tornado.web.RequestHandler):
                 return
 
             ps = PostService()
-            response = ps.get_post(data["pid"])
+            response = ps.get_post(data)
             self.write(json.dumps(response))
 
     def delete(self, param1=None, param2=None, param3=None):

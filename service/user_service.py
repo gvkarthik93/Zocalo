@@ -15,28 +15,38 @@ session = Session()
 class UserService:
 
     def hash_password(self, pwd):
-        hashed_pwd = bcrypt.hashpw(pwd.encode('utf-8'), bcrypt.gensalt(17))
-        return hashed_pwd
+        # hashed_pwd = bcrypt.hashpw(pwd.encode('utf-8'), bcrypt.gensalt(17))
+        return pwd
+        # return hashed_pwd
 
     def login(self, data):
         try:
             user = session.query(User).filter_by(
                 user_name=data["username"]).one()
         except KeyError:
-            return {"status":0, "message":"Invalid JSON field"}
+            return {"status":0, "message":"Invalid JSON field", "courses":[]}
         except NoResultFound:
-            return {"status":0, "message":"No username found"}
+            return {"status":0, "message":"No username found", "courses":[]}
         except MultipleResultsFound:
             pass
 
         try:
-            if not bcrypt.checkpw(data["password"], user.password):
-            # if user.password != self.hash_password(data["password"]):
-                return {"status":0, "message":"Wrong password"}
+            # if not bcrypt.checkpw(data["password"], user.password):
+            if user.password != self.hash_password(data["password"]):
+                return {"status":0, "message":"Wrong password", "courses":[]}
         except KeyError:
-            return {"status":0, "message":"Invalid JSON field"}
+            return {"status":0, "message":"Invalid JSON field", "courses":[]}
 
-        return {"status":1, "message":"Success"}
+        # get all the course id associated with the user
+        course_list = []
+        for c in user.courses:
+            d = {}
+            d["course_id"] = c.id
+            d["course_name"] = c.course_name
+            d["course_title"] = c.course_title
+            course_list.append(d)
+
+        return {"status":1, "message":"Success", "courses":course_list}
         
 
     def register(self, data):

@@ -1,6 +1,3 @@
-# import sys
-# import os
-# sys.path.append(os.path.join(os.path.dirname(__file__), "..", ".."))
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from database_setup import *

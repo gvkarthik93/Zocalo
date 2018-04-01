@@ -16,8 +16,7 @@ class PostService:
 
     def get_questions(self, data):
         try:
-            course = session.query(Course).
-                filter_by(course_id=data["course_id"]).one()
+            course = session.query(Course).filter_by(course_id=data["course_id"]).one()
         except NoResultFound:
             return {"status":0, "message":"No post founded", "posts":[]}
         except MultipleResultsFound:
@@ -25,8 +24,7 @@ class PostService:
 
         if not session.query(
             exists().where(and_(UserCourse.user_name==data["username"], 
-                UserCourse.course_id==data["course_id"])))
-                .scalar():
+                UserCourse.course_id==data["course_id"]))).scalar():
             return {"status":0, "message":"User not registed", "posts":[]}
 
         post_list = []
@@ -53,8 +51,7 @@ class PostService:
 
         if not session.query(
             exists().where(and_(UserCourse.user_name==data["username"], 
-                UserCourse.course_id==data["course_id"])))
-                .scalar():
+                UserCourse.course_id==data["course_id"]))).scalar():
             return {"status":0, "message":"User not registed", "posts":[]}
 
         p = {}

@@ -57,7 +57,7 @@ class UserService:
                 return {"status":0, "message":"Username existed"}
             if session.query(
                 exists().where(User.email==data["email"])).scalar():
-                return {"status":0, "message:""Email existed"}
+                return {"status":0, "message":"Email existed"}
             pwd = self.hash_password(data["password"])
             new_user = User(
                 user_name=data["username"], 

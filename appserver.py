@@ -27,13 +27,7 @@ class AccessHandler(tornado.web.RequestHandler):
                 return
             us = UserService()
             result = us.login(data)
-            if result["status"]:
-                ps = PostService()
-                response = ps.get_questions()
-                self.write(json.dumps(response))
-            else:
-                self.write(json.dumps(
-                    {"status":0, "message":result["message"]}))
+            self.write(json.dumps(result))
 
         elif param == "signup":
             try:
@@ -76,19 +70,38 @@ class AccessHandler(tornado.web.RequestHandler):
 
 # Handle the requests associated with posts
 class PostsHandler(tornado.web.RequestHandler):
-    def post(self, param=None):
-        if param is None:
-            print ("Send all the posts from the database")
-        else:
-            data = tornado.escape.json_decode(self.request.body)
-            print (data)
-            print ("Send specific post")
+    def post(self, param1=None, param2=None, param3=None):
+        if param1 is None:
+            try:
+                data = tornado.escape.json_decode(self.request.body)
+            except:
+                self.write(json.dumps(
+                    {"status":0, "message":"Invalid json format"}))
+                return
 
-    def delete(self, param=None):
-        if param is None:
+            ps = PostService()
+            response = ps.get_questions(data)
+            self.write(json.dumps(response))
+
+        elif param1 is not None:
+            try:
+                data = tornado.escape.json_decode(self.request.body)
+            except:
+                self.write(json.dumps(
+                    {"status":0, "message":"Invalid json format"}))
+                return
+
+            ps = PostService()
+            response = ps.get_post(data["pid"])
+            self.write(json.dumps(response))
+
+    def delete(self, param1=None, param2=None, param3=None):
+        if param1 is None and param2 is None and param3 is None:
             print ("Need to provide specific post details")
-        else:
+        elif param1 is not None:
             print ("Delete specific post")
+        elif param1 is not None and param2 is not None and param3 is not None:
+            print ("Delete specific specific answer related to specific post")
 
 # /edits/Post
 # /edits/Content
@@ -101,6 +114,8 @@ def main():
         (r"/access/(.*)", AccessHandler),
         (r"/access", AccessHandler),
 
+        (r"/posts/(.*)/(.*)/(.*)", PostsHandler),
+        (r"/posts/(.*)/(.*)", PostsHandler),
         (r"/posts/(.*)", PostsHandler),
         (r"/posts", PostsHandler),
 

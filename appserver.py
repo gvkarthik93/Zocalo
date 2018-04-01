@@ -86,7 +86,7 @@ class PostsHandler(tornado.web.RequestHandler):
                 return
 
             ps = PostService()
-            response = ps.get_post(param1)
+            response = ps.get_post(param1, data)
             self.write(json.dumps(response))
 
     def delete(self, param1=None, param2=None, param3=None):

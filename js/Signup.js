@@ -4,6 +4,7 @@ import TextField from 'material-ui/TextField';
 import {RadioButton, RadioButtonGroup} from 'material-ui/RadioButton';
 import RaisedButton from 'material-ui/RaisedButton';
 import {Grid, Row, Col} from 'react-flexbox-grid/lib/index';
+import {BrowserRouter as Router, Link} from 'react-router-dom';
 import 'whatwg-fetch';
 
 export default class Signup extends Component {
@@ -103,7 +104,10 @@ export default class Signup extends Component {
                 value={this.state.fullname}
                 onChange={this.handleChangeFullName}
               /><br/>
-              <RaisedButton label="Submit" primary={true} style={styles.submitButton}
+              <div style={{marginTop: 10, marginBottom: 15, textAlign: 'center', fontSize: 13, color: '#ccc'}}>
+                <Link to="/LoginPage">Already have an account? Login here.</Link>
+              </div>
+              <RaisedButton label="Signup" primary={true} style={styles.submitButton}
                 onClick={this.handleSubmit}
                 disabled={this.state.username == ""
                 || this.state.password == ""

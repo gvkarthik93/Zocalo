@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
+import Dialog from 'material-ui/Dialog';
+import FlatButton from 'material-ui/FlatButton';
 import Paper from 'material-ui/Paper';
 import TextField from 'material-ui/TextField';
 import {RadioButton, RadioButtonGroup} from 'material-ui/RadioButton';
 import RaisedButton from 'material-ui/RaisedButton';
 import {Grid, Row, Col} from 'react-flexbox-grid/lib/index';
-import { BrowserRouter as Router } from 'react-router-dom';
+import {BrowserRouter as Router, Link} from 'react-router-dom';
 import 'whatwg-fetch';
 
 export default class Login extends Component {
@@ -12,12 +14,14 @@ export default class Login extends Component {
     super(props);
     this.state = {
         username: '',
-        password: ''
+        password: '',
+        open: false
     };
     this.handleChangeUsername = this.handleChangeUsername.bind(this);
     this.handleChangePassword = this.handleChangePassword.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.sendPostRequest = this.sendPostRequest.bind(this);
+    this.handleClose = this.handleClose.bind(this);
   }
   sendPostRequest() {
     fetch('access/login', {
@@ -35,7 +39,14 @@ export default class Login extends Component {
       return res.json();
     }).then(function(data) {
       console.log(data);
-    })
+      if (data.status == 0) {
+        console.log("no username found.");
+        this.setState({open: true});
+      }
+      else if (data.status == 1) {
+        this.props.history.push('/MainPage');
+      }
+    }.bind(this))
   }
   handleChangeUsername(e) {
       this.setState({username: e.target.value});
@@ -43,15 +54,23 @@ export default class Login extends Component {
   handleChangePassword(e) {
       this.setState({password: e.target.value});
   }
+  handleClose(e) {
+    this.setState({open: false});
+  }
   handleSubmit(e) {
       e.preventDefault();
       this.sendPostRequest();
-      this.props.history.push('/MainPage');
       console.log("Submitted");
   }
   render() {
     //console.log(this.props);
-    const { match, location, history } = this.props;
+    const actions = [
+      <FlatButton
+        label="OK"
+        primary={true}
+        onClick={this.handleClose}
+      />
+    ];
     return (
       <Row>
           <Col md={2} lg={2}/>
@@ -69,9 +88,23 @@ export default class Login extends Component {
                 value={this.state.password}
                 onChange={this.handleChangePassword}
               /><br/>
+              <div style={{marginTop: 10, marginBottom: 15, textAlign: 'center', fontSize: 13, color: '#ccc'}}>
+                <Link to="/SignupPage">Do not have an account? Signup!</Link>
+              </div>
               <RaisedButton label="login" primary={true} style={styles.submitButton}
-                onClick={this.handleSubmit}/>
+                onClick={this.handleSubmit}
+                disabled={this.state.username == ""
+                || this.state.password == "" ? true : false}/>
             </Paper>
+            <Dialog
+              title="Login unsuccessful"
+              actions={actions}
+              modal={false}
+              open={this.state.open}
+              onRequestClose={this.handleClose}
+            >
+              <p>This username password combination is invalid. Please try again!</p>
+            </Dialog>
           </Col>
           <Col md={2} lg={2}/>
       </Row>

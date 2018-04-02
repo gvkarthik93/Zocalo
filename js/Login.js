@@ -24,6 +24,8 @@ export default class Login extends Component {
     this.handleClose = this.handleClose.bind(this);
   }
   sendPostRequest() {
+    console.log("Submitted username: " + this.state.username);
+    console.log("Submitted password: " + this.state.password);
     fetch('access/login', {
       credentials: 'include',
       method: 'POST',

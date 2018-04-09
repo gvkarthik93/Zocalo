@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import AppBar from 'material-ui/AppBar';
 import Avatar from 'material-ui/Avatar';
-import {Card, CardActions, CardHeader, CardText} from 'material-ui/Card';
+import {Card, CardActions, CardHeader, CardTitle, CardText} from 'material-ui/Card';
 import Dialog from 'material-ui/Dialog';
 import Drawer from 'material-ui/Drawer';
 import FlatButton from 'material-ui/FlatButton';
@@ -145,9 +145,9 @@ export default class Mainpage extends Component {
               actAsExpander={false}
               showExpandableButton={false}
             />
-            <CardText expandable={false}>
+            <CardTitle expandable={false}>
               {value.summary}
-            </CardText>
+            </CardTitle>
             <CardActions>
               <RaisedButton label="more" primary={true} onClick={this.handleOpenDetailDialog.bind(this, value)} style={styles.rightButton}/>
             </CardActions>

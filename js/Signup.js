@@ -26,14 +26,14 @@ export default class Signup extends Component {
   }
   sendPostRequest() {
     //Change to post to signup
-    fetch('/sign_up', {
+    fetch('access/signup', {
       credentials: 'include',
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        type: 'login',
+        type: 'signup',
         username: this.state.username,
         password: this.state.password,
         email: this.state.email,
@@ -41,7 +41,17 @@ export default class Signup extends Component {
       })
     }).then(function(res) {
       console.log(res);
-    })
+    }).then(function(data) {
+      console.log(data);
+      this.props.history.push('/MainPage');
+      // if (data.status == 0) {
+      //   console.log("no username found.");
+      //   this.setState({open: true});
+      // }
+      // else if (data.status == 1) {
+      //   this.props.history.push('/MainPage');
+      // }
+    }.bind(this))
   }
   validateEmail() {
     let re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;

@@ -29,7 +29,8 @@ class UserService:
             return {"status":0, "message":"No username found", "courses":[]}
         except MultipleResultsFound:
             pass
-
+        print(user.password)
+        print(data["password"])
         try:
             # if not bcrypt.checkpw(data["password"], user.password):
             if user.password != self.hash_password(data["password"]):
@@ -48,7 +49,7 @@ class UserService:
             course_list.append(d)
 
         return {"status":1, "message":"Success", "courses":course_list}
-        
+
 
     def register(self, data):
 
@@ -62,9 +63,9 @@ class UserService:
                 return {"status":0, "message":"Email existed"}
             pwd = self.hash_password(data["password"])
             new_user = User(
-                username=data["username"], 
+                username=data["username"],
                 password=pwd,
-                name=data["name"], 
+                name=data["name"],
                 email=data["email"]
             )
         except KeyError:
@@ -74,7 +75,7 @@ class UserService:
         session.commit()
         return {"status":1, "message":"Success"}
 
-    def change_password(self, data): 
+    def change_password(self, data):
         try:
             user = session.query(User).filter_by(
                 username=data["username"]).one()

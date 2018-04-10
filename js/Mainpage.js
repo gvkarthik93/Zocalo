@@ -9,6 +9,7 @@ import { Link, Router } from 'react-router-dom';
 import MenuItem from 'material-ui/MenuItem';
 import Paper from 'material-ui/Paper';
 import RaisedButton from 'material-ui/RaisedButton';
+import SelectField from 'material-ui/SelectField';
 import {Grid, Row, Col} from 'react-flexbox-grid/lib/index';
 import SearchBar from './SearchBar';
 var _ = require('lodash');
@@ -19,9 +20,11 @@ export default class Mainpage extends Component {
       filter: "All",
       openDetailDialog: false,
       openCommentDialog: false,
-      currentPost: null
+      currentPost: null,
+      sort: null
     };
     this.handleFilter = this.handleFilter.bind(this);
+    this.handleSort = this.handleSort.bind(this);
     this.getPostData = this.getPostData.bind(this);
     this.getFilteredData = this.getFilteredData.bind(this);
     this.handleOpenDetailDialog = this.handleOpenDetailDialog.bind(this);
@@ -106,6 +109,9 @@ export default class Mainpage extends Component {
     e.preventDefault();
     this.setState({filter: tag});
     console.log(tag);
+  }
+  handleSort(e, index, value) {
+    this.setState({sort: value});
   }
   handleOpenDetailDialog(post, e) {
     e.preventDefault();
@@ -208,6 +214,16 @@ export default class Mainpage extends Component {
           {tagButtons}
         </div>
         <div style={styles.postBoard}>
+          <RaisedButton label="Create post" primary={true} style={styles.createPostButton}/>
+          <SelectField
+            value={this.state.sort}
+            onChange={this.handleSort}
+            floatingLabelText="Sort By"
+            style={styles.sortDropdown}
+          >
+            <MenuItem key={1} value={1} primaryText="Time" />
+            <MenuItem key={2} value={2} primaryText="Votes" />
+          </SelectField>
           {posts}
         </div>
         <Dialog
@@ -263,6 +279,14 @@ const styles = {
   rightButton: {
     marginTop: '6px'
   },
+  createPostButton: {
+    marginTop: '12px',
+    marginBottom: '6px',
+  },
+  sortDropdown: {
+    marginTop: '-18px',
+    float: 'right'
+  },
   title: {
     float: 'left',
     whiteSpace: 'nowrap',
@@ -285,9 +309,6 @@ const styles = {
     alignItems: 'center',
     justifyContent: 'center',
     flexDirection: 'column'
-  },
-  testSearchBar: {
-
   },
   barcontent: {
     color: 'black'

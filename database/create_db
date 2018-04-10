@@ -1,10 +1,20 @@
 #!/bin/bash
 
+# delete Zocalo.db file if exist
+if [ -f Zocalo.db ]
+then
+    rm Zocalo.db
+    echo 'Removed Zocalo.db' 
+fi
+
 # setup database schema
 python database_setup.py
+echo 'Created Zocalo schema'
 
 # create lookup table data
 python lookup_data.py
+echo 'Created Zocalo lookup data'
 
 # testing data
 python create_tmp_data.py
+echo 'Created Zocalo testing data'

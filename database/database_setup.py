@@ -56,7 +56,7 @@ class Course(Base):
 
     users = relationship("UserCourse", back_populates="u_c")
     posts = relationship("Post", back_populates="course")
-
+    tags = relationship("Tag", back_populates="course")
     school = relationship("School", back_populates="courses")
 
     def __repr__(self):
@@ -86,19 +86,6 @@ class Role(Base):
                 self.id, self.type)
 
 
-class VisibilityType(Base):
-    __tablename__ = 'visibility_type'
-
-    id = Column(Integer, primary_key=True)
-    type = Column(String(100), nullable=False)
-
-    posts = relationship("Post", back_populates="visibility_type")
-
-    def __repr__(self):
-        return "<VisibilityType(id='%s', type='%s')>" % (
-                self.id, self.type)
-
-
 class PostType(Base):
     __tablename__ = 'post_type'
 
@@ -112,6 +99,31 @@ class PostType(Base):
                 self.id, self.type)
 
 
+class PostTag(Base):
+    __tablename__ = 'post_tag'
+
+    post_id = Column(Integer, ForeignKey("posts.id"), primary_key=True)
+    tag_id = Column(Integer, ForeignKey("tag.id"), primary_key=True)
+
+    p_t = relationship("Tag", back_populates="posts")
+    t_p = relationship("Post", back_populates="tags")
+
+
+class Tag(Base):
+    __tablename__ = 'tag'
+
+    id = Column(Integer, primary_key=True)
+    course_id = Column(Integer, ForeignKey("courses.id"))
+    name = Column(String(50), nullable=False)
+
+    course = relationship("Course", back_populates="tags")
+    posts = relationship("PostTag", back_populates="p_t")
+
+    def __repr__(self):
+        return "<Tag(id='%d', course_id='%d'), name='%s'>" % (
+                self.id, self.course_id)
+
+
 class Post(Base):
     __tablename__ = 'posts'
 
@@ -120,19 +132,16 @@ class Post(Base):
     summary = Column(String(500))
     description = Column(String(1000))
     create_time = Column(DateTime, default=func.now())
-    tag = Column(String(100))
     vote_count = Column(Integer, default=0)
     post_username = Column(String(100), ForeignKey("users.username"))
     answerer_username = Column(String(100), ForeignKey("users.username"))
     course_id = Column(Integer, ForeignKey("courses.id"))
     post_type_id = Column(Integer, ForeignKey("post_type.id"))
-    visibility_type_id = Column(Integer, ForeignKey("visibility_type.id"))
 
-    visibility_type = relationship("VisibilityType", back_populates="posts")
     post_type = relationship("PostType", back_populates="posts")
     course = relationship("Course", back_populates="posts")
     replies = relationship("Reply", back_populates="post")
-    
+    tags = relationship("PostTag", back_populates="t_p")
     post_author = relationship("User", foreign_keys=[post_username])
     answer_ta = relationship("User", foreign_keys=[answerer_username])
     

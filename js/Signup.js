@@ -37,7 +37,7 @@ export default class Signup extends Component {
         username: this.state.username,
         password: this.state.password,
         email: this.state.email,
-        fullname: this.state.fullname
+        name: this.state.fullname
       })
     }).then(function(res) {
       console.log(res);

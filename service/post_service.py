@@ -13,7 +13,6 @@ Session = sessionmaker(bind=engine)
 session = Session()
 
 class PostService:
-
     def get_questions(self, data):
         try:
             course = session.query(Course).\

@@ -55,6 +55,11 @@ class AccessHandler(tornado.web.RequestHandler):
             data = tornado.escape.json_decode(self.request.body)
             print (data)
 
+        elif param == "schools":
+            data = tornado.escape.json_decode(self.request.body)
+            print (data)
+            # Get all the schools in the database
+
     def delete(self, param=None):
         if param is None:
             print ("Send No access Code")
@@ -94,6 +99,68 @@ class PostsHandler(tornado.web.RequestHandler):
         elif param1 and param2 and param3:
             print ("Delete specific specific answer related to specific post")
 
+
+class CreateHandler(tornado.web.RequestHandler):
+    def post(self, param1=None, param2=None, param3=None):
+        if param1 is None and param2 is None and param3 is None:
+            try:
+                data = tornado.escape.json_decode(self.request.body)
+            except:
+                self.write(json.dumps(
+                    {"status":0, "message":"Invalid json format"}))
+                return
+
+            # Create Single Post
+
+        else:
+            try:
+                data = tornado.escape.json_decode(self.request.body)
+            except:
+                self.write(json.dumps(
+                    {"status":0, "message":"Invalid json format"}))
+                return
+
+            # Create answer
+
+
+class EditHandler(tornado.web.RequestHandler):
+    def post(self, param1=None, param2=None, param3=None, param4=None):
+        if param3 is None and param4 is None:
+            try:
+                data = tornado.escape.json_decode(self.request.body)
+            except:
+                self.write(json.dumps(
+                    {"status":0, "message":"Invalid json format"}))
+                return
+
+            # Edit Specific Post
+
+        else:
+            try:
+                data = tornado.escape.json_decode(self.request.body)
+            except:
+                self.write(json.dumps(
+                    {"status":0, "message":"Invalid json format"}))
+                return
+
+            # Edit answer to speciic post
+
+class EnrollHandler(tornado.web.RequestHandler):
+    def post(self, param1=None):
+        if param1 is not None:
+            try:
+                data = tornado.escape.json_decode(self.request.body)
+            except:
+                self.write(json.dumps(
+                    {"status":0, "message":"Invalid json format"}))
+                return
+
+            # Enroll for course
+
+        else:
+            # Invalid request type
+            print ("Invalid Request")
+
 def main():
     application = tornado.web.Application([
         (r"/", MainHandler),
@@ -101,10 +168,25 @@ def main():
         (r"/access/(.*)", AccessHandler),
         (r"/access", AccessHandler),
 
+#/create/post/
+#/create/post/pid/answer
+#/edit/post/pid
+#/edit/post/pid/answer/aid
+#/enroll/course
+#/access/schools
+
         (r"/posts/(.*)/(.*)/(.*)", PostsHandler),
         (r"/posts/(.*)/(.*)", PostsHandler),
         (r"/posts/(.*)", PostsHandler),
         (r"/posts", PostsHandler),
+
+        (r"/create/(.*)/(.*)/(.*)", CreateHandler),
+        (r"/create/(.*)/", CreateHandler),
+
+        (r"/edit/(.*)/(.*)/(.*)/(.*)", EditHandler),
+        (r"/edit/(.*)/(.*)", EditHandler),
+
+        (r"/enroll/(.*)", EnrollHandler),
 
         (r'/(.*)', tornado.web.StaticFileHandler, {'path': './'}),
         (r"/image/*.png", tornado.web.StaticFileHandler, {'path':'./image/'}),

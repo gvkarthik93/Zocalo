@@ -55,6 +55,11 @@ class AccessHandler(tornado.web.RequestHandler):
             data = tornado.escape.json_decode(self.request.body)
             print (data)
 
+        elif param == "schools":
+            data = tornado.escape.json_decode(self.request.body)
+            print (data)
+            # Get all the schools in the database
+
     def delete(self, param=None):
         if param is None:
             print ("Send No access Code")
@@ -119,7 +124,7 @@ class CreateHandler(tornado.web.RequestHandler):
 
 
 class EditHandler(tornado.web.RequestHandler):
-    def post(self, param1=None, param2=None, param3=None, param3=None):
+    def post(self, param1=None, param2=None, param3=None, param4=None):
         if param3 is None and param4 is None:
             try:
                 data = tornado.escape.json_decode(self.request.body)
@@ -140,6 +145,21 @@ class EditHandler(tornado.web.RequestHandler):
 
             # Edit answer to speciic post
 
+class EnrollHandler(tornado.web.RequestHandler):
+    def post(self, param1=None):
+        if param1 is not None:
+            try:
+                data = tornado.escape.json_decode(self.request.body)
+            except:
+                self.write(json.dumps(
+                    {"status":0, "message":"Invalid json format"}))
+                return
+
+            # Enroll for course
+
+        else:
+            # Invalid request type
+
 def main():
     application = tornado.web.Application([
         (r"/", MainHandler),
@@ -152,7 +172,7 @@ def main():
 #/edit/post/pid
 #/edit/post/pid/answer/aid
 #/enroll/course
-#/getsloginformdetails
+#/access/schools
 
         (r"/posts/(.*)/(.*)/(.*)", PostsHandler),
         (r"/posts/(.*)/(.*)", PostsHandler),
@@ -164,6 +184,8 @@ def main():
 
         (r"/edit/(.*)/(.*)/(.*)/(.*)", EditHandler),
         (r"/edit/(.*)/(.*)", EditHandler),
+
+        (r"/enroll/(.*)", EnrollHandler),
 
         (r'/(.*)', tornado.web.StaticFileHandler, {'path': './'}),
         (r"/image/*.png", tornado.web.StaticFileHandler, {'path':'./image/'}),

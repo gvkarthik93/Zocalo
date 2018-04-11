@@ -94,6 +94,52 @@ class PostsHandler(tornado.web.RequestHandler):
         elif param1 and param2 and param3:
             print ("Delete specific specific answer related to specific post")
 
+
+class CreateHandler(tornado.web.RequestHandler):
+    def post(self, param1=None, param2=None, param3=None):
+        if param1 is None and param2 is None and param3 is None:
+            try:
+                data = tornado.escape.json_decode(self.request.body)
+            except:
+                self.write(json.dumps(
+                    {"status":0, "message":"Invalid json format"}))
+                return
+
+            # Create Single Post
+
+        else:
+            try:
+                data = tornado.escape.json_decode(self.request.body)
+            except:
+                self.write(json.dumps(
+                    {"status":0, "message":"Invalid json format"}))
+                return
+
+            # Create answer
+
+
+class EditHandler(tornado.web.RequestHandler):
+    def post(self, param1=None, param2=None, param3=None, param3=None):
+        if param3 is None and param4 is None:
+            try:
+                data = tornado.escape.json_decode(self.request.body)
+            except:
+                self.write(json.dumps(
+                    {"status":0, "message":"Invalid json format"}))
+                return
+
+            # Edit Specific Post
+
+        else:
+            try:
+                data = tornado.escape.json_decode(self.request.body)
+            except:
+                self.write(json.dumps(
+                    {"status":0, "message":"Invalid json format"}))
+                return
+
+            # Edit answer to speciic post
+
 def main():
     application = tornado.web.Application([
         (r"/", MainHandler),
@@ -101,10 +147,23 @@ def main():
         (r"/access/(.*)", AccessHandler),
         (r"/access", AccessHandler),
 
+#/create/post/
+#/create/post/pid/answer
+#/edit/post/pid
+#/edit/post/pid/answer/aid
+#/enroll/course
+#/getsloginformdetails
+
         (r"/posts/(.*)/(.*)/(.*)", PostsHandler),
         (r"/posts/(.*)/(.*)", PostsHandler),
         (r"/posts/(.*)", PostsHandler),
         (r"/posts", PostsHandler),
+
+        (r"/create/(.*)/(.*)/(.*)", CreateHandler),
+        (r"/create/(.*)/", CreateHandler),
+
+        (r"/edit/(.*)/(.*)/(.*)/(.*)", EditHandler),
+        (r"/edit/(.*)/(.*)", EditHandler),
 
         (r'/(.*)', tornado.web.StaticFileHandler, {'path': './'}),
         (r"/image/*.png", tornado.web.StaticFileHandler, {'path':'./image/'}),

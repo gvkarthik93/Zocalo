@@ -13,7 +13,6 @@ Session = sessionmaker(bind=engine)
 session = Session()
 
 class UserService:
-
     def hash_password(self, pwd):
         # hashed_pwd = bcrypt.hashpw(pwd.encode('utf-8'), bcrypt.gensalt(17))
         return pwd

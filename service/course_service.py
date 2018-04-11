@@ -14,7 +14,6 @@ Session = sessionmaker(bind=engine)
 session = Session()
 
 class CourseService:
-
     #data: c_name, s_id, c_title
     #input: course_name, school_id, course_title
     #output: status, message

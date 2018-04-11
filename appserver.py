@@ -159,6 +159,7 @@ class EnrollHandler(tornado.web.RequestHandler):
 
         else:
             # Invalid request type
+            print ("Invalid Request")
 
 def main():
     application = tornado.web.Application([

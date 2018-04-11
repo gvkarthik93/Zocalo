@@ -34,7 +34,8 @@ class PostService:
             d["pid"] = p.id
             d["header"] = p.header
             d["summary"] = p.summary
-            d["tag"] = p.tag
+            d["tags"] = []
+            # d["tags"] = p.tag
             d["vote"] = p.vote_count
             d["time"] = str(p.create_time)
             d["author"] = p.post_username
@@ -58,8 +59,9 @@ class PostService:
         p = {}
         p["pid"] = post.id
         p["header"] = post.header
-        p["summary"] = post.summary
-        p["tag"] = post.tag
+        p["description"] = post.description
+        # p["tags"] = post.tag
+        p["tags"] = []
         p["replies"] = []
         for r in post.replies:
             rd = {}

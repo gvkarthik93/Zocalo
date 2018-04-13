@@ -17,7 +17,7 @@ class AccessHandler(tornado.web.RequestHandler):
         if param is None:
             self.write(json.dumps(
                 {"status":0, "message":"Access Denied"}))
-        
+
         elif param == "login":
             try:
                 data = tornado.escape.json_decode(self.request.body)
@@ -164,7 +164,10 @@ class EnrollHandler(tornado.web.RequestHandler):
 def main():
     application = tornado.web.Application([
         (r"/", MainHandler),
-        
+        (r"/LoginPage", MainHandler),
+        (r"/SignupPage", MainHandler),
+        (r"/MainPage", MainHandler),
+
         (r"/access/(.*)", AccessHandler),
         (r"/access", AccessHandler),
 
@@ -198,6 +201,6 @@ def main():
     http_server.listen(port)
     print ("Server Running on Port: ", port)
     tornado.ioloop.IOLoop.instance().start()
- 
+
 if __name__ == "__main__":
     main()

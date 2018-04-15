@@ -96,6 +96,11 @@ class PostsHandler(tornado.web.RequestHandler):
     def delete(self, param1=None, param2=None, param3=None):
         if param1 and not param2 and not param3:
             print ("Delete specific post")
+
+            # ps = PostService()
+            # response = ps.edit_post(data)
+            # self.write(json.dumps(response))
+
         elif param1 and param2 and param3:
             print ("Delete specific specific answer related to specific post")
 
@@ -111,7 +116,9 @@ class CreateHandler(tornado.web.RequestHandler):
                 return
 
             # Create Single Post
-
+            ps = PostService()
+            response = ps.create_post(data)
+            self.write(json.dumps(response))
         else:
             try:
                 data = tornado.escape.json_decode(self.request.body)
@@ -121,7 +128,9 @@ class CreateHandler(tornado.web.RequestHandler):
                 return
 
             # Create answer
-
+            ps = PostService()
+            response = ps.create_reply(data)
+            self.write(json.dumps(response))
 
 class EditHandler(tornado.web.RequestHandler):
     def post(self, param1=None, param2=None, param3=None, param4=None):
@@ -134,7 +143,9 @@ class EditHandler(tornado.web.RequestHandler):
                 return
 
             # Edit Specific Post
-
+            ps = PostService()
+            response = ps.edit_post(data)
+            self.write(json.dumps(response))
         else:
             try:
                 data = tornado.escape.json_decode(self.request.body)
@@ -144,6 +155,9 @@ class EditHandler(tornado.web.RequestHandler):
                 return
 
             # Edit answer to speciic post
+            ps = PostService()
+            response = ps.edit_reply(data)
+            self.write(json.dumps(response))
 
 class EnrollHandler(tornado.web.RequestHandler):
     def post(self, param1=None):

@@ -11,6 +11,7 @@ class MainHandler(tornado.web.RequestHandler):
     def get(self):
         self.render('./index.html')
 
+
 # Handle the access requests
 class AccessHandler(tornado.web.RequestHandler):
     def post(self, param=None):
@@ -66,98 +67,54 @@ class AccessHandler(tornado.web.RequestHandler):
         elif param == "delete":
             print ("Delete the credential")
 
+
 # Handle the requests associated with posts
 class PostsHandler(tornado.web.RequestHandler):
-    def post(self, param1=None, param2=None, param3=None):
-        if param1 is None:
-            try:
-                data = tornado.escape.json_decode(self.request.body)
-            except:
-                self.write(json.dumps(
-                    {"status":0, "message":"Invalid json format"}))
-                return
+    def get(self, param1=None, param2=None, param3=None):
+        try:
+            data = tornado.escape.json_decode(self.request.body)
+        except:
+            self.write(json.dumps(
+                {"status":0, "message":"Invalid json format"}))
+            return
 
+        if param1 is None:
             ps = PostService()
             response = ps.get_questions(data)
             self.write(json.dumps(response))
-
         else:
-            try:
-                data = tornado.escape.json_decode(self.request.body)
-            except:
-                self.write(json.dumps(
-                    {"status":0, "message":"Invalid json format"}))
-                return
-
             ps = PostService()
             response = ps.get_post(param1, data)
             self.write(json.dumps(response))
 
-    def delete(self, param1=None, param2=None, param3=None):
-        if param1 and not param2 and not param3:
-            print ("Delete specific post")
+    def post(self, param1=None, param2=None):
+        try:
+            data = tornado.escape.json_decode(self.request.body)
+        except:
+            self.write(json.dumps(
+                {"status":0, "message":"Invalid json format"}))
+            return
 
-            # ps = PostService()
-            # response = ps.edit_post(data)
-            # self.write(json.dumps(response))
-
-        elif param1 and param2 and param3:
-            print ("Delete specific specific answer related to specific post")
-
-
-class CreateHandler(tornado.web.RequestHandler):
-    def post(self, param1=None, param2=None, param3=None):
-        if param1 is None and param2 is None and param3 is None:
-            try:
-                data = tornado.escape.json_decode(self.request.body)
-            except:
-                self.write(json.dumps(
-                    {"status":0, "message":"Invalid json format"}))
-                return
-
-            # Create Single Post
+        if param1 is None and param2 is None:
             ps = PostService()
             response = ps.create_post(data)
             self.write(json.dumps(response))
         else:
-            try:
-                data = tornado.escape.json_decode(self.request.body)
-            except:
-                self.write(json.dumps(
-                    {"status":0, "message":"Invalid json format"}))
-                return
-
-            # Create answer
             ps = PostService()
-            response = ps.create_reply(data)
+            response = ps.create_reply(param1, data)
             self.write(json.dumps(response))
 
-class EditHandler(tornado.web.RequestHandler):
-    def post(self, param1=None, param2=None, param3=None, param4=None):
-        if param3 is None and param4 is None:
-            try:
-                data = tornado.escape.json_decode(self.request.body)
-            except:
-                self.write(json.dumps(
-                    {"status":0, "message":"Invalid json format"}))
-                return
-
-            # Edit Specific Post
+    def delete(self, param1=None, param2=None, param3=None):
+        if param1 and not param2 and not param3:
             ps = PostService()
-            response = ps.edit_post(data)
+            response = ps.delete_post(param1)
             self.write(json.dumps(response))
-        else:
-            try:
-                data = tornado.escape.json_decode(self.request.body)
-            except:
-                self.write(json.dumps(
-                    {"status":0, "message":"Invalid json format"}))
-                return
 
-            # Edit answer to speciic post
+        elif param1 and param2 and param3:
             ps = PostService()
-            response = ps.edit_reply(data)
-            self.write(json.dumps(response))
+            response = ps.delete_reply(param3)
+            self.write(json.dumps(response))           
+
 
 class EnrollHandler(tornado.web.RequestHandler):
     def post(self, param1=None):
@@ -175,6 +132,7 @@ class EnrollHandler(tornado.web.RequestHandler):
             # Invalid request type
             print ("Invalid Request")
 
+
 def main():
     application = tornado.web.Application([
         (r"/", MainHandler),
@@ -185,10 +143,6 @@ def main():
         (r"/access/(.*)", AccessHandler),
         (r"/access", AccessHandler),
 
-#/create/post/
-#/create/post/pid/answer
-#/edit/post/pid
-#/edit/post/pid/answer/aid
 #/enroll/course
 #/access/schools
 
@@ -196,12 +150,6 @@ def main():
         (r"/posts/(.*)/(.*)", PostsHandler),
         (r"/posts/(.*)", PostsHandler),
         (r"/posts", PostsHandler),
-
-        (r"/create/(.*)/(.*)/(.*)", CreateHandler),
-        (r"/create/(.*)/", CreateHandler),
-
-        (r"/edit/(.*)/(.*)/(.*)/(.*)", EditHandler),
-        (r"/edit/(.*)/(.*)", EditHandler),
 
         (r"/enroll/(.*)", EnrollHandler),
 

@@ -60,29 +60,7 @@ export default class Mainpage extends Component {
     }.bind(this));
     return data;
   }
-  getPostDetailData() {
-    var data = {
-      "status":1,
-  	  "message":"Success",
-  		"post": {
-  			"pid":52,
-  			"header":"When is the exam and where is it?",
-  			"description":"(D)I need the exact date and location for the exam.",
-  			"tags":["Exam","Logistics","Other"],
-  			"replies":
-  			[{"rid":0, "author":"Sihan", "time": "2018-03-31 20:40:00", "vote": 3, "answer":"Today is a good day for exam."},
-  			{"rid":1, "author":"Jack", "time": "2018-03-31 21:40:00", "vote": 5, "answer":"I believe it's in Gates G01, maybe I am wrong, can some TA confirm this?"},
-  			{"rid":2, "author":"Jane", "time": "2018-03-31 22:40:00", "vote": 11, "answer":"Disagree with the last post, I believe it's in startler 101. Correct me if I am wrong."},
-  			{"rid":3, "author":"Peter", "time": "2018-03-31 23:40:00", "vote": 22, "answer":"Disagree again with the reply above. It's a take home exam."},
-  			{"rid":4, "author":"Dan", "time": "2018-03-31 23:41:00", "vote": 0, "answer":"I don't know"},
-  			{"rid":5, "author":"Lilly", "time": "2018-03-31 23:46:22", "vote": 1, "answer":"Agree with floor 4."}]
-  		}
-  	}
-
-  	return data
-  }
   getPostDetailComponents() {
-    console.log("called");
     var answers = [];
     if (this.state.currentPost != null) {
       _.forEach(this.state.currentPost.replies, function(value) {
@@ -177,7 +155,7 @@ export default class Mainpage extends Component {
 
     const customTitle = (
       <div>
-        <h1 style={styles.title}>Zocalo</h1>
+        <a onClick={(e) => {this.props.history.push('/MainPage')}} style={styles.title}>Zocalo</a>
         <div style={styles.testSearchBar}>
           <SearchBar />
         </div>
@@ -257,10 +235,6 @@ export default class Mainpage extends Component {
   }
 }
 const styles = {
-  div: {
-    height: '40px',
-    backgroundColor: 'green'
-  },
   appbar: {
     position: 'fixed',
     top: '0'
@@ -305,7 +279,8 @@ const styles = {
     height: '64px',
     width: '212px',
     lineHeight: '64px',
-    flex: '1 1 0%'
+    flex: '1 1 0%',
+    cursor: 'pointer'
   },
   searchBar: {
     color: 'black',

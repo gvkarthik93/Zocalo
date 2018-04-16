@@ -28,8 +28,7 @@ class UserService:
             return {"status":0, "message":"No username found", "courses":[]}
         except MultipleResultsFound:
             pass
-        print(user.password)
-        print(data["password"])
+
         try:
             # if not bcrypt.checkpw(data["password"], user.password):
             if user.password != self.hash_password(data["password"]):

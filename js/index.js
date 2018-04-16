@@ -5,6 +5,7 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import Mainpage from './Mainpage';
 import Login from './Login';
 import Signup from './Signup';
+import PostDetailPage from './PostDetailPage';
 
 const App = () => (
   <MuiThemeProvider>
@@ -13,7 +14,9 @@ const App = () => (
         <Route path="/SignupPage" component={Signup} />
         <Route path="/MainPage" component={Mainpage} />
         <Route path="/LoginPage" component={Login} />
-        <Route path="/" component={Login} />
+        <Route path="/PostDetailPage/posts/:pid" component={PostDetailPage} />
+        <Route path="/" component={Mainpage} />
+
       </Switch>
     </Router>
   </MuiThemeProvider>

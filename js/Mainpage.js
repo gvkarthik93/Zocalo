@@ -113,14 +113,19 @@ export default class Mainpage extends Component {
   handleSort(e, index, value) {
     this.setState({sort: value});
   }
-  handleOpenDetailDialog(post, e) {
+  handleOpenDetailDialog(pid, e) {
     e.preventDefault();
-    var postDetail = this.getPostDetailData();
+    // var win = window.open('/PostDetailPage/posts/'+pid, '_blank');
+    // var win = window.open('/MainPage', '_blank');
+    // win.focus();
+
+    this.props.history.push('/PostDetailPage/posts/'+pid);
+    // var postDetail = this.getPostDetailData();
     //console.log(this.getPostDetailData());
-    this.setState({openDetailDialog: true});
-    this.setState({currentPost: postDetail});
+    // this.setState({openDetailDialog: true});
+    // this.setState({currentPost: postDetail});
     //console.log(this.currentPost);
-    this.forceUpdate();
+    // this.forceUpdate();
   }
   handleCloseDetailDialog(e) {
     this.setState({openDetailDialog: false});
@@ -155,7 +160,7 @@ export default class Mainpage extends Component {
               {value.summary}
             </CardTitle>
             <CardActions>
-              <RaisedButton label="more" primary={true} onClick={this.handleOpenDetailDialog.bind(this, value)} style={styles.rightButton}/>
+              <RaisedButton label="more" primary={true} onClick={this.handleOpenDetailDialog.bind(this, value.pid)} style={styles.rightButton}/>
             </CardActions>
           </Card>
         </div>

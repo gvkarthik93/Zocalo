@@ -42,6 +42,28 @@ export default class PostDetailPage extends Component {
     console.log(this.props.match.params.pid);
     var data = this.getPostDetailData();
     var ava = <Avatar>{data.post.author[0]}</Avatar>
+
+    var replies = [];
+    _.forEach(data.post.replies, function(value) {
+      var ava = <Avatar>{value.author[0]}</Avatar>
+      replies.push (
+        <div style={styles.cardContainer}>
+          <Card>
+            <CardHeader
+              title={value.author}
+              subtitle={value.vote + " votes • " + value.time}
+              avatar={ava}
+              actAsExpander={false}
+              showExpandableButton={false}
+            />
+            <CardTitle expandable={false}>
+              {value.answer}
+            </CardTitle>
+          </Card>
+        </div>
+      )
+    }.bind(this));
+
     return (
       <div>
         <AppBar
@@ -65,30 +87,7 @@ export default class PostDetailPage extends Component {
             </CardTitle>
           </Card>
           <h1>Answers</h1>
-          <Card style={styles.cardContainer}>
-            <CardHeader
-              title={data.post.header}
-              subtitle={data.post.vote + " votes • " + data.post.time}
-              avatar={ava}
-              actAsExpander={false}
-              showExpandableButton={false}
-            />
-            <CardTitle expandable={false}>
-              {data.post.description}
-            </CardTitle>
-          </Card>
-          <Card style={styles.cardContainer}>
-            <CardHeader
-              title={data.post.header}
-              subtitle={data.post.vote + " votes • " + data.post.time}
-              avatar={ava}
-              actAsExpander={false}
-              showExpandableButton={false}
-            />
-            <CardTitle expandable={false}>
-              {data.post.description}
-            </CardTitle>
-          </Card>
+          {replies}
         </div>
       </div>
     )
@@ -101,7 +100,8 @@ const styles = {
     top: '0'
   },
   rightButton: {
-    marginTop: '6px'
+    marginTop: '6px',
+    marginRight: '12px'
   },
   postContainer: {
     margin: '96px 24px 0px 24px'

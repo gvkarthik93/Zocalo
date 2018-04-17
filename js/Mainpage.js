@@ -256,7 +256,8 @@ const styles = {
     padding: '10px 0px'
   },
   rightButton: {
-    marginTop: '6px'
+    marginTop: '6px',
+    marginRight: '12px'
   },
   createPostButton: {
     marginTop: '12px',

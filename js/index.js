@@ -15,7 +15,7 @@ const App = () => (
         <Route path="/MainPage" component={Mainpage} />
         <Route path="/LoginPage" component={Login} />
         <Route path="/PostDetailPage/posts/:pid" component={PostDetailPage} />
-        <Route path="/" component={Mainpage} />
+        <Route path="/" component={Login} />
 
       </Switch>
     </Router>

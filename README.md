@@ -10,17 +10,11 @@ Open source platform for collaboration among students and professors
     `$cd database`
    and do
     `$./create_db`
-3. Use `$pip install -r requirements.txt` to install all the packages required for the project.
-4. Nagivate back to project directory by
-    `$cd ..`
-   and start the server
+3. Nagivate back to project directory by `$cd ..`
+   and use `$pip install -r requirements.txt` to install all the packages required for the project.
+4. Start the server
     `$python appserver.py`
-<<<<<<< HEAD
-5. Use `$pip install -r requirements.txt` to install python packages
-6. If the server starts correctly, it should show
-=======
 5. If the server starts correctly, it should show
->>>>>>> b866437c8c8086b572de0c828d3f995752310c2b
     `Server Running on Port:  8002`
 6. Open browser, go to [http://localhost:8002/](http://localhost:8002/)
 7. We've create a test login credential:

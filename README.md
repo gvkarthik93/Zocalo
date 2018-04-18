@@ -22,7 +22,7 @@ Open source platform for collaboration among students and professors
     - Password:sc123
 
 
-# Test on Local Machine
+# Deployment
 1. Checkout the project from github [https://github.com/gvkarthik93/Zocalo.git](https://github.com/gvkarthik93/Zocalo.git)
 2. Using terminal, navigate to Zocalo folder
 3. Use `$pip3 install -r requirements.txt` to install all the packages required for the project.

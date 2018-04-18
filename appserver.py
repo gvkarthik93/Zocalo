@@ -87,7 +87,7 @@ class PostsHandler(tornado.web.RequestHandler):
             response = ps.get_post(param1, data)
             self.write(json.dumps(response))
 
-    def post(self, param1=None, param2=None):
+    def post(self, param1=None, param2=None, param3=None):
         try:
             data = tornado.escape.json_decode(self.request.body)
         except:

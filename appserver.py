@@ -104,6 +104,9 @@ class PostsHandler(tornado.web.RequestHandler):
             response = ps.create_reply(param1, data)
             self.write(json.dumps(response))
 
+    def put(self, param1=None, param2=None, param3=None):
+        print ("Edit Data")
+
     def delete(self, param1=None, param2=None, param3=None):
         if param1 and not param2 and not param3:
             ps = PostService()
@@ -127,6 +130,7 @@ class EnrollHandler(tornado.web.RequestHandler):
                 return
 
             # Enroll for course
+            # Create courses
 
         else:
             # Invalid request type
@@ -142,9 +146,6 @@ def main():
 
         (r"/access/(.*)", AccessHandler),
         (r"/access", AccessHandler),
-
-#/enroll/course
-#/access/schools
 
         (r"/posts/(.*)/(.*)/(.*)", PostsHandler),
         (r"/posts/(.*)/(.*)", PostsHandler),

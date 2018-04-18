@@ -34,7 +34,7 @@ Open source platform for collaboration among students and professors
     `$python appserver.py`</li>
   <li>If the server starts correctly, it should show
     `Server Running on Port:  8002`</li>
-  <li>Open browser, go to [http://localhost:8002/](http://localhost:8002/) to test the server</li>
+  <li>Open browser, go to http://localhost:8002/ to test the server</li>
   <li>Open `https://www.heroku.com/` and signup with a new account credentials.</li>
   <li>Install heroku CLI from `https://www.heroku.com/`</li>
   <li>Now on the terminal run the command `heroku create` (Note that the command should run in the project directory)</li>

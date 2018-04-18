@@ -105,7 +105,22 @@ class PostsHandler(tornado.web.RequestHandler):
             self.write(json.dumps(response))
 
     def put(self, param1=None, param2=None, param3=None):
-        print ("Edit Data")
+        try:
+            data = tornado.escape.json_decode(self.request.body)
+        except:
+            self.write(json.dumps(
+                {"status":0, "message":"Invalid json format"}))
+            return
+
+        if param1 and not param2 and not param3:
+            ps = PostService()
+            response = ps.edit_post(param1, data)
+            self.write(json.dumps(response))
+
+        elif param1 and param2 and param3:
+            ps = PostService()
+            response = ps.edit_reply(param3, data)
+            self.write(json.dumps(response))  
 
     def delete(self, param1=None, param2=None, param3=None):
         if param1 and not param2 and not param3:

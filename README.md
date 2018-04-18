@@ -13,7 +13,7 @@ Open source platform for collaboration among students and professors
     `$cd ..`
    and start the server
     `$python appserver.py`
-5. Use `$pip3 install <package>` to install any package if an error occurs.
+5. Use `$pip install -r requirements.txt` to install python packages
 6. If the server starts correctly, it should show
     `Server Running on Port:  8002`
 7. Open browser, go to [http://localhost:8002/](http://localhost:8002/)

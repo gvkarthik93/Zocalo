@@ -70,6 +70,7 @@ class AccessHandler(tornado.web.RequestHandler):
 
 # Handle the requests associated with posts
 class PostsHandler(tornado.web.RequestHandler):
+    # To fetch all the posts
     def get(self, param1=None, param2=None, param3=None):
         try:
             data = tornado.escape.json_decode(self.request.body)
@@ -87,6 +88,7 @@ class PostsHandler(tornado.web.RequestHandler):
             response = ps.get_post(param1, data)
             self.write(json.dumps(response))
 
+    # To create new posts and answers
     def post(self, param1=None, param2=None, param3=None):
         try:
             data = tornado.escape.json_decode(self.request.body)
@@ -104,6 +106,7 @@ class PostsHandler(tornado.web.RequestHandler):
             response = ps.create_reply(param1, data)
             self.write(json.dumps(response))
 
+    # To edit specific post or answer
     def put(self, param1=None, param2=None, param3=None):
         try:
             data = tornado.escape.json_decode(self.request.body)
@@ -122,6 +125,7 @@ class PostsHandler(tornado.web.RequestHandler):
             response = ps.edit_reply(param3, data)
             self.write(json.dumps(response))  
 
+    # To delete specific post or answer
     def delete(self, param1=None, param2=None, param3=None):
         if param1 and not param2 and not param3:
             ps = PostService()
@@ -167,7 +171,7 @@ def main():
         (r"/posts/(.*)", PostsHandler),
         (r"/posts", PostsHandler),
 
-        (r"/enroll/(.*)", EnrollHandler),
+        (r"/course/(.*)", EnrollHandler),
 
         (r'/(.*)', tornado.web.StaticFileHandler, {'path': './'}),
         (r"/image/*.png", tornado.web.StaticFileHandler, {'path':'./image/'}),

@@ -52,7 +52,3 @@ Open source platform for collaboration among students and professors
 13. The above command will start the server on heroku and the application is now open on internet.
 
 <hr>
-<h3>Linkedlist.cpp</h3>
-
-
-<hr>

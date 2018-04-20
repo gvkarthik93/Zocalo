@@ -46,6 +46,7 @@ export default class Login extends Component {
         this.setState({open: true});
       }
       else if (data.status == 1) {
+        this.props.setCurrentUser(this.state.username);
         this.props.history.push('/MainPage');
       }
     }.bind(this))

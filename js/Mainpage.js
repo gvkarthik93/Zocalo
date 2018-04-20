@@ -34,6 +34,31 @@ export default class Mainpage extends Component {
     this.handleAddComment = this.handleAddComment.bind(this);
     this.getPostDetailComponents = this.getPostDetailComponents.bind(this);
   }
+  // componentDidMount() {
+  //   fetch('posts', {
+  //     credentials: 'include',
+  //     method: 'GET',
+  //     headers: {
+  //       'Content-Type': 'application/json'
+  //     },
+  //     body: JSON.stringify({
+  //       type: 'login',
+  //       username: this.state.username,
+  //       password: this.state.password
+  //     })
+  //   }).then(function(res) {
+  //     return res.json();
+  //   }).then(function(data) {
+  //     console.log(data);
+  //     if (data.status == 0) {
+  //       console.log("no username found.");
+  //       this.setState({open: true});
+  //     }
+  //     else if (data.status == 1) {
+  //       this.props.history.push('/MainPage');
+  //     }
+  //   }.bind(this))
+  // }
   getPostData() {
     var data = { "status":1,
       "message":"Success",
@@ -121,6 +146,7 @@ export default class Mainpage extends Component {
     console.log("Comment added.");
   }
   render() {
+    console.log(this.props.currentUser);
     var posts = [];
     _.forEach(this.getFilteredData(), function(value) {
       var ava = <Avatar>{value.author[0]}</Avatar>

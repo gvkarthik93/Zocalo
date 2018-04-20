@@ -40,6 +40,7 @@ export default class PostDetailPage extends Component {
   }
   render() {
     console.log(this.props.match.params.pid);
+    console.log(this.props);
     var data = this.getPostDetailData();
     var ava = <Avatar>{data.post.author[0]}</Avatar>
 

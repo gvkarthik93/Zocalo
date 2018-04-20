@@ -6,6 +6,7 @@ import json
 import tornado.escape
 from service.user_service import UserService
 from service.post_service import PostService
+from util.auth_util import AuthUtil
 
 class MainHandler(tornado.web.RequestHandler):
     def get(self):
@@ -42,6 +43,12 @@ class AccessHandler(tornado.web.RequestHandler):
             self.write(json.dumps(result))
 
         elif param == "changepwd":
+            auth_header = self.request.headers.get('Authorization')
+            au = AuthUtil()
+            msg = au.checkToken(auth_header)
+            if not msg[0]:
+                self.write(msg[1])
+
             try:
                 data = tornado.escape.json_decode(self.request.body)
             except:
@@ -72,6 +79,12 @@ class AccessHandler(tornado.web.RequestHandler):
 class PostsHandler(tornado.web.RequestHandler):
     # To fetch all the posts
     def get(self, param1=None, param2=None, param3=None):
+        auth_header = self.request.headers.get('Authorization')
+        au = AuthUtil()
+        msg = au.checkToken(auth_header)
+        if not msg[0]:
+            self.write(msg[1])
+
         try:
             data = tornado.escape.json_decode(self.request.body)
         except:
@@ -90,6 +103,12 @@ class PostsHandler(tornado.web.RequestHandler):
 
     # To create new posts and answers
     def post(self, param1=None, param2=None, param3=None):
+        auth_header = self.request.headers.get('Authorization')
+        au = AuthUtil()
+        msg = au.checkToken(auth_header)
+        if not msg[0]:
+            self.write(msg[1])
+
         try:
             data = tornado.escape.json_decode(self.request.body)
         except:
@@ -108,6 +127,12 @@ class PostsHandler(tornado.web.RequestHandler):
 
     # To edit specific post or answer
     def put(self, param1=None, param2=None, param3=None):
+        auth_header = self.request.headers.get('Authorization')
+        au = AuthUtil()
+        msg = au.checkToken(auth_header)
+        if not msg[0]:
+            self.write(msg[1])
+
         try:
             data = tornado.escape.json_decode(self.request.body)
         except:
@@ -127,6 +152,12 @@ class PostsHandler(tornado.web.RequestHandler):
 
     # To delete specific post or answer
     def delete(self, param1=None, param2=None, param3=None):
+        auth_header = self.request.headers.get('Authorization')
+        au = AuthUtil()
+        msg = au.checkToken(auth_header)
+        if not msg[0]:
+            self.write(msg[1])
+
         if param1 and not param2 and not param3:
             ps = PostService()
             response = ps.delete_post(param1)

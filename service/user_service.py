@@ -1,16 +1,19 @@
 import sys
 import os
 import bcrypt
+import jwt
 sys.path.append(os.path.join(os.path.dirname(__file__), "..", ".."))
 from sqlalchemy import create_engine, exists
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.orm.exc import MultipleResultsFound
 from Zocalo.database.database_setup import *
+from Zocalo.util.auth_util import AuthUtil
 
 engine = create_engine('sqlite:///database/Zocalo.db')
 Session = sessionmaker(bind=engine)
 session = Session()
+
 
 class UserService:
     def hash_password(self, pwd):
@@ -46,11 +49,15 @@ class UserService:
             d["course_title"] = c.course_title
             course_list.append(d)
 
-        return {"status":1, "message":"Success", "courses":course_list}
+        # generate Token
+        a_u = AuthUtil()
+        jwt_token = a_u.generateToken(user.username)
+
+        return {"status":1, "message":"Success", 
+                "courses":course_list, "token": jwt_token.decode("utf-8")}
 
 
     def register(self, data):
-
         # check duplicate email and username
         try:
             if session.query(

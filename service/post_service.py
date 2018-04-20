@@ -95,14 +95,38 @@ class PostService:
         except MultipleResultsFound:
             print("should not happen")
 
+        try:
+            post.header=data["header"], 
+            post.summary=data["summary"], 
+            post.description=data["description"], 
+            post.post_username=data["author"], 
+            post.course_id=data["course_id"],
+            post.post_type_id=data["post_type_id"]
+        except KeyError:
+            return {"status":0, "message":"Invalid JSON field"}
+
+        session.add(post)
+        session.commit()
+        return {"status":1, "message":"Success"}
 
     def edit_reply(self, rid, data):
         try:
-            post = session.query(Post).filter_by(id=rid).one()
+            reply = session.query(Reply).filter_by(id=rid).one()
         except NoResultFound:
             return {"status":0, "message":"Reply does not exist"}
         except MultipleResultsFound:
             print("should not happen")
+
+        try:
+            reply.post_id=pid,
+            reply.username=data["username"],
+            reply.answer=data["answer"]
+        except KeyError:
+            return {"status":0, "message":"Invalid JSON field"}
+
+        session.add(reply)
+        session.commit()
+        return {"status":1, "message":"Success"}
 
     def create_post(self, data):
         try:

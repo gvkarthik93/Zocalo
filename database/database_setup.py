@@ -37,14 +37,24 @@ class User(Base):
     name = Column(String(100), nullable=False)
     email = Column(String(100), nullable=False) 
     email_setting_id = Column(Integer, ForeignKey("email_setting.id"))
+    school_id = Column(Integer, ForeignKey("schools.id"))
 
     email_setting = relationship("EmailSetting", back_populates="users")
     courses = relationship("UserCourse", back_populates="c_u")
     replies = relationship("Reply", back_populates="user")
+    school = relationship("School", back_populates="users")
 
     def __repr__(self):
         return "<User(username='%s', password='%s', name='%s', email='%s')>" % (
                 self.username, self.name, self.password, self.email)
+
+class Term(Base):
+    __tablename__ = 'term'
+
+    id = Column(Integer, primary_key=True)
+    name = Column(String(50), nullable=False)
+
+    courses = relationship("Course", back_populates="term")
 
 class Course(Base):
     __tablename__ = 'courses'
@@ -53,11 +63,13 @@ class Course(Base):
     course_name = Column(String(100), nullable=False)
     school_id = Column(Integer, ForeignKey("schools.id"))
     course_title = Column(String(100), nullable=False)
+    term_id = Column(Integer, ForeignKey("term.id"))
 
     users = relationship("UserCourse", back_populates="u_c")
     posts = relationship("Post", back_populates="course")
     tags = relationship("Tag", back_populates="course")
     school = relationship("School", back_populates="courses")
+    term = relationship("Term", back_populates="courses")
 
     def __repr__(self):
         return "<Course(course_name='%s', school_id='%s', course_title='%s')>" % (
@@ -70,6 +82,7 @@ class School(Base):
     school_name = Column(String(100), nullable=False)
 
     courses = relationship("Course", back_populates="school")
+    users = relationship("User", back_populates="school")
 
     def __repr__(self):
         return "<School(id='%s', school_name='%s')>" % (

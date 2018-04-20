@@ -18,19 +18,13 @@ export default class Mainpage extends Component {
     super(props);
     this.state = {
       filter: "All",
-      openDetailDialog: false,
-      openCommentDialog: false,
-      currentPost: null,
       sort: null
     };
     this.handleFilter = this.handleFilter.bind(this);
     this.handleSort = this.handleSort.bind(this);
     this.getPostData = this.getPostData.bind(this);
     this.getFilteredData = this.getFilteredData.bind(this);
-    this.handleOpenDetailDialog = this.handleOpenDetailDialog.bind(this);
-    this.handleCloseDetailDialog = this.handleCloseDetailDialog.bind(this);
-    this.handleOpenCommentDialog = this.handleOpenCommentDialog.bind(this);
-    this.handleCloseCommentDialog = this.handleCloseCommentDialog.bind(this);
+    this.handleOpenDetailPage = this.handleOpenDetailPage.bind(this);
     this.handleAddComment = this.handleAddComment.bind(this);
     this.getPostDetailComponents = this.getPostDetailComponents.bind(this);
   }
@@ -116,31 +110,9 @@ export default class Mainpage extends Component {
   handleSort(e, index, value) {
     this.setState({sort: value});
   }
-  handleOpenDetailDialog(pid, e) {
+  handleOpenDetailPage(pid, e) {
     e.preventDefault();
-    // var win = window.open('/PostDetailPage/posts/'+pid, '_blank');
-    // var win = window.open('/MainPage', '_blank');
-    // win.focus();
-
     this.props.history.push('/PostDetailPage/posts/'+pid);
-    // var postDetail = this.getPostDetailData();
-    //console.log(this.getPostDetailData());
-    // this.setState({openDetailDialog: true});
-    // this.setState({currentPost: postDetail});
-    //console.log(this.currentPost);
-    // this.forceUpdate();
-  }
-  handleCloseDetailDialog(e) {
-    this.setState({openDetailDialog: false});
-    this.setState({currentPost: null});
-  }
-  handleOpenCommentDialog(e) {
-    e.preventDefault();
-    this.setState({openCommentDialog: true});
-  }
-  handleCloseCommentDialog(e) {
-    e.preventDefault();
-    this.setState({openCommentDialog: false});
   }
   handleAddComment() {
     console.log("Comment added.");
@@ -164,7 +136,7 @@ export default class Mainpage extends Component {
               {value.summary}
             </CardTitle>
             <CardActions>
-              <RaisedButton label="more" primary={true} onClick={this.handleOpenDetailDialog.bind(this, value.pid)} style={styles.rightButton}/>
+              <RaisedButton label="more" primary={true} onClick={this.handleOpenDetailPage.bind(this, value.pid)} style={styles.rightButton}/>
             </CardActions>
           </Card>
         </div>
@@ -186,19 +158,6 @@ export default class Mainpage extends Component {
           <SearchBar />
         </div>
       </div>);
-
-    const detailActions = [
-      <FlatButton
-        label="Add comment"
-        primary={true}
-        onClick={this.handleOpenCommentDialog}
-      />,
-      <FlatButton
-        label="Close"
-        primary={true}
-        onClick={this.handleCloseDetailDialog}
-      />,
-    ];
 
     const commentActions = [
       <FlatButton
@@ -235,26 +194,6 @@ export default class Mainpage extends Component {
           </SelectField>
           {posts}
         </div>
-        <Dialog
-          title= {this.state.currentPost == null ? "Header" : this.state.currentPost.post.header}
-          actions={detailActions}
-          modal={false}
-          open={this.state.openDetailDialog}
-          onRequestClose={this.handleCloseDetailDialog}
-          autoScrollBodyContent={true}
-        >
-          <p>{this.state.currentPost == null ? "Details" : this.state.currentPost.post.description}</p>
-          {this.getPostDetailComponents()}
-        </Dialog>
-        <Dialog
-          title= {this.state.currentPost == null ? "Header" : this.state.currentPost.post.header}
-          actions={commentActions}
-          modal={false}
-          open={this.state.openCommentDialog}
-          onRequestClose={this.handleCloseCommentDialog}
-        >
-          <p>Add comment</p>
-        </Dialog>
       </div>
 
     )

@@ -15,8 +15,8 @@ class App extends Component {
     };
     this.setCurrentUser = this.setCurrentUser.bind(this);
   }
-  setCurrentUser(username) {
-    this.setState({currentUser: username});
+  setCurrentUser(token) {
+    this.setState({currentUser: token});
   }
   render() {
     return (

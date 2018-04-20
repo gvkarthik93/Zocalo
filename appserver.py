@@ -78,19 +78,25 @@ class AccessHandler(tornado.web.RequestHandler):
 # Handle the requests associated with posts
 class PostsHandler(tornado.web.RequestHandler):
     # To fetch all the posts
-    def get(self, param1=None, param2=None, param3=None):
+    def get(self, param1=None):
+        try:
+            cid = self.get_query_argument("cid")
+        except:
+            self.write(json.dumps(
+                {"status":0, "message":"course id needed"}))
+            return
+
         auth_header = self.request.headers.get('Authorization')
         au = AuthUtil()
         msg = au.checkToken(auth_header)
         if not msg[0]:
             self.write(msg[1])
 
-        try:
-            data = tornado.escape.json_decode(self.request.body)
-        except:
-            self.write(json.dumps(
-                {"status":0, "message":"Invalid json format"}))
-            return
+        
+        print(msg[1])
+        data = {}
+        data["username"] = msg[1]["username"]
+        data["course_id"] = cid
 
         if param1 is None:
             ps = PostService()

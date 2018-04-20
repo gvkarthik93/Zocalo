@@ -1,4 +1,5 @@
 import jwt
+import json
 from datetime import datetime, timedelta
 
 # Metadata for token
@@ -19,7 +20,7 @@ class AuthUtil:
             except (jwt.DecodeError, jwt.ExpiredSignatureError):
                 return (0, json.dumps(
                 {"status":0, "message":"Invalid Token"}))
-        return (1, "")
+        return (1, payload)
 
     def generateToken(self, username):
         print(datetime.now())

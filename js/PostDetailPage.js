@@ -8,11 +8,26 @@ import RaisedButton from 'material-ui/RaisedButton';
 export default class PostDetailPage extends Component {
   constructor(props) {
     super(props);
-    // this.state = {
-    //
-    // };
-    // this.handleFilter = this.handleFilter.bind(this);
+    this.state = {
+      postDetails: null
+    };
     this.getPostDetailData = this.getPostDetailData.bind(this);
+  }
+  componentDidMount() {
+    fetch('/posts/' + this.props.match.params.pid + '?cid=1', {
+      credentials: 'include',
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + this.props.currentUser
+      },
+    }).then(function(res) {
+      return res.json();
+    }).then(function(data) {
+      console.log("postdetail data");
+      console.log(data);
+      this.setState({postDetails: data});
+    }.bind(this))
   }
   getPostDetailData() {
     var data = {
@@ -39,47 +54,39 @@ export default class PostDetailPage extends Component {
   	return data
   }
   render() {
-    console.log(this.props.match.params.pid);
-    console.log(this.props);
-    var data = this.getPostDetailData();
-    var ava = <Avatar>{data.post.author[0]}</Avatar>
+    var postContainer = null;
+    if (this.state.postDetails != null) {
+      var data = this.state.postDetails;
+      // var ava = data == null ? <Avatar>?</Avatar> : <Avatar>{data.post.author[0]}</Avatar>
+      // subtitle={data.post.vote + " votes • " + data.post.time}
+      var replies = [];
+      _.forEach(data.post.replies, function(value) {
+        var ava = <Avatar>{value.author[0]}</Avatar>
+        replies.push (
+          <div style={styles.cardContainer}>
+            <Card>
+              <CardHeader
+                title={value.author}
+                subtitle={value.vote + " votes • " + value.time}
+                avatar={ava}
+                actAsExpander={false}
+                showExpandableButton={false}
+              />
+              <CardTitle expandable={false}>
+                {value.answer}
+              </CardTitle>
+            </Card>
+          </div>
+        )
+      }.bind(this));
 
-    var replies = [];
-    _.forEach(data.post.replies, function(value) {
-      var ava = <Avatar>{value.author[0]}</Avatar>
-      replies.push (
-        <div style={styles.cardContainer}>
-          <Card>
-            <CardHeader
-              title={value.author}
-              subtitle={value.vote + " votes • " + value.time}
-              avatar={ava}
-              actAsExpander={false}
-              showExpandableButton={false}
-            />
-            <CardTitle expandable={false}>
-              {value.answer}
-            </CardTitle>
-          </Card>
-        </div>
-      )
-    }.bind(this));
-
-    return (
-      <div>
-        <AppBar
-          title="Zocalo"
-          onTitleClick={(e) => {console.log("eh")}}
-          iconElementRight={<RaisedButton label="Login" onClick={()=>{this.props.history.push('/Loginpage');}} style={styles.rightButton}/>}
-          style={styles.appbar}
-        />
+      postContainer = (
         <div style={styles.postContainer}>
           <h1>Question</h1>
           <Card>
             <CardHeader
               title={data.post.header}
-              subtitle={data.post.vote + " votes • " + data.post.time}
-              avatar={ava}
+              avatar={<Avatar>?</Avatar>}
               actAsExpander={false}
               showExpandableButton={false}
             />
@@ -89,7 +96,18 @@ export default class PostDetailPage extends Component {
           </Card>
           <h1>Answers</h1>
           {replies}
-        </div>
+        </div>)
+    }
+
+    return (
+      <div>
+        <AppBar
+          title="Zocalo"
+          onTitleClick={(e) => {console.log("eh")}}
+          iconElementRight={<RaisedButton label="Login" onClick={()=>{this.props.history.push('/Loginpage');}} style={styles.rightButton}/>}
+          style={styles.appbar}
+        />
+        {postContainer}
       </div>
     )
   }

@@ -18,94 +18,59 @@ export default class Mainpage extends Component {
     super(props);
     this.state = {
       filter: "All",
-      sort: null
+      sort: null,
+      posts: null
     };
     this.handleFilter = this.handleFilter.bind(this);
     this.handleSort = this.handleSort.bind(this);
-    this.getPostData = this.getPostData.bind(this);
     this.getFilteredData = this.getFilteredData.bind(this);
     this.handleOpenDetailPage = this.handleOpenDetailPage.bind(this);
-    this.handleAddComment = this.handleAddComment.bind(this);
-    this.getPostDetailComponents = this.getPostDetailComponents.bind(this);
   }
-  // componentDidMount() {
-  //   fetch('posts', {
-  //     credentials: 'include',
-  //     method: 'GET',
-  //     headers: {
-  //       'Content-Type': 'application/json'
-  //     },
-  //     body: JSON.stringify({
-  //       type: 'login',
-  //       username: this.state.username,
-  //       password: this.state.password
-  //     })
-  //   }).then(function(res) {
-  //     return res.json();
-  //   }).then(function(data) {
-  //     console.log(data);
-  //     if (data.status == 0) {
-  //       console.log("no username found.");
-  //       this.setState({open: true});
-  //     }
-  //     else if (data.status == 1) {
-  //       this.props.history.push('/MainPage');
-  //     }
-  //   }.bind(this))
+  componentDidMount() {
+    // this.setState({posts: this.getPostData().posts});
+    fetch('posts?cid=1', {
+      credentials: 'include',
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + this.props.currentUser
+      },
+    }).then(function(res) {
+      return res.json();
+    }).then(function(data) {
+      console.log(data);
+      this.setState({posts: data.posts});
+    }.bind(this))
+  }
+  // getPostData() {
+  //   var data = { "status":1,
+  //     "message":"Success",
+  //   	"posts":
+  //   	[{"pid":41,"header": "Is there an exam tomorrow?" ,"summary": "I am having a conflict. Do we have an exam tomorrow?", "tags": ["Exam"], "vote": 10, "time":"03-08-2018", "author": "Alice"},
+  //   	{"pid":51, "header": "What's SQLITE?" ,"summary": "What's the best resource?", "tags": ["Project 1", "Homework1"], "vote": 10, "time":"03-06-2018", "author": "Sihan"},
+  //   	{"pid":63, "header": "Can we use Sqlite?" ,"summary": "Wondering if we can use it or not", "tags": ["Project 1", "Homework1"], "vote": 10, "time":"03-05-2018", "author": "Karthik"},
+  //   	{"pid":67, "header": "What's difference betwen MongoDb and Sqlite?" ,"summary": "Both seems cool.", "tags": ["Project 1", "Homework1"], "vote": 10, "time":"03-04-2018", "author": "Miles"},
+  //   	{"pid":12, "header": "Do we need to finish it before due date?" ,"summary": "I am lazy.", "tags": [], "vote": 10, "time":"03-03-2018", "author": "Alice"},
+  //   	{"pid":44, "header": "Is it necessary to do epic frontend for project?" ,"summary": "I am a React fan.", "tags": ["Just Alice Things"], "vote": 10, "time":"03-02-2018", "author": "Alice"},
+  //   	{"pid":21, "header": "Should I join Google or GS?" ,"summary": "I am confused!!!", "tags": ["Just Alice Things"], "vote": 10, "time":"03-01-2018", "author": "Alice"}]
+  //   }
+  //
+  // 	return data;
   // }
-  getPostData() {
-    var data = { "status":1,
-      "message":"Success",
-    	"posts":
-    	[{"pid":41,"header": "Is there an exam tomorrow?" ,"summary": "I am having a conflict. Do we have an exam tomorrow?", "tags": ["Exam"], "vote": 10, "time":"03-08-2018", "author": "Alice"},
-    	{"pid":51, "header": "What's SQLITE?" ,"summary": "What's the best resource?", "tags": ["Project 1", "Homework1"], "vote": 10, "time":"03-06-2018", "author": "Sihan"},
-    	{"pid":63, "header": "Can we use Sqlite?" ,"summary": "Wondering if we can use it or not", "tags": ["Project 1", "Homework1"], "vote": 10, "time":"03-05-2018", "author": "Karthik"},
-    	{"pid":67, "header": "What's difference betwen MongoDb and Sqlite?" ,"summary": "Both seems cool.", "tags": ["Project 1", "Homework1"], "vote": 10, "time":"03-04-2018", "author": "Miles"},
-    	{"pid":12, "header": "Do we need to finish it before due date?" ,"summary": "I am lazy.", "tags": [], "vote": 10, "time":"03-03-2018", "author": "Alice"},
-    	{"pid":44, "header": "Is it necessary to do epic frontend for project?" ,"summary": "I am a React fan.", "tags": ["Just Alice Things"], "vote": 10, "time":"03-02-2018", "author": "Alice"},
-    	{"pid":21, "header": "Should I join Google or GS?" ,"summary": "I am confused!!!", "tags": ["Just Alice Things"], "vote": 10, "time":"03-01-2018", "author": "Alice"}]
-    }
-
-  	return data;
-  }
   getFilteredData() {
-    var data = this.getPostData().posts;
+    var data = this.state.posts;
     if (this.state.filter == "All") return data;
     var data = [];
-    _.forEach (this.getPostData().posts, function(value) {
+    _.forEach (this.state.posts, function(value) {
       if (value.tags.includes(this.state.filter)) {
         data.push(value);
       };
     }.bind(this));
     return data;
   }
-  getPostDetailComponents() {
-    var answers = [];
-    if (this.state.currentPost != null) {
-      _.forEach(this.state.currentPost.replies, function(value) {
-        var ava = <Avatar>{value.author[0]}</Avatar>
-        answers.push (
-          <div style={styles.cardContainer}>
-            <Card>
-              <CardHeader
-                title={value.answer}
-                subtitle={value.vote + " votes • " + value.time}
-                avatar={ava}
-                actAsExpander={false}
-                showExpandableButton={false}
-              />
-            </Card>
-          </div>
-        )
-      }.bind(this));
-    }
-    console.log(this.state.currentPost);
-    return answers;
-  }
   handleFilter(tag, e) {
     e.preventDefault();
     this.setState({filter: tag});
-    console.log(tag);
   }
   handleSort(e, index, value) {
     this.setState({sort: value});
@@ -114,11 +79,7 @@ export default class Mainpage extends Component {
     e.preventDefault();
     this.props.history.push('/PostDetailPage/posts/'+pid);
   }
-  handleAddComment() {
-    console.log("Comment added.");
-  }
   render() {
-    console.log(this.props.currentUser);
     var posts = [];
     _.forEach(this.getFilteredData(), function(value) {
       var ava = <Avatar>{value.author[0]}</Avatar>
@@ -144,7 +105,7 @@ export default class Mainpage extends Component {
     }.bind(this));
 
     var tags = [];
-    _.forEach(this.getPostData().posts, function(value) {
+    _.forEach(this.state.posts, function(value) {
       tags = tags.concat(value.tags);
     });
     var tags = _.uniq(tags);

@@ -26,7 +26,7 @@ class App extends Component {
             <Route path="/SignupPage" component={Signup} />
             <Route path="/MainPage" render={(props) => <Mainpage {...props} currentUser={this.state.currentUser}/>} />
             <Route path="/LoginPage" render={(props) => <Login {...props} setCurrentUser={this.setCurrentUser}/>} />
-            <Route path="/PostDetailPage/posts/:pid" component={PostDetailPage} />
+            <Route path="/PostDetailPage/posts/:pid" render={(props) => <PostDetailPage {...props} currentUser={this.state.currentUser}/>} />
             <Route path="/" render={(props) => <Login {...props} setCurrentUser={this.setCurrentUser}/>} />
           </Switch>
         </Router>

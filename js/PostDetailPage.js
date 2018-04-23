@@ -19,6 +19,7 @@ export default class PostDetailPage extends Component {
 
   }
   componentDidMount() {
+    console.log(localStorage.getItem('jwtToken'));
     fetch('/posts/' + this.props.match.params.pid + '?cid=1', {
       credentials: 'include',
       method: 'GET',
@@ -106,7 +107,6 @@ export default class PostDetailPage extends Component {
       var addBox = (
         <Card style={styles.addBox}>
           <CardHeader
-            title={value.author}
             actAsExpander={false}
             showExpandableButton={false}
           />

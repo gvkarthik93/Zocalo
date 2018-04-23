@@ -28,6 +28,8 @@ export default class Mainpage extends Component {
   }
   componentDidMount() {
     // this.setState({posts: this.getPostData().posts});
+    console.log(localStorage.getItem('jwtToken'));
+    console.log(localStorage.getItem('username'));
     fetch('posts?cid=1', {
       credentials: 'include',
       method: 'GET',

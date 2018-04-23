@@ -40,13 +40,15 @@ export default class Login extends Component {
     }).then(function(res) {
       return res.json();
     }).then(function(data) {
-      console.log(data);
       if (data.status == 0) {
         console.log("no username found.");
         this.setState({open: true});
       }
       else if (data.status == 1) {
         this.props.setCurrentUser(data.token);
+        localStorage.setItem('jwtToken', data.token);
+        localStorage.setItem('username', this.state.username);
+        console.log(data.token);
         this.props.history.push('/MainPage');
       }
     }.bind(this))

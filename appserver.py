@@ -10,12 +10,14 @@ from util.auth_util import AuthUtil
 
 
 class MainHandler(tornado.web.RequestHandler):
+    @tornado.web.asynchronous
     def get(self):
         self.render('./index.html')
 
 
 # Handle the access requests
 class AccessHandler(tornado.web.RequestHandler):
+    @tornado.web.asynchronous
     def post(self, param=None):
         if param is None:
             self.write(json.dumps(
@@ -69,6 +71,7 @@ class AccessHandler(tornado.web.RequestHandler):
             print(data)
             # Get all the schools in the database
 
+    @tornado.web.asynchronous
     def delete(self, param=None):
         if param is None:
             print ("Send No access Code")
@@ -79,6 +82,7 @@ class AccessHandler(tornado.web.RequestHandler):
 # Handle the requests associated with posts
 class PostsHandler(tornado.web.RequestHandler):
     # To fetch all the posts
+    @tornado.web.asynchronous
     def get(self, param1=None):
         try:
             cid = self.get_query_argument("cid")
@@ -109,6 +113,7 @@ class PostsHandler(tornado.web.RequestHandler):
             self.write(json.dumps(response))
 
     # To create new posts and answers
+    @tornado.web.asynchronous
     def post(self, param1=None, param2=None, param3=None):
         auth_header = self.request.headers.get('Authorization')
         au = AuthUtil()
@@ -133,6 +138,7 @@ class PostsHandler(tornado.web.RequestHandler):
             self.write(json.dumps(response))
 
     # To edit specific post or answer
+    @tornado.web.asynchronous
     def put(self, param1=None, param2=None, param3=None):
         auth_header = self.request.headers.get('Authorization')
         au = AuthUtil()
@@ -158,6 +164,7 @@ class PostsHandler(tornado.web.RequestHandler):
             self.write(json.dumps(response))  
 
     # To delete specific post or answer
+    @tornado.web.asynchronous
     def delete(self, param1=None, param2=None, param3=None):
         auth_header = self.request.headers.get('Authorization')
         au = AuthUtil()
@@ -177,6 +184,7 @@ class PostsHandler(tornado.web.RequestHandler):
 
 
 class EnrollHandler(tornado.web.RequestHandler):
+    @tornado.web.asynchronous
     def post(self, param1=None):
         if param1 is not None:
             try:

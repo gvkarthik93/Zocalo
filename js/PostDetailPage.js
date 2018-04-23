@@ -3,15 +3,20 @@ import { Link, Router } from 'react-router-dom';
 import AppBar from 'material-ui/AppBar';
 import Avatar from 'material-ui/Avatar';
 import {Card, CardActions, CardHeader, CardTitle, CardText} from 'material-ui/Card';
+import Paper from 'material-ui/Paper';
 import RaisedButton from 'material-ui/RaisedButton';
+import TextField from 'material-ui/TextField';
 
 export default class PostDetailPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      postDetails: null
+      postDetails: null,
+      showAddBox: false
     };
     this.getPostDetailData = this.getPostDetailData.bind(this);
+    this.handleAddAnswer = this.handleAddAnswer.bind(this);
+
   }
   componentDidMount() {
     fetch('/posts/' + this.props.match.params.pid + '?cid=1', {
@@ -53,6 +58,14 @@ export default class PostDetailPage extends Component {
 
   	return data
   }
+  handleAddAnswer() {
+    if (this.state.showAddBox == false) {
+      this.setState({showAddBox: true});
+    }
+    else {
+      this.setState({showAddBox: false});
+    }
+  }
   render() {
     var postContainer = null;
     if (this.state.postDetails != null) {
@@ -79,7 +92,35 @@ export default class PostDetailPage extends Component {
           </div>
         )
       }.bind(this));
-
+      // var addBox = (
+      //   <Paper style={styles.addBox}>
+      //   <TextField
+      //     hintText="Type your answer here"
+      //     floatingLabelText="Add an answer here"
+      //     multiLine={true}
+      //     rows={2}
+      //     fullWidth={true}
+      //   />
+      //   </Paper>
+      // )
+      var addBox = (
+        <Card style={styles.addBox}>
+          <CardHeader
+            title={value.author}
+            actAsExpander={false}
+            showExpandableButton={false}
+          />
+          <CardTitle expandable={false}>
+            <TextField
+              hintText="Type your answer here"
+              floatingLabelText="Add an answer here"
+              multiLine={true}
+              rows={1}
+              fullWidth={true}
+            />
+          </CardTitle>
+        </Card>
+      )
       postContainer = (
         <div style={styles.postContainer}>
           <h1>Question</h1>
@@ -96,7 +137,8 @@ export default class PostDetailPage extends Component {
           </Card>
           <h1>Answers</h1>
           {replies}
-          <RaisedButton label="Add Answer" primary={true} onClick={this.handleAddAnswer} />
+          {this.state.showAddBox ? addBox : null}
+          <RaisedButton label="Add Answer" primary={true} onClick={this.handleAddAnswer} style={styles.tagButton} />
         </div>)
     }
 
@@ -128,5 +170,9 @@ const styles = {
   },
   cardContainer: {
     margin: '18px 0px'
+  },
+  addBox: {
+    height: '131px',
+    marginBottom: '18px'
   }
 }

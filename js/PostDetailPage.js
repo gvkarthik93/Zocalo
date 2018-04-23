@@ -12,14 +12,18 @@ export default class PostDetailPage extends Component {
     super(props);
     this.state = {
       postDetails: null,
-      showAddBox: false
+      showAddBox: false,
+      answer: ''
     };
-    this.getPostDetailData = this.getPostDetailData.bind(this);
+    this.handleChangeAnswer = this.handleChangeAnswer.bind(this);
     this.handleAddAnswer = this.handleAddAnswer.bind(this);
-
+    this.handleCancel = this.handleCancel.bind(this);
+    this.fetchPostDetail = this.fetchPostDetail.bind(this);
   }
   componentDidMount() {
-    console.log(localStorage.getItem('jwtToken'));
+    this.fetchPostDetail();
+  }
+  fetchPostDetail() {
     fetch('/posts/' + this.props.match.params.pid + '?cid=1', {
       credentials: 'include',
       method: 'GET',
@@ -35,37 +39,38 @@ export default class PostDetailPage extends Component {
       this.setState({postDetails: data});
     }.bind(this))
   }
-  getPostDetailData() {
-    var data = {
-      "status":1,
-  	  "message":"Success",
-  		"post": {
-  			"pid":52,
-  			"header":"When is the exam and where is it?",
-  			"description":"(D)I need the exact date and location for the exam.",
-  			"tags":["Exam","Logistics","Other"],
-        "vote": 15,
-        "time": "03-06-2018",
-        "author": "Alice",
-  			"replies":
-  			[{"rid":0, "author":"Sihan", "time": "2018-03-31 20:40:00", "vote": 3, "answer":"Today is a good day for exam."},
-  			{"rid":1, "author":"Jack", "time": "2018-03-31 21:40:00", "vote": 5, "answer":"I believe it's in Gates G01, maybe I am wrong, can some TA confirm this?"},
-  			{"rid":2, "author":"Jane", "time": "2018-03-31 22:40:00", "vote": 11, "answer":"Disagree with the last post, I believe it's in startler 101. Correct me if I am wrong."},
-  			{"rid":3, "author":"Peter", "time": "2018-03-31 23:40:00", "vote": 22, "answer":"Disagree again with the reply above. It's a take home exam."},
-  			{"rid":4, "author":"Dan", "time": "2018-03-31 23:41:00", "vote": 0, "answer":"I don't know"},
-  			{"rid":5, "author":"Lilly", "time": "2018-03-31 23:46:22", "vote": 1, "answer":"Agree with floor 4."}]
-  		}
-  	}
-
-  	return data
+  handleChangeAnswer(e) {
+    this.setState({answer: e.target.value});
   }
   handleAddAnswer() {
     if (this.state.showAddBox == false) {
       this.setState({showAddBox: true});
     }
     else {
-      this.setState({showAddBox: false});
+      fetch('/posts/' + this.props.match.params.pid + '/answer', {
+        credentials: 'include',
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + localStorage.getItem('jwtToken')
+        },
+        body: JSON.stringify({
+          type: 'login',
+          username: localStorage.getItem('username'),
+          answer: this.state.answer
+        })
+      }).then(function(res) {
+        return res.json();
+      }).then(function(data) {
+        console.log("Add answer response");
+        console.log(data);
+        this.setState({showAddBox: false});
+        this.fetchPostDetail();
+      }.bind(this))
     }
+  }
+  handleCancel() {
+    this.setState({showAddBox: false});
   }
   render() {
     var postContainer = null;
@@ -93,30 +98,25 @@ export default class PostDetailPage extends Component {
           </div>
         )
       }.bind(this));
-      // var addBox = (
-      //   <Paper style={styles.addBox}>
-      //   <TextField
-      //     hintText="Type your answer here"
-      //     floatingLabelText="Add an answer here"
-      //     multiLine={true}
-      //     rows={2}
-      //     fullWidth={true}
-      //   />
-      //   </Paper>
-      // )
+
+      var ava = <Avatar>{localStorage.getItem('username')[0]}</Avatar>
       var addBox = (
         <Card style={styles.addBox}>
           <CardHeader
+            title={localStorage.getItem('username')}
+            avatar={ava}
             actAsExpander={false}
             showExpandableButton={false}
           />
           <CardTitle expandable={false}>
             <TextField
               hintText="Type your answer here"
-              floatingLabelText="Add an answer here"
+              floatingLabelText="Type your answer here"
               multiLine={true}
               rows={1}
               fullWidth={true}
+              value={this.state.answer}
+              onChange={this.handleChangeAnswer}
             />
           </CardTitle>
         </Card>
@@ -138,7 +138,8 @@ export default class PostDetailPage extends Component {
           <h1>Answers</h1>
           {replies}
           {this.state.showAddBox ? addBox : null}
-          <RaisedButton label="Add Answer" primary={true} onClick={this.handleAddAnswer} style={styles.tagButton} />
+          <RaisedButton label={this.state.showAddBox ? "Submit" : "Add Answer"} primary={true} onClick={this.handleAddAnswer} style={styles.addAnsButton} />
+          {this.state.showAddBox ? <RaisedButton label="Cancel" onClick={this.handleCancel} style={styles.addAnsButton} /> : null}
         </div>)
     }
 
@@ -172,7 +173,9 @@ const styles = {
     margin: '18px 0px'
   },
   addBox: {
-    height: '131px',
-    marginBottom: '18px'
+    marginBottom: '18px',
+  },
+  addAnsButton: {
+    marginRight: '18px'
   }
 }

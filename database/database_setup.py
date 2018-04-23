@@ -1,9 +1,11 @@
+import datetime
 from sqlalchemy import create_engine
 from sqlalchemy import Column, String, Integer, DateTime, ForeignKey, UniqueConstraint, func
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
 
 Base = declarative_base()
+
 
 class EmailSetting(Base):
     __tablename__ = 'email_setting'
@@ -15,7 +17,7 @@ class EmailSetting(Base):
 
     def __repr__(self):
         return "<Email_setting(id='%s', type='%s')>" % (
-                self.id, self.type)
+            self.id, self.type)
 
 
 class UserCourse(Base):
@@ -24,7 +26,7 @@ class UserCourse(Base):
     username = Column(String(100), ForeignKey("users.username"), primary_key=True)
     course_id = Column(Integer, ForeignKey("courses.id"), primary_key=True)
     role_id = Column(Integer, ForeignKey("role.id"), nullable=False)
-    
+
     c_u = relationship("User", back_populates="courses")
     u_c = relationship("Course", back_populates="users")
 
@@ -35,7 +37,7 @@ class User(Base):
     username = Column(String(100), primary_key=True)
     password = Column(String(100), nullable=False)
     name = Column(String(100), nullable=False)
-    email = Column(String(100), nullable=False) 
+    email = Column(String(100), nullable=False)
     email_setting_id = Column(Integer, ForeignKey("email_setting.id"))
     school_id = Column(Integer, ForeignKey("schools.id"))
 
@@ -46,7 +48,8 @@ class User(Base):
 
     def __repr__(self):
         return "<User(username='%s', password='%s', name='%s', email='%s')>" % (
-                self.username, self.name, self.password, self.email)
+            self.username, self.name, self.password, self.email)
+
 
 class Term(Base):
     __tablename__ = 'term'
@@ -55,6 +58,7 @@ class Term(Base):
     name = Column(String(50), nullable=False)
 
     courses = relationship("Course", back_populates="term")
+
 
 class Course(Base):
     __tablename__ = 'courses'
@@ -73,7 +77,8 @@ class Course(Base):
 
     def __repr__(self):
         return "<Course(course_name='%s', school_id='%s', course_title='%s')>" % (
-                self.course_name, self.school_id, self.course_title)
+            self.course_name, self.school_id, self.course_title)
+
 
 class School(Base):
     __tablename__ = 'schools'
@@ -86,7 +91,8 @@ class School(Base):
 
     def __repr__(self):
         return "<School(id='%s', school_name='%s')>" % (
-                self.id, self.school_name)
+            self.id, self.school_name)
+
 
 class Role(Base):
     __tablename__ = 'role'
@@ -96,7 +102,7 @@ class Role(Base):
 
     def __repr__(self):
         return "<Role(id='%s', type='%s')>" % (
-                self.id, self.type)
+            self.id, self.type)
 
 
 class PostType(Base):
@@ -109,7 +115,7 @@ class PostType(Base):
 
     def __repr__(self):
         return "<PostType(id='%s', type='%s')>" % (
-                self.id, self.type)
+            self.id, self.type)
 
 
 class PostTag(Base):
@@ -134,7 +140,7 @@ class Tag(Base):
 
     def __repr__(self):
         return "<Tag(id='%d', course_id='%d'), name='%s'>" % (
-                self.id, self.course_id)
+            self.id, self.course_id)
 
 
 class Post(Base):
@@ -142,9 +148,8 @@ class Post(Base):
 
     id = Column(Integer, primary_key=True)
     header = Column(String(100), nullable=False)
-    summary = Column(String(500))
     description = Column(String(1000))
-    create_time = Column(DateTime, default=func.now())
+    create_time = Column(DateTime, default=datetime.datetime.now)
     vote_count = Column(Integer, default=0)
     post_username = Column(String(100), ForeignKey("users.username"))
     answerer_username = Column(String(100), ForeignKey("users.username"))
@@ -157,13 +162,15 @@ class Post(Base):
     tags = relationship("PostTag", back_populates="t_p")
     post_author = relationship("User", foreign_keys=[post_username])
     answer_ta = relationship("User", foreign_keys=[answerer_username])
-    
+
     def __repr__(self):
-        return "<Post(header='%s', summary='%s', description='%s', \
-                create_time='%s', post_username='%s', answer='%s', vote_count='%s')>" % (
-                    self.header, self.summary, self.description, \
-                    self.create_time, self.post_username, self.answerer_username, 
-                    self.vote_count)
+        return "<Post(header='%s', description='%s', \
+                create_time='%s', post_username='%s', answer='%s', \
+                vote_count='%s')>" % (
+            self.header, self.description,
+            self.create_time, self.post_username, self.answerer_username,
+            self.vote_count)
+
 
 class Reply(Base):
     __tablename__ = 'replies'
@@ -172,7 +179,7 @@ class Reply(Base):
     post_id = Column(Integer, ForeignKey("posts.id"))
     username = Column(String(100), ForeignKey("users.username"))
     answer = Column(String(1000))
-    create_time = Column(DateTime, default=func.now())
+    create_time = Column(DateTime, default=datetime.datetime.now)
     vote_count = Column(Integer, default=0)
 
     post = relationship("Post", back_populates="replies")
@@ -180,9 +187,9 @@ class Reply(Base):
 
     def __repr__(self):
         return "<Reply(postid='%s', answer='%s', create_time='%s', \
-                username='%s', vote_count='%s')>" % ( 
-                    self.post_id, self.answer, self.username, \
-                    self.create_time, self.vote_count)
+                username='%s', vote_count='%s')>" % (
+            self.post_id, self.answer, self.username,
+            self.create_time, self.vote_count)
 
 
 engine = create_engine('sqlite:///Zocalo.db')

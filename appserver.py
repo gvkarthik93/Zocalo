@@ -8,6 +8,7 @@ from service.user_service import UserService
 from service.post_service import PostService
 from util.auth_util import AuthUtil
 
+
 class MainHandler(tornado.web.RequestHandler):
     def get(self):
         self.render('./index.html')
@@ -61,11 +62,11 @@ class AccessHandler(tornado.web.RequestHandler):
 
         elif param == "forgotpwd":
             data = tornado.escape.json_decode(self.request.body)
-            print (data)
+            print(data)
 
         elif param == "schools":
             data = tornado.escape.json_decode(self.request.body)
-            print (data)
+            print(data)
             # Get all the schools in the database
 
     def delete(self, param=None):

@@ -35,7 +35,7 @@ export default class Mainpage extends Component {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + this.props.currentUser
+        'Authorization': 'Bearer ' + localStorage.getItem('jwtToken')
       },
     }).then(function(res) {
       return res.json();

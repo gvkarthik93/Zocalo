@@ -142,6 +142,7 @@ jupyter-client==5.2.1
 jupyter-console==5.2.0
 jupyter-core==4.4.0
 Keras==1.2.0
+pyjwt==1.6.1
 keystoneauth1==2.20.0
 kombu==4.0.2
 lazy-object-proxy==1.3.0

@@ -64,8 +64,14 @@ export default class PostDetailPage extends Component {
       }).then(function(data) {
         console.log("Add answer response");
         console.log(data);
-        this.setState({showAddBox: false});
-        this.fetchPostDetail();
+        if (data.status == 1) {
+          this.setState({showAddBox: false});
+          this.setState({answer: ''});
+          this.fetchPostDetail();
+        }
+        else {
+          console.log("Something went wrong.")
+        }
       }.bind(this))
     }
   }

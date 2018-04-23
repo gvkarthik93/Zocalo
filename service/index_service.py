@@ -9,15 +9,16 @@ class IndexSchema:
 		self.dataFrame = None
 		self.lastUpdatedTime = None
 
-	def runTimeIndex(self, postService):
+	def runTimeIndex(self):
 		print ("Building runtime index")
-		data = service.get_all_questions()
+		data = self.service.get_all_questions()
 		self.dataFrame = pd.DataFrame(data)
 		self.lastUpdatedTime = datetime.datetime.now()
+		print (self.dataFrame)
 
 	def updateIndex(self):
 		print ("Updating index")
-		data = service.get_all_questions_wtime(self.lastUpdatedTime)
+		data = self.service.get_all_questions_wtime(self.lastUpdatedTime)
 		df = pd.DataFrame(data)
 		self.dataFrame.append(df)
 
@@ -29,3 +30,6 @@ class IndexSchema:
 
 	def convertDftoJson(self):
 		print ("Converts dataframe to Json to send response back to client")
+
+id = IndexSchema()
+id.createIndex()

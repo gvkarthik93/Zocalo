@@ -96,6 +96,7 @@ export default class PostDetailPage extends Component {
           </Card>
           <h1>Answers</h1>
           {replies}
+          <RaisedButton label="Add Answer" primary={true} onClick={this.handleAddAnswer} />
         </div>)
     }
 

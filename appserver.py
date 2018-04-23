@@ -91,8 +91,8 @@ class PostsHandler(tornado.web.RequestHandler):
         msg = au.checkToken(auth_header)
         if not msg[0]:
             self.write(msg[1])
+            return
 
-        
         print(msg[1])
         data = {}
         data["username"] = msg[1]["username"]

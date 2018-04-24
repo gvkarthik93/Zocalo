@@ -40,6 +40,7 @@ export default class Login extends Component {
     }).then(function(res) {
       return res.json();
     }).then(function(data) {
+      console.log(data);
       if (data.status == 0) {
         console.log("no username found.");
         this.setState({open: true});

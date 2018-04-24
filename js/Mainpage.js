@@ -131,6 +131,13 @@ export default class Mainpage extends Component {
   }
   handleCancel() {
     this.setState({showCreateBox: false});
+    this.state.createPostForm = {
+      header: "",
+      description: "",
+      visibility: "public",
+      postType: "question"
+    }
+    this.setState({createPostForm: this.state.createPostForm});
   }
   handleFilter(tag, e) {
     e.preventDefault();
@@ -158,7 +165,7 @@ export default class Mainpage extends Component {
               showExpandableButton={false}
             />
             <CardTitle expandable={false}>
-              {value.summary}
+              {value.description}
             </CardTitle>
             <CardActions>
               <RaisedButton label="more" primary={true} onClick={this.handleOpenDetailPage.bind(this, value.pid)} style={styles.rightButton}/>

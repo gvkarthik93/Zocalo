@@ -34,14 +34,12 @@ session.add(r2)
 session.add(r3)
 
 # post type
-pt1 = PostType(type="Public")
-pt2 = PostType(type="Private")
-pt3 = PostType(type="Note")
-pt4 = PostType(type="Poll")
+pt1 = PostType(type="post")
+pt2 = PostType(type="note")
+pt3 = PostType(type="poll")
 session.add(pt1)
 session.add(pt2)
 session.add(pt3)
-session.add(pt4)
+
 
 session.commit()
-

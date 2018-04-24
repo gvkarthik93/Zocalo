@@ -9,36 +9,36 @@ from sqlalchemy.orm.exc import MultipleResultsFound
 from Zocalo.database.database_setup import *
 
 engine = create_engine('sqlite:///database/Zocalo.db')
-# engine = create_engine('sqlite:///Zocalo.db')
+# engine = create_engine('sqlite:///../database/Zocalo.db')
 Session = sessionmaker(bind=engine)
 session = Session()
 
 
 class PostService:
-    def get_all_questions(self):
-        courses = session.query(Course).all()
-        data = []
-        for c in courses:
-            course = {}
-            course["cid"] = c.id
-            course["course_name"] = c.course_name
-            course["course_title"] = c.course_title
-            course["posts"] = []
-            for p in c.posts:
-                p_d = {}
-                p_d["pid"] = p.id
-                p_d["description"] = p.description
-                p_d["tags"] = []
-                for tg in p.tags:
-                    p_d["tags"].append(tg.p_t.name)
-                p_d["vote"] = p.vote_count
-                p_d["time"] = str(p.create_time)
-                p_d["author"] = p.post_username
-                course["posts"].append(p_d)
-            data.append(course)
-        return data
+    # def get_all_questions(self):
+    #     courses = session.query(Course).all()
+    #     data = []
+    #     for c in courses:
+    #         course = {}
+    #         course["cid"] = c.id
+    #         course["course_name"] = c.course_name
+    #         course["course_title"] = c.course_title
+    #         course["posts"] = []
+    #         for p in c.posts:
+    #             p_d = {}
+    #             p_d["pid"] = p.id
+    #             p_d["description"] = p.description
+    #             p_d["tags"] = []
+    #             for tg in p.tags:
+    #                 p_d["tags"].append(tg.p_t.name)
+    #             p_d["vote"] = p.vote_count
+    #             p_d["time"] = str(p.create_time)
+    #             p_d["author"] = p.post_username
+    #             course["posts"].append(p_d)
+    #         data.append(course)
+    #     return data
 
-    def get_all_questions_wtime(self, start):
+    def get_all_questions(self, start=None):
         end = datetime.datetime.now()
         courses = session.query(Course).all()
         data = []
@@ -49,7 +49,7 @@ class PostService:
             course["course_title"] = c.course_title
             course["posts"] = []
             for p in c.posts:
-                if p.create_time > start and p.create_time < end:
+                if start is None or p.create_time > start and p.create_time < end:
                     p_d = {}
                     p_d["pid"] = p.id
                     p_d["description"] = p.description
@@ -232,3 +232,4 @@ class PostService:
         session.add(new_reply)
         session.commit()
         return {"status": 1, "message": "Success"}
+

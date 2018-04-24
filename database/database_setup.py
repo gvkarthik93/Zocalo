@@ -163,6 +163,7 @@ class Post(Base):
     header = Column(String(100), nullable=False)
     description = Column(String(1000))
     create_time = Column(DateTime, default=datetime.datetime.now)
+    last_edit_time = Column(DateTime, default=datetime.datetime.now)
     vote_count = Column(Integer, default=0)
     post_username = Column(String(100), ForeignKey("users.username"))
     answerer_username = Column(String(100), ForeignKey("users.username"))
@@ -195,6 +196,7 @@ class Reply(Base):
     username = Column(String(100), ForeignKey("users.username"))
     answer = Column(String(1000))
     create_time = Column(DateTime, default=datetime.datetime.now)
+    last_edit_time = Column(DateTime, default=datetime.datetime.now)
     vote_count = Column(Integer, default=0)
 
     post = relationship("Post", back_populates="replies")

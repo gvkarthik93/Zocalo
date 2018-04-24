@@ -15,29 +15,6 @@ session = Session()
 
 
 class PostService:
-    # def get_all_questions(self):
-    #     courses = session.query(Course).all()
-    #     data = []
-    #     for c in courses:
-    #         course = {}
-    #         course["cid"] = c.id
-    #         course["course_name"] = c.course_name
-    #         course["course_title"] = c.course_title
-    #         course["posts"] = []
-    #         for p in c.posts:
-    #             p_d = {}
-    #             p_d["pid"] = p.id
-    #             p_d["description"] = p.description
-    #             p_d["tags"] = []
-    #             for tg in p.tags:
-    #                 p_d["tags"].append(tg.p_t.name)
-    #             p_d["vote"] = p.vote_count
-    #             p_d["time"] = str(p.create_time)
-    #             p_d["author"] = p.post_username
-    #             course["posts"].append(p_d)
-    #         data.append(course)
-    #     return data
-
     def get_all_questions(self, start=None):
         end = datetime.datetime.now()
         courses = session.query(Course).all()

@@ -121,7 +121,7 @@ export default class Mainpage extends Component {
             postType: "question"
           }
           this.setState({createPostForm: this.state.createPostForm});
-          this.fetchPostDetail();
+          this.fetchPosts();
         }
         else {
           console.log("Something went wrong.")

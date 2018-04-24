@@ -99,7 +99,6 @@ class PostsHandler(tornado.web.RequestHandler):
             self.write(msg[1])
             return
 
-        print(msg[1])
         data = {}
         data["username"] = msg[1]["username"]
         data["course_id"] = cid
@@ -162,7 +161,7 @@ class PostsHandler(tornado.web.RequestHandler):
         elif param1 and param2 and param3:
             ps = PostService()
             response = ps.edit_reply(param3, data)
-            self.write(json.dumps(response))  
+            self.write(json.dumps(response))
 
     # To delete specific post or answer
     # @tornado.web.asynchronous

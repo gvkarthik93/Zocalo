@@ -40,16 +40,16 @@ uc5 = UserCourse(username="Conor", course_id=1, role_id=3)
 p1 = Post(
     header="When is the midterm",
     description="What is the exact time of midterm? Wherer is the midterm?",
-    vote_count=3, post_username="SihanC", course_id=1,)
+    vote_count=3, post_username="SihanC", course_id=1, post_type_id=1, visibility_type_id=1)
 
 p2 = Post(
     header="What is paxos", description="I heard paxos is a name of a place, where is it? I want to visit it",
-    vote_count=20, post_username="SihanC", course_id=1)
+    vote_count=20, post_username="SihanC", course_id=1, post_type_id=1, visibility_type_id=1)
 
 p3 = Post(
     header="ZooKeeper?",
     description="I heard ZooKeeper is a name of a movie. Why are we studying it?",
-    vote_count=7, post_username="Conor", course_id=1)
+    vote_count=7, post_username="Conor", course_id=1, post_type_id=1, visibility_type_id=1)
 
 # replies
 r1 = Reply(post_id=1, username="Conor", answer="Tomorrow at noon.", vote_count=2)

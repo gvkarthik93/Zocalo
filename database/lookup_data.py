@@ -34,12 +34,17 @@ session.add(r2)
 session.add(r3)
 
 # post type
-pt1 = PostType(type="post")
+pt1 = PostType(type="question")
 pt2 = PostType(type="note")
 pt3 = PostType(type="poll")
 session.add(pt1)
 session.add(pt2)
 session.add(pt3)
 
+# visibility type
+vt1 = VisibilityType(type="public")
+vt2 = VisibilityType(type="private")
+session.add(vt1)
+session.add(vt2)
 
 session.commit()

@@ -68,6 +68,7 @@ class PostService:
             course = session.query(Course).\
                 filter_by(id=data["course_id"]).one()
         except NoResultFound:
+            print("Nothing found")
             return {"status": 0, "message": "No post founded", "posts": []}
         except MultipleResultsFound:
             print("should not happen")
@@ -90,6 +91,7 @@ class PostService:
             d["vote"] = p.vote_count
             d["time"] = str(p.create_time)
             d["author"] = p.post_username
+            d["post_type"] = p.post_type.type
             post_list.append(d)
 
         return {"status": 1, "message": "Success", "posts": post_list}
@@ -182,13 +184,33 @@ class PostService:
 
     def create_post(self, data):
         try:
+            pt = session.query(PostType).filter_by(type=data["post_type"]).one()
+        except KeyError:
+            return {"status": 0, "message": "Invalid JSON field"}
+        except NoResultFound:
+            return {"status": 0, "message": "Invalid post type"}
+        except MultipleResultsFound:
+            print("should not happen")
+
+        try:
+            vt = session.query(VisibilityType).filter_by(type=data["visibility"]).one()
+        except KeyError:
+            return {"status": 0, "message": "Invalid JSON field"}
+        except NoResultFound:
+            return {"status": 0, "message": "Invalid visibility type"}
+        except MultipleResultsFound:
+            print("should not happen")
+
+        pt_id = pt.id
+        vt_id = vt.id
+        try:
             new_post = Post(
                 header=data["header"],
-                summary=data["summary"],
                 description=data["description"],
                 post_username=data["author"],
                 course_id=data["course_id"],
-                post_type_id=data["post_type_id"]
+                post_type_id=pt_id,
+                visibility_type_id=vt_id
             )
         except KeyError:
             return {"status": 0, "message": "Invalid JSON field"}

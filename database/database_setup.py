@@ -105,6 +105,19 @@ class Role(Base):
             self.id, self.type)
 
 
+class VisibilityType(Base):
+    __tablename__ = 'visibility_type'
+
+    id = Column(Integer, primary_key=True)
+    type = Column(String(100), nullable=False)
+
+    posts = relationship("Post", back_populates="visibility_type")
+
+    def __repr__(self):
+        return "<Role(id='%s', type='%s')>" % (
+            self.id, self.type)
+
+
 class PostType(Base):
     __tablename__ = 'post_type'
 
@@ -155,7 +168,9 @@ class Post(Base):
     answerer_username = Column(String(100), ForeignKey("users.username"))
     course_id = Column(Integer, ForeignKey("courses.id"))
     post_type_id = Column(Integer, ForeignKey("post_type.id"))
+    visibility_type_id = Column(Integer, ForeignKey("visibility_type.id"))
 
+    visibility_type = relationship("VisibilityType", back_populates="posts")
     post_type = relationship("PostType", back_populates="posts")
     course = relationship("Course", back_populates="posts")
     replies = relationship("Reply", back_populates="post")

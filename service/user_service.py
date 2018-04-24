@@ -22,8 +22,7 @@ class UserService:
 
     def login(self, data):
         try:
-            user = session.query(User).filter_by(
-                username=data["username"]).one()
+            user = session.query(User).filter_by(username=data["username"]).one()
         except KeyError:
             return {"status": 0, "message": "Invalid JSON field", "courses": []}
         except NoResultFound:

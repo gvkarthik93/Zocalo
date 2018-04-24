@@ -49,7 +49,8 @@ class PostService:
             course["course_title"] = c.course_title
             course["posts"] = []
             for p in c.posts:
-                if start is None or p.create_time > start and p.create_time < end:
+                if start is None or \
+                   p.last_edit_time > start and p.last_edit_time < end:
                     p_d = {}
                     p_d["pid"] = p.id
                     p_d["description"] = p.description
@@ -57,8 +58,11 @@ class PostService:
                     for tg in p.tags:
                         p_d["tags"].append(tg.p_t.name)
                     p_d["vote"] = p.vote_count
-                    p_d["time"] = str(p.create_time)
+                    p_d["create_time"] = str(p.create_time)
+                    p_d["last_edit_time"] = str(p.last_edit_time)
                     p_d["author"] = p.post_username
+                    p_d["visibility"] = p.visibility_type.type
+                    p_d["post_type"] = p.post_type.type
                     course["posts"].append(p_d)
             data.append(course)
         return data
@@ -95,6 +99,47 @@ class PostService:
             post_list.append(d)
 
         return {"status": 1, "message": "Success", "posts": post_list}
+
+    def get_all_answers(self, start=None):
+        end = datetime.datetime.now()
+        posts = session.query(Post).all()
+        data = []
+        for p in posts:
+            post = {}
+            post["answers"] = []
+            for r in p.replies:
+                if start is None or \
+                   r.last_edit_time > start and r.last_edit_time < end:
+                    reply = {}
+                    reply["rid"] = r.id
+                    reply["answer"] = r.answer
+                    reply["vote"] = r.vote_count
+                    reply["create_time"] = str(r.create_time)
+                    reply["last_edit_time"] = str(r.last_edit_time)
+                    reply["author"] = r.username
+                    post["answers"].append(reply)
+
+            if start is not None and \
+               (post["answers"] == [] and p.last_edit_time < start):
+                    continue
+
+            post["pid"] = p.id
+            post["header"] = p.header
+            post["description"] = p.description
+            post["vote"] = p.vote_count
+            post["create_time"] = str(p.create_time)
+            post["last_edit_time"] = str(p.last_edit_time)
+            post["author"] = p.post_username
+            post["visibility"] = p.visibility_type.type
+            post["post_type"] = p.post_type.type
+            post["tags"] = []
+            for tg in p.tags:
+                post["tags"].append(tg.p_t.name)
+            post["cid"] = p.course.id
+            post["course_name"] = p.course.course_name
+            post["course_title"] = p.course.course_title
+            data.append(post)
+        return data
 
     def get_post(self, pid, data):
         try:
@@ -232,4 +277,3 @@ class PostService:
         session.add(new_reply)
         session.commit()
         return {"status": 1, "message": "Success"}
-

@@ -12,6 +12,7 @@ import RaisedButton from 'material-ui/RaisedButton';
 import SelectField from 'material-ui/SelectField';
 import {Grid, Row, Col} from 'react-flexbox-grid/lib/index';
 import SearchBar from './SearchBar';
+import TextField from 'material-ui/TextField';
 var _ = require('lodash');
 export default class Mainpage extends Component {
   constructor(props) {
@@ -19,17 +20,31 @@ export default class Mainpage extends Component {
     this.state = {
       filter: "All",
       sort: null,
-      posts: null
+      posts: null,showAddBox: false,
+      showCreateBox: false,
+      createPostForm: {
+        header: "",
+        description: "",
+        visibility: "public",
+        postType: "question"
+      }
     };
+    this.fetchPosts = this.fetchPosts.bind(this);
     this.handleFilter = this.handleFilter.bind(this);
     this.handleSort = this.handleSort.bind(this);
     this.getFilteredData = this.getFilteredData.bind(this);
     this.handleOpenDetailPage = this.handleOpenDetailPage.bind(this);
+    this.handleCreatePost = this.handleCreatePost.bind(this);
+    this.handleCancel = this.handleCancel.bind(this);
+    this.handleChangeHeader = this.handleChangeHeader.bind(this);
+    this.handleChangeDescription = this.handleChangeDescription.bind(this);
+    this.handleChangeVisibility = this.handleChangeVisibility.bind(this);
+    this.handleChangePostType = this.handleChangePostType.bind(this);
   }
   componentDidMount() {
-    // this.setState({posts: this.getPostData().posts});
-    console.log(localStorage.getItem('jwtToken'));
-    console.log(localStorage.getItem('username'));
+    this.fetchPosts();
+  }
+  fetchPosts() {
     fetch('posts?cid=1', {
       credentials: 'include',
       method: 'GET',
@@ -44,21 +59,6 @@ export default class Mainpage extends Component {
       this.setState({posts: data.posts});
     }.bind(this))
   }
-  // getPostData() {
-  //   var data = { "status":1,
-  //     "message":"Success",
-  //   	"posts":
-  //   	[{"pid":41,"header": "Is there an exam tomorrow?" ,"summary": "I am having a conflict. Do we have an exam tomorrow?", "tags": ["Exam"], "vote": 10, "time":"03-08-2018", "author": "Alice"},
-  //   	{"pid":51, "header": "What's SQLITE?" ,"summary": "What's the best resource?", "tags": ["Project 1", "Homework1"], "vote": 10, "time":"03-06-2018", "author": "Sihan"},
-  //   	{"pid":63, "header": "Can we use Sqlite?" ,"summary": "Wondering if we can use it or not", "tags": ["Project 1", "Homework1"], "vote": 10, "time":"03-05-2018", "author": "Karthik"},
-  //   	{"pid":67, "header": "What's difference betwen MongoDb and Sqlite?" ,"summary": "Both seems cool.", "tags": ["Project 1", "Homework1"], "vote": 10, "time":"03-04-2018", "author": "Miles"},
-  //   	{"pid":12, "header": "Do we need to finish it before due date?" ,"summary": "I am lazy.", "tags": [], "vote": 10, "time":"03-03-2018", "author": "Alice"},
-  //   	{"pid":44, "header": "Is it necessary to do epic frontend for project?" ,"summary": "I am a React fan.", "tags": ["Just Alice Things"], "vote": 10, "time":"03-02-2018", "author": "Alice"},
-  //   	{"pid":21, "header": "Should I join Google or GS?" ,"summary": "I am confused!!!", "tags": ["Just Alice Things"], "vote": 10, "time":"03-01-2018", "author": "Alice"}]
-  //   }
-  //
-  // 	return data;
-  // }
   getFilteredData() {
     var data = this.state.posts;
     if (this.state.filter == "All") return data;
@@ -69,6 +69,68 @@ export default class Mainpage extends Component {
       };
     }.bind(this));
     return data;
+  }
+  handleChangeHeader(e) {
+    this.state.createPostForm.header = e.target.value;
+    this.setState({createPostForm: this.state.createPostForm});
+  }
+  handleChangeDescription(e) {
+    this.state.createPostForm.description = e.target.value;
+    this.setState({createPostForm: this.state.createPostForm});
+  }
+  handleChangeVisibility(e, index, value) {
+    this.state.createPostForm.visibility = value;
+    this.setState({createPostForm: this.state.createPostForm});
+  }
+  handleChangePostType(e, index, value) {
+    this.state.createPostForm.postType = value;
+    this.setState({createPostForm: this.state.createPostForm});
+  }
+  handleCreatePost() {
+    if (!this.state.showCreateBox) {
+      this.setState({showCreateBox: true});
+    }
+    else {
+      fetch('/posts', {
+        credentials: 'include',
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + localStorage.getItem('jwtToken')
+        },
+        body: JSON.stringify({
+          type: 'login',
+          header: this.state.createPostForm.header,
+          description: this.state.createPostForm.description,
+          author: localStorage.getItem('username'),
+          course_id: 1,
+          visibility: this.state.createPostForm.visibility,
+          post_type: this.state.createPostForm.postType
+        })
+      }).then(function(res) {
+        return res.json();
+      }).then(function(data) {
+        console.log("Create post response");
+        console.log(data);
+        if (data.status == 1) {
+          this.setState({showCreateBox: false});
+          this.state.createPostForm = {
+            header: "",
+            description: "",
+            visibility: "public",
+            postType: "question"
+          }
+          this.setState({createPostForm: this.state.createPostForm});
+          this.fetchPostDetail();
+        }
+        else {
+          console.log("Something went wrong.")
+        }
+      }.bind(this))
+    }
+  }
+  handleCancel() {
+    this.setState({showCreateBox: false});
   }
   handleFilter(tag, e) {
     e.preventDefault();
@@ -121,19 +183,71 @@ export default class Mainpage extends Component {
           <SearchBar />
         </div>
       </div>);
-
-    const commentActions = [
-      <FlatButton
-        label="OK"
-        primary={true}
-        onClick={this.handleAddComment}
-      />,
-      <FlatButton
-        label="Cancel"
-        primary={true}
-        onClick={this.handleCloseCommentDialog}
-      />,
-    ];
+    var ava = <Avatar>{localStorage.getItem('username')[0]}</Avatar>
+    var createBox = (
+      <div style={styles.postBoard}>
+        <Card style={styles.createBox}>
+          <CardHeader
+            title={localStorage.getItem('username')}
+            avatar={ava}
+            actAsExpander={false}
+            showExpandableButton={false}
+          />
+          <CardTitle expandable={false}>
+            <TextField
+              hintText="Type your question summary here"
+              floatingLabelText="Summary"
+              rows={1}
+              fullWidth={true}
+              value={this.state.createPostForm.header}
+              onChange={this.handleChangeHeader}
+            />
+            <TextField
+              hintText="Type your question details here"
+              floatingLabelText="Description"
+              multiLine={true}
+              rows={1}
+              fullWidth={true}
+              value={this.state.createPostForm.description}
+              onChange={this.handleChangeDescription}
+            />
+            <SelectField
+              floatingLabelText="Post Type"
+              value={this.state.createPostForm.postType}
+              onChange={this.handleChangePostType}
+            >
+              <MenuItem value="question" primaryText="Question" />
+              <MenuItem value="note" primaryText="Note" />
+            </SelectField><br/>
+            <SelectField
+              floatingLabelText="Visibility"
+              value={this.state.createPostForm.visibility}
+              onChange={this.handleChangeVisibility}
+            >
+              <MenuItem value="public" primaryText="Public" />
+              <MenuItem value="private" primaryText="Private" />
+            </SelectField>
+          </CardTitle>
+        </Card>
+        <RaisedButton label="Create" primary={true} onClick={this.handleCreatePost} style={styles.createPostButton}/>
+        <RaisedButton label="Cancel" onClick={this.handleCancel} style={styles.createPostButton} />
+      </div>
+    )
+    var postContainer = (
+      <div style={styles.postBoard}>
+        <RaisedButton label="Create post" primary={true} onClick={this.handleCreatePost} style={styles.createPostButton}/>
+        <SelectField
+          value={this.state.sort}
+          onChange={this.handleSort}
+          floatingLabelText="Sort By"
+          style={styles.sortDropdown}
+        >
+          <MenuItem key={1} value={1} primaryText="Time" />
+          <MenuItem key={2} value={2} primaryText="Votes" />
+        </SelectField>
+        {posts}
+      </div>
+    )
     return (
       <div>
         <AppBar
@@ -144,19 +258,7 @@ export default class Mainpage extends Component {
         <div style={styles.tagPanel}>
           {tagButtons}
         </div>
-        <div style={styles.postBoard}>
-          <RaisedButton label="Create post" primary={true} style={styles.createPostButton}/>
-          <SelectField
-            value={this.state.sort}
-            onChange={this.handleSort}
-            floatingLabelText="Sort By"
-            style={styles.sortDropdown}
-          >
-            <MenuItem key={1} value={1} primaryText="Time" />
-            <MenuItem key={2} value={2} primaryText="Votes" />
-          </SelectField>
-          {posts}
-        </div>
+        {this.state.showCreateBox ? createBox : postContainer}
       </div>
 
     )
@@ -190,6 +292,7 @@ const styles = {
   createPostButton: {
     marginTop: '12px',
     marginBottom: '6px',
+    marginRight: '12px'
   },
   sortDropdown: {
     marginTop: '-18px',
@@ -221,5 +324,8 @@ const styles = {
   },
   barcontent: {
     color: 'black'
+  },
+  createBox: {
+    marginTop: '12px'
   }
 }

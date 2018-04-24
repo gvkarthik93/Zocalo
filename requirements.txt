@@ -4,4 +4,3 @@ elasticsearch==5.3.0
 SQLAlchemy==1.2.1
 sqlparse==0.2.3
 tornado==4.5.3
-pyjwt=1.6.1

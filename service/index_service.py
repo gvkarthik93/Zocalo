@@ -25,8 +25,11 @@ class IndexSchema:
 	def createIndex(self):
 		self.runTimeIndex()
 
-	def searchIndexData(self):
+	def searchIndexedData(self):
 		print ("Search the data in dataframe")
+
+	def editIndexedData(self):
+		print ("Edit the data in dataframe")
 
 	def convertDftoJson(self):
 		print ("Converts dataframe to Json to send response back to client")

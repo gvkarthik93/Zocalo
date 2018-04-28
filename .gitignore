@@ -1,6 +1,9 @@
 # sqlite db file
 *.db
 
+# Built frontend bundle.
+bundle.js
+
 # MySQL Schema file
 *.mwb
 

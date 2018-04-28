@@ -3,9 +3,14 @@ import { Link, Router } from 'react-router-dom';
 import AppBar from 'material-ui/AppBar';
 import Avatar from 'material-ui/Avatar';
 import {Card, CardActions, CardHeader, CardTitle, CardText} from 'material-ui/Card';
+import Dialog from 'material-ui/Dialog';
+import FlatButton from 'material-ui/FlatButton';
 import Paper from 'material-ui/Paper';
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
+import IconButton from 'material-ui/IconButton';
+import Edit from 'material-ui/svg-icons/image/edit';
+import Delete from 'material-ui/svg-icons/action/delete';
 
 export default class PostDetailPage extends Component {
   constructor(props) {
@@ -13,12 +18,17 @@ export default class PostDetailPage extends Component {
     this.state = {
       postDetails: null,
       showAddBox: false,
-      answer: ''
+      answer: '',
+      openDeleteDialog: false,
+      actionRid: 0
     };
     this.handleChangeAnswer = this.handleChangeAnswer.bind(this);
     this.handleAddAnswer = this.handleAddAnswer.bind(this);
     this.handleCancel = this.handleCancel.bind(this);
     this.fetchPostDetail = this.fetchPostDetail.bind(this);
+    this.handleOpenDeleteDialog = this.handleOpenDeleteDialog.bind(this);
+    this.handleCloseDeleteDialog = this.handleCloseDeleteDialog.bind(this);
+    this.handleDelete = this.handleDelete.bind(this);
   }
   componentDidMount() {
     this.fetchPostDetail();
@@ -78,6 +88,36 @@ export default class PostDetailPage extends Component {
   handleCancel() {
     this.setState({showAddBox: false});
   }
+  handleOpenDeleteDialog(rid, e) {
+    this.setState({openDeleteDialog: true});
+    this.setState({actionRid: rid});
+  }
+  handleCloseDeleteDialog() {
+    this.setState({openDeleteDialog: false});
+  }
+  handleDelete() {
+    ///posts/{id}/answer/{id}
+    fetch('/posts/' + this.props.match.params.pid + '/answer/' + this.state.actionRid, {
+      credentials: 'include',
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + localStorage.getItem('jwtToken')
+      }
+    }).then(function(res) {
+      return res.json();
+    }).then(function(data) {
+      console.log("Delete post response");
+      console.log(data);
+      if (data.status == 1) {
+        this.fetchPostDetail();
+        this.setState({openDeleteDialog: false});
+      }
+      else {
+        console.log("Something went wrong.")
+      }
+    }.bind(this))
+  }
   render() {
     var postContainer = null;
     if (this.state.postDetails != null) {
@@ -100,6 +140,17 @@ export default class PostDetailPage extends Component {
               <CardTitle expandable={false}>
                 {value.answer}
               </CardTitle>
+              {value.author == localStorage.getItem('username') ?
+                (<CardActions>
+                  <IconButton tooltip="edit">
+                    <Edit />
+                  </IconButton>
+                  <IconButton tooltip="delete">
+                    <Delete onClick={this.handleOpenDeleteDialog.bind(this, value.rid)}/>
+                  </IconButton>
+                </CardActions>) :
+                null
+              }
             </Card>
           </div>
         )
@@ -149,6 +200,9 @@ export default class PostDetailPage extends Component {
         </div>)
     }
 
+    const deleteActions = [<FlatButton label="Yes" primary={true} keyboardFocused={true} onClick={this.handleDelete} />,
+    <FlatButton label="Cancel" primary={true} onClick={this.handleCloseDeleteDialog} />];
+
     return (
       <div>
         <AppBar
@@ -158,6 +212,14 @@ export default class PostDetailPage extends Component {
           style={styles.appbar}
         />
         {postContainer}
+        <Dialog
+          actions={deleteActions}
+          modal={false}
+          open={this.state.openDeleteDialog}
+          onRequestClose={this.handleCloseDeleteDialog}
+        >
+          Are you sure you want to delete this post?
+        </Dialog>
       </div>
     )
   }

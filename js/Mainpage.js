@@ -13,6 +13,10 @@ import SelectField from 'material-ui/SelectField';
 import {Grid, Row, Col} from 'react-flexbox-grid/lib/index';
 import SearchBar from './SearchBar';
 import TextField from 'material-ui/TextField';
+import IconButton from 'material-ui/IconButton';
+import Edit from 'material-ui/svg-icons/image/edit';
+import Delete from 'material-ui/svg-icons/action/delete';
+
 var _ = require('lodash');
 export default class Mainpage extends Component {
   constructor(props) {
@@ -20,14 +24,17 @@ export default class Mainpage extends Component {
     this.state = {
       filter: "All",
       sort: null,
-      posts: null,showAddBox: false,
+      posts: null,
+      showAddBox: false,
       showCreateBox: false,
+      openDeleteDialog: false,
       createPostForm: {
         header: "",
         description: "",
         visibility: "public",
         postType: "question"
-      }
+      },
+      actionPid: 0
     };
     this.fetchPosts = this.fetchPosts.bind(this);
     this.handleFilter = this.handleFilter.bind(this);
@@ -40,6 +47,9 @@ export default class Mainpage extends Component {
     this.handleChangeDescription = this.handleChangeDescription.bind(this);
     this.handleChangeVisibility = this.handleChangeVisibility.bind(this);
     this.handleChangePostType = this.handleChangePostType.bind(this);
+    this.handleOpenDeleteDialog = this.handleOpenDeleteDialog.bind(this);
+    this.handleCloseDeleteDialog = this.handleCloseDeleteDialog.bind(this);
+    this.handleDelete = this.handleDelete.bind(this);
   }
   componentDidMount() {
     this.fetchPosts();
@@ -150,6 +160,35 @@ export default class Mainpage extends Component {
     e.preventDefault();
     this.props.history.push('/PostDetailPage/posts/'+pid);
   }
+  handleOpenDeleteDialog(pid, e) {
+    this.setState({openDeleteDialog: true});
+    this.setState({actionPid: pid});
+  }
+  handleCloseDeleteDialog() {
+    this.setState({openDeleteDialog: false});
+  }
+  handleDelete() {
+    fetch('/posts/' + this.state.actionPid, {
+      credentials: 'include',
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + localStorage.getItem('jwtToken')
+      }
+    }).then(function(res) {
+      return res.json();
+    }).then(function(data) {
+      console.log("Delete post response");
+      console.log(data);
+      if (data.status == 1) {
+        this.fetchPosts();
+        this.setState({openDeleteDialog: false});
+      }
+      else {
+        console.log("Something went wrong.")
+      }
+    }.bind(this))
+  }
   render() {
     var posts = [];
     _.forEach(this.getFilteredData(), function(value) {
@@ -167,9 +206,21 @@ export default class Mainpage extends Component {
             <CardTitle expandable={false}>
               {value.description}
             </CardTitle>
-            <CardActions>
-              <RaisedButton label="more" primary={true} onClick={this.handleOpenDetailPage.bind(this, value.pid)} style={styles.rightButton}/>
-            </CardActions>
+            {value.author == localStorage.getItem('username') ?
+              (<CardActions>
+                <RaisedButton label="more" primary={true} onClick={this.handleOpenDetailPage.bind(this, value.pid)} style={styles.rightButton}/>
+                <IconButton tooltip="edit">
+                  <Edit />
+                </IconButton>
+                <IconButton tooltip="delete">
+                  <Delete onClick={this.handleOpenDeleteDialog.bind(this, value.pid)}/>
+                </IconButton>
+              </CardActions>) :
+              (<CardActions>
+                <RaisedButton label="more" primary={true} onClick={this.handleOpenDetailPage.bind(this, value.pid)} style={styles.rightButton}/>
+              </CardActions>)
+            }
+
           </Card>
         </div>
       )
@@ -240,6 +291,10 @@ export default class Mainpage extends Component {
         <RaisedButton label="Cancel" onClick={this.handleCancel} style={styles.createPostButton} />
       </div>
     )
+
+    const deleteActions = [<FlatButton label="Yes" primary={true} keyboardFocused={true} onClick={this.handleDelete} />,
+    <FlatButton label="Cancel" primary={true} onClick={this.handleCloseDeleteDialog} />];
+
     var postContainer = (
       <div style={styles.postBoard}>
         <RaisedButton label="Create post" primary={true} onClick={this.handleCreatePost} style={styles.createPostButton}/>
@@ -266,6 +321,14 @@ export default class Mainpage extends Component {
           {tagButtons}
         </div>
         {this.state.showCreateBox ? createBox : postContainer}
+        <Dialog
+          actions={deleteActions}
+          modal={false}
+          open={this.state.openDeleteDialog}
+          onRequestClose={this.handleCloseDeleteDialog}
+        >
+          Are you sure you want to delete this post?
+        </Dialog>
       </div>
 
     )

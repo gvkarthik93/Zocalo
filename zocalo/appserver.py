@@ -11,7 +11,7 @@ from .util.auth_util import AuthUtil
 
 class MainHandler(tornado.web.RequestHandler):
     def get(self):
-        self.render('./index.html')
+        self.render('../index.html')
 
 
 # Handle the access requests

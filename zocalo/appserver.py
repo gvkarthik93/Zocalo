@@ -12,7 +12,7 @@ from .util.auth_util import AuthUtil
 class MainHandler(tornado.web.RequestHandler):
     # @tornado.web.asynchronous
     def get(self):
-        self.render('./index.html')
+        self.render('../index.html')
 
 
 # Handle the access requests
@@ -211,6 +211,7 @@ def main():
         (r"/posts/(.*)", PostsHandler),
         (r"/posts", PostsHandler),
 
+        (r"/course/(.*)/(.*)", EnrollHandler),
         (r"/course/(.*)", EnrollHandler),
 
         (r'/(.*)', tornado.web.StaticFileHandler, {'path': './'}),

@@ -6,14 +6,12 @@ Open source platform for collaboration among students and professors
 
 # Test on Local Machine
 1. Using terminal, navigate to Zocalo folder
-2. To create a database file with data, navigate to database folder by
-    `$cd database`
-   and do
+2. To create a database file with data, navigate to database folder in zocalo folder and do
     `$./create_db`
-3. Nagivate back to project directory by `$cd ..`
+3. Nagivate back to project directory
    and use `$pip install -r requirements.txt` to install all the packages required for the project.
 4. Start the server
-    `$python appserver.py`
+    `$python start_zocalo.py`
 5. If the server starts correctly, it should show
     `Server Running on Port:  8002`
 6. Open browser, go to [http://localhost:8002/](http://localhost:8002/)

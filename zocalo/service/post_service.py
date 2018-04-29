@@ -135,23 +135,44 @@ class PostService:
 
         return {"status": 1, "message": "Success", "post": p}
 
-    def delete_post(self, p_id):
-        # if not check_register(data["username"], data["course_id"]):
-        #     return {"status": 0, "message": "User not registed", "posts": []}
+    def delete_post(self, p_id, data):
+        try:
+            post = session.query(Post).filter_by(id=p_id).one()
+        except NoResultFound:
+            return {"status": 0, "message": "No post founded"}
+        except MultipleResultsFound:
+            print("should not happen")
 
-        count = session.query(Post).filter_by(id=p_id).delete()
+        if not self.check_register(data["username"], post.course_id):
+            return {"status": 0, "message": "User not registed"}
+
+        if post.post_username != data["username"]:
+            return {"status": 0, "message": "Not the author of the post"}
+
+        for r in post.replies:
+            session.delete(r)
+
+        session.delete(post)
         session.commit()
-        return {"status": 1, "message": "Success"} if count == 1 \
-            else {"status": 0, "message": "Post does not exist"}
+        return {"status": 1, "message": "Success"}
 
-    def delete_reply(self, r_id):
-        # if not check_register(data["username"], data["course_id"]):
-        #     return {"status": 0, "message": "User not registed", "posts": []}
+    def delete_reply(self, r_id, data):
+        try:
+            reply = session.query(Reply).filter_by(id=r_id).one()
+        except NoResultFound:
+            return {"status": 0, "message": "No reply founded"}
+        except MultipleResultsFound:
+            print("should not happen")
 
-        count = session.query(Reply).filter_by(id=r_id).delete()
+        if not self.check_register(data["username"], reply.post.course_id):
+            return {"status": 0, "message": "User not registed"}
+
+        if reply.username != data["username"]:
+            return {"status": 0, "message": "Not the author of the reply"}
+
+        session.delete(reply)
         session.commit()
-        return {"status": 1, "message": "Success"} if count == 1 \
-            else {"status": 0, "message": "Reply does not exist"}
+        return {"status": 1, "message": "Success"}
 
     def edit_post(self, pid, data):
         try:

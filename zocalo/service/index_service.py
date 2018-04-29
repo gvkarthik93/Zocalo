@@ -2,6 +2,7 @@ from user_service import UserService
 from post_service import PostService
 import pandas as pd
 import datetime
+import json
 
 class IndexSchema:
 	def __init__(self):
@@ -36,8 +37,9 @@ class IndexSchema:
 				documents.append(doc)
 		return documents
 
-	def convertDftoJson(self):
-		print ("Converts dataframe to Json to send response back to client")
+	def convertDftoJson(self, data):
+		print ("Converting data to json format")
+		return json.dumps(data)
 
 	def stringSearch(self, text, pattern):
 		la = self.computePatternList(pattern)

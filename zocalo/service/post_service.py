@@ -19,40 +19,6 @@ class PostService:
                 UserCourse.username == username,
                 UserCourse.course_id == cid))).scalar()
 
-    def get_questions(self, data):
-        try:
-            course = session.query(Course).\
-                filter_by(id=data["course_id"]).one()
-        except NoResultFound:
-            print("Nothing found")
-            return {"status": 0, "message": "No post founded", "posts": []}
-        except MultipleResultsFound:
-            print("should not happen")
-
-        if not self.check_register(data["username"], data["course_id"]):
-            return {"status": 0, "message": "User not registed", "posts": []}
-
-        post_list = []
-        for p in course.posts:
-            if p.visibility_type.type == "public" or \
-                p.visibility_type.type == "private" and \
-                data["username"] == p.post_username:
-                d = {}
-                d["pid"] = p.id
-                d["header"] = p.header
-                d["description"] = p.description
-                d["tags"] = []
-                for tg in p.tags:
-                    d["tags"].append(tg.p_t.name)
-                d["vote"] = p.vote_count
-                d["time"] = str(p.create_time)
-                d["author"] = p.post_username
-                d["post_type"] = p.post_type.type
-                d["visibility"] = p.visibility_type.type
-                post_list.append(d)
-
-        return {"status": 1, "message": "Success", "posts": post_list}
-
     def get_all_data(self, start=None):
         end = datetime.datetime.now()
         posts = session.query(Post).all()
@@ -94,6 +60,40 @@ class PostService:
             data.append(post)
         return data
 
+    def get_questions(self, data):
+        try:
+            course = session.query(Course).\
+                filter_by(id=data["course_id"]).one()
+        except NoResultFound:
+            print("Nothing found")
+            return {"status": 0, "message": "No post founded", "posts": []}
+        except MultipleResultsFound:
+            print("should not happen")
+
+        if not self.check_register(data["username"], data["course_id"]):
+            return {"status": 0, "message": "User not registed", "posts": []}
+
+        post_list = []
+        for p in course.posts:
+            if p.visibility_type.type == "public" or \
+                p.visibility_type.type == "private" and \
+                data["username"] == p.post_username:
+                d = {}
+                d["pid"] = p.id
+                d["header"] = p.header
+                d["description"] = p.description
+                d["tags"] = []
+                for tg in p.tags:
+                    d["tags"].append(tg.p_t.name)
+                d["vote"] = p.vote_count
+                d["time"] = str(p.create_time)
+                d["author"] = p.post_username
+                d["post_type"] = p.post_type.type
+                d["visibility"] = p.visibility_type.type
+                post_list.append(d)
+
+        return {"status": 1, "message": "Success", "posts": post_list}
+
     def get_post(self, pid, data):
         try:
             post = session.query(Post).filter_by(id=pid).one()
@@ -129,6 +129,9 @@ class PostService:
         p["description"] = post.description
         p["post_type"] = post.post_type.type
         p["visibility"] = post.visibility_type.type
+        p["time"] = str(post.last_edit_time)
+        p["vote"] = post.vote_count
+        p["author"] = post.post_username
         p["tags"] = []
         for tg in post.tags:
             p["tags"].append(tg.p_t.name)
@@ -137,7 +140,7 @@ class PostService:
             rd = {}
             rd["rid"] = r.id
             rd["author"] = r.username
-            rd["time"] = str(r.create_time)
+            rd["time"] = str(r.last_edit_time)
             rd["vote"] = r.vote_count
             rd["answer"] = r.answer
             p["replies"].append(rd)

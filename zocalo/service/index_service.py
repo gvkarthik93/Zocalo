@@ -2,6 +2,7 @@ from user_service import UserService
 from post_service import PostService
 import pandas as pd
 import datetime
+import json
 
 class IndexSchema:
 	def __init__(self):
@@ -11,26 +12,34 @@ class IndexSchema:
 
 	def runTimeIndex(self):
 		print ("Building runtime index")
-		data = self.service.get_all_questions()
+		data = self.service.get_all_data()
 		self.dataFrame = pd.DataFrame(data)
 		self.lastUpdatedTime = datetime.datetime.now()
 		print (self.dataFrame)
 
 	def updateIndex(self):
 		print ("Updating index")
-		data = self.service.get_all_questions(self.lastUpdatedTime)
+		data = self.service.get_all_data(self.lastUpdatedTime)
 		df = pd.DataFrame(data)
 		self.dataFrame.append(df)
 
 	def createIndex(self):
 		self.runTimeIndex()
 
-	def searchIndexedData(self):
-		result = []
-		rowCount, columnCount = self.dataFrame.shape
+	def searchIndexedData(self,query):
+		documents = list()
+		for (idx, row) in self.dataFrame.iterrows():
+			doc = dict()
+			if self.stringSearch(row.loc['header'],query) or self.stringSearch(row.loc['description'],query):
+				doc["pid"] = row.loc['pid']
+				doc["header"] = row.loc['header']
+				doc["description"] = row.loc['description']
+				documents.append(doc)
+		return documents
 
-	def convertDftoJson(self):
-		print ("Converts dataframe to Json to send response back to client")
+	def convertDftoJson(self, data):
+		print ("Converting data to json format")
+		return json.dumps(data)
 
 	def stringSearch(self, text, pattern):
 		la = self.computePatternList(pattern)

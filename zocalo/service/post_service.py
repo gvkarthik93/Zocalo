@@ -46,7 +46,7 @@ class PostService:
 
         return {"status": 1, "message": "Success", "posts": post_list}
 
-    def get_all_answers(self, start=None):
+    def get_all_data(self, start=None):
         end = datetime.datetime.now()
         posts = session.query(Post).all()
         data = []

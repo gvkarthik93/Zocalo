@@ -206,6 +206,10 @@ class Post(Base):
 class Reply(Base):
     __tablename__ = 'replies'
 
+    __mapper_args__ = {
+        'confirm_deleted_rows': False
+    }
+
     id = Column(Integer, primary_key=True)
     post_id = Column(Integer, ForeignKey("posts.id"))
     username = Column(String(100), ForeignKey("users.username"))

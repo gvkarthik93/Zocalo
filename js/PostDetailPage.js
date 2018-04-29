@@ -91,6 +91,7 @@ export default class PostDetailPage extends Component {
   handleCancel() {
     this.setState({showAddBox: false});
     this.setState({showEditBox: false});
+    this.setState({answer: ''});
   }
   handleOpenDeleteDialog(rid, e) {
     this.setState({openDeleteDialog: true});
@@ -123,8 +124,9 @@ export default class PostDetailPage extends Component {
       console.log("Edit post response");
       console.log(data);
       if (data.status == 1) {
-        this.fetchPostDetail();
         this.setState({showEditBox: false});
+        this.setState({answer: ''});
+        this.fetchPostDetail();
       }
       else {
         console.log("Something went wrong.")
@@ -191,7 +193,6 @@ export default class PostDetailPage extends Component {
           </div>
         )
       }.bind(this));
-      replies.push(<RaisedButton label="Add Answer" primary={true} onClick={this.handleAddAnswer} style={styles.addAnsButton} />);
 
       var ava = <Avatar>{localStorage.getItem('username')[0]}</Avatar>
       var addBox = (
@@ -260,6 +261,7 @@ export default class PostDetailPage extends Component {
           </Card>
           <h1>{!this.state.showEditBox ? "Answers" : "Edit answer"}</h1>
           {!this.state.showEditBox ? replies : null}
+          {this.state.showAddBox || this.state.showEditBox ? null : <RaisedButton label="Add Answer" primary={true} onClick={this.handleAddAnswer} style={styles.addAnsButton} />}
           {this.state.showAddBox ? addBox : null}
           {this.state.showEditBox ? editBox : null}
         </div>)

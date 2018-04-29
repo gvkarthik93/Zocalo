@@ -27,6 +27,7 @@ export default class Mainpage extends Component {
       posts: null,
       showAddBox: false,
       showCreateBox: false,
+      showEditBox: false,
       openDeleteDialog: false,
       createPostForm: {
         header: "",
@@ -48,7 +49,7 @@ export default class Mainpage extends Component {
     this.handleChangeVisibility = this.handleChangeVisibility.bind(this);
     this.handleChangePostType = this.handleChangePostType.bind(this);
     this.handleOpenDeleteDialog = this.handleOpenDeleteDialog.bind(this);
-    this.handleCloseDeleteDialog = this.handleCloseDeleteDialog.bind(this);
+    this.handleEdit = this.handleEdit.bind(this);
     this.handleDelete = this.handleDelete.bind(this);
   }
   componentDidMount() {
@@ -141,6 +142,8 @@ export default class Mainpage extends Component {
   }
   handleCancel() {
     this.setState({showCreateBox: false});
+    this.setState({showEditBox: false});
+    this.setState({openDeleteDialog: false});
     this.state.createPostForm = {
       header: "",
       description: "",
@@ -164,8 +167,52 @@ export default class Mainpage extends Component {
     this.setState({openDeleteDialog: true});
     this.setState({actionPid: pid});
   }
-  handleCloseDeleteDialog() {
-    this.setState({openDeleteDialog: false});
+  handleShowEdit(pid, header, description, visibility, post_type, e) {
+    console.log(visibility);
+    this.setState({showEditBox: true});
+    this.setState({actionPid: pid});
+    const createPostForm = {
+      header: header,
+      description: description,
+      visibility: visibility,
+      postType: post_type
+    }
+    this.setState({createPostForm: createPostForm});
+  }
+  handleEdit() {
+    fetch('/posts/' + this.state.actionPid, {
+      credentials: 'include',
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + localStorage.getItem('jwtToken')
+      },
+      body: JSON.stringify({
+        username: localStorage.getItem('username'),
+        header: this.state.createPostForm.header,
+        description: this.state.createPostForm.description,
+        visibility: this.state.createPostForm.visibility
+      })
+    }).then(function(res) {
+      return res.json();
+    }).then(function(data) {
+      console.log("Edit post response");
+      console.log(data);
+      if (data.status == 1) {
+        this.setState({showEditBox: false});
+        const createPostForm = {
+          header: "",
+          description: "",
+          visibility: "public",
+          postType: "question"
+        };
+        this.setState({createPostForm: createPostForm});
+        this.fetchPosts();
+      }
+      else {
+        console.log("Something went wrong.")
+      }
+    }.bind(this))
   }
   handleDelete() {
     fetch('/posts/' + this.state.actionPid, {
@@ -210,7 +257,7 @@ export default class Mainpage extends Component {
               (<CardActions>
                 <RaisedButton label="more" primary={true} onClick={this.handleOpenDetailPage.bind(this, value.pid)} style={styles.rightButton}/>
                 <IconButton tooltip="edit">
-                  <Edit />
+                  <Edit onClick={this.handleShowEdit.bind(this, value.pid, value.header, value.description, value.visibility, value.post_type)}/>
                 </IconButton>
                 <IconButton tooltip="delete">
                   <Delete onClick={this.handleOpenDeleteDialog.bind(this, value.pid)}/>
@@ -220,7 +267,6 @@ export default class Mainpage extends Component {
                 <RaisedButton label="more" primary={true} onClick={this.handleOpenDetailPage.bind(this, value.pid)} style={styles.rightButton}/>
               </CardActions>)
             }
-
           </Card>
         </div>
       )
@@ -292,11 +338,62 @@ export default class Mainpage extends Component {
       </div>
     )
 
-    const deleteActions = [<FlatButton label="Yes" primary={true} keyboardFocused={true} onClick={this.handleDelete} />,
-    <FlatButton label="Cancel" primary={true} onClick={this.handleCloseDeleteDialog} />];
+    var editBox = (
+      <div>
+        <Card style={styles.createBox}>
+          <CardHeader
+            title={localStorage.getItem('username')}
+            avatar={ava}
+            actAsExpander={false}
+            showExpandableButton={false}
+          />
+          <CardTitle expandable={false}>
+            <TextField
+              hintText="Type your question summary here"
+              floatingLabelText="Summary"
+              rows={1}
+              fullWidth={true}
+              value={this.state.createPostForm.header}
+              onChange={this.handleChangeHeader}
+            />
+            <TextField
+              hintText="Type your question details here"
+              floatingLabelText="Description"
+              multiLine={true}
+              rows={1}
+              fullWidth={true}
+              value={this.state.createPostForm.description}
+              onChange={this.handleChangeDescription}
+            />
+            <SelectField
+              floatingLabelText="Post Type"
+              value={this.state.createPostForm.postType}
+              onChange={this.handleChangePostType}
+              disabled={true}
+            >
+              <MenuItem value="question" primaryText="Question" />
+              <MenuItem value="note" primaryText="Note" />
+            </SelectField><br/>
+            <SelectField
+              floatingLabelText="Visibility"
+              value={this.state.createPostForm.visibility}
+              onChange={this.handleChangeVisibility}
+            >
+              <MenuItem value="public" primaryText="Public" />
+              <MenuItem value="private" primaryText="Private" />
+            </SelectField>
+          </CardTitle>
+        </Card>
+        <RaisedButton label="Submit" primary={true} onClick={this.handleEdit} style={styles.createPostButton}/>
+        <RaisedButton label="Cancel" onClick={this.handleCancel} style={styles.createPostButton} />
+      </div>
+    )
 
-    var postContainer = (
-      <div style={styles.postBoard}>
+    const deleteActions = [<FlatButton label="Yes" primary={true} keyboardFocused={true} onClick={this.handleDelete} />,
+    <FlatButton label="Cancel" primary={true} onClick={this.handleCancel} />];
+
+    const actionRow = (
+      <div>
         <RaisedButton label="Create post" primary={true} onClick={this.handleCreatePost} style={styles.createPostButton}/>
         <SelectField
           value={this.state.sort}
@@ -307,7 +404,13 @@ export default class Mainpage extends Component {
           <MenuItem key={1} value={1} primaryText="Time" />
           <MenuItem key={2} value={2} primaryText="Votes" />
         </SelectField>
-        {posts}
+      </div>
+    )
+
+    var postContainer = (
+      <div style={styles.postBoard}>
+        {this.state.showEditBox ? <h1>Edit post</h1> : actionRow}
+        {this.state.showEditBox ? editBox : posts}
       </div>
     )
     return (
@@ -325,7 +428,7 @@ export default class Mainpage extends Component {
           actions={deleteActions}
           modal={false}
           open={this.state.openDeleteDialog}
-          onRequestClose={this.handleCloseDeleteDialog}
+          onRequestClose={this.handleCancel}
         >
           Are you sure you want to delete this post?
         </Dialog>

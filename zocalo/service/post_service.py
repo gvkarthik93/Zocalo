@@ -13,35 +13,6 @@ session = Session()
 
 
 class PostService:
-    def get_all_questions(self, start=None):
-        end = datetime.datetime.now()
-        courses = session.query(Course).all()
-        data = []
-        for c in courses:
-            course = {}
-            course["cid"] = c.id
-            course["course_name"] = c.course_name
-            course["course_title"] = c.course_title
-            course["posts"] = []
-            for p in c.posts:
-                if start is None or \
-                   p.last_edit_time > start and p.last_edit_time < end:
-                    p_d = {}
-                    p_d["pid"] = p.id
-                    p_d["description"] = p.description
-                    p_d["tags"] = []
-                    for tg in p.tags:
-                        p_d["tags"].append(tg.p_t.name)
-                    p_d["vote"] = p.vote_count
-                    p_d["create_time"] = str(p.create_time)
-                    p_d["last_edit_time"] = str(p.last_edit_time)
-                    p_d["author"] = p.post_username
-                    p_d["visibility"] = p.visibility_type.type
-                    p_d["post_type"] = p.post_type.type
-                    course["posts"].append(p_d)
-            data.append(course)
-        return data
-
     def get_questions(self, data):
         try:
             course = session.query(Course).\
@@ -75,7 +46,7 @@ class PostService:
 
         return {"status": 1, "message": "Success", "posts": post_list}
 
-    def get_all_answers(self, start=None):
+    def get_all_data(self, start=None):
         end = datetime.datetime.now()
         posts = session.query(Post).all()
         data = []

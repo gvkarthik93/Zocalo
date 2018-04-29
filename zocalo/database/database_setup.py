@@ -1,6 +1,6 @@
 import datetime
 from sqlalchemy import create_engine
-from sqlalchemy import Column, String, Integer, DateTime, ForeignKey, UniqueConstraint, func
+from sqlalchemy import Column, String, Boolean, Integer, DateTime, ForeignKey, UniqueConstraint, func
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
 
@@ -18,6 +18,18 @@ class EmailSetting(Base):
     def __repr__(self):
         return "<Email_setting(id='%s', type='%s')>" % (
             self.id, self.type)
+
+
+class UserPost(Base):
+    __tablename__ = 'user_post'
+
+    username = Column(String(100), ForeignKey("users.username"), primary_key=True)
+    post_id = Column(Integer, ForeignKey("posts.id"), primary_key=True)
+    viewed = Column(Boolean, default=False)
+    voted = Column(Integer, default=0)
+
+    u_p = relationship("Post", back_populates="users")
+    p_u = relationship("User", back_populates="posts")
 
 
 class UserCourse(Base):
@@ -45,6 +57,7 @@ class User(Base):
     courses = relationship("UserCourse", back_populates="c_u")
     replies = relationship("Reply", back_populates="user")
     school = relationship("School", back_populates="users")
+    posts = relationship("UserPost", back_populates="p_u")
 
     def __repr__(self):
         return "<User(username='%s', password='%s', name='%s', email='%s')>" % (
@@ -178,6 +191,7 @@ class Post(Base):
     tags = relationship("PostTag", back_populates="t_p")
     post_author = relationship("User", foreign_keys=[post_username])
     answer_ta = relationship("User", foreign_keys=[answerer_username])
+    users = relationship("UserPost", back_populates="u_p")
 
     def __repr__(self):
         return "<Post(header='%s', description='%s', \

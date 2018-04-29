@@ -13,6 +13,12 @@ session = Session()
 
 
 class PostService:
+    def check_register(self, username, cid):
+        return session.query(
+            exists().where(and_(
+                UserCourse.username == username,
+                UserCourse.course_id == cid))).scalar()
+
     def get_questions(self, data):
         try:
             course = session.query(Course).\
@@ -23,10 +29,7 @@ class PostService:
         except MultipleResultsFound:
             print("should not happen")
 
-        if not session.query(
-            exists().where(and_(
-                UserCourse.username == data["username"],
-                UserCourse.course_id == data["course_id"]))).scalar():
+        if not self.check_register(data["username"], data["course_id"]):
             return {"status": 0, "message": "User not registed", "posts": []}
 
         post_list = []
@@ -95,11 +98,23 @@ class PostService:
         except MultipleResultsFound:
             print("should not happen")
 
-        if not session.query(
-            exists().where(and_(
-                UserCourse.username == data["username"],
-                UserCourse.course_id == data["course_id"]))).scalar():
+        if not self.check_register(data["username"], data["course_id"]):
             return {"status": 0, "message": "User not registed", "posts": []}
+
+        try:
+            user_post = session.query(UserPost).filter_by(
+                username=data["username"]).filter_by(post_id=pid).one()
+            user_post.viewed = True
+        except NoResultFound:
+            user_post = UserPost(
+                post_id=pid,
+                username=data["username"],
+                viewed = True
+            )
+            session.add(user_post)
+            session.commit()
+        except MultipleResultsFound:
+            print("should not happen")
 
         p = {}
         p["pid"] = post.id
@@ -121,12 +136,18 @@ class PostService:
         return {"status": 1, "message": "Success", "post": p}
 
     def delete_post(self, p_id):
+        # if not check_register(data["username"], data["course_id"]):
+        #     return {"status": 0, "message": "User not registed", "posts": []}
+
         count = session.query(Post).filter_by(id=p_id).delete()
         session.commit()
         return {"status": 1, "message": "Success"} if count == 1 \
             else {"status": 0, "message": "Post does not exist"}
 
     def delete_reply(self, r_id):
+        # if not check_register(data["username"], data["course_id"]):
+        #     return {"status": 0, "message": "User not registed", "posts": []}
+
         count = session.query(Reply).filter_by(id=r_id).delete()
         session.commit()
         return {"status": 1, "message": "Success"} if count == 1 \
@@ -139,6 +160,9 @@ class PostService:
             return {"status": 0, "message": "Post does not exist"}
         except MultipleResultsFound:
             print("should not happen")
+
+        if not self.check_register(data["username"], post.course_id):
+            return {"status": 0, "message": "User not registed"}
 
         if post.post_username != data["username"]:
             return {"status": 0, "message": "Not the author of the post"}
@@ -172,6 +196,9 @@ class PostService:
         except MultipleResultsFound:
             print("should not happen")
 
+        if not self.check_register(data["username"], reply.post.course_id):
+            return {"status": 0, "message": "User not registed"}
+
         if reply.username != data["username"]:
             return {"status": 0, "message": "Not the author of the reply"}
 
@@ -186,6 +213,9 @@ class PostService:
         return {"status": 1, "message": "Success"}
 
     def create_post(self, data):
+        if not self.check_register(data["username"], data["course_id"]):
+            return {"status": 0, "message": "User not registed"}
+
         try:
             pt = session.query(PostType).filter_by(type=data["post_type"]).one()
         except KeyError:
@@ -210,7 +240,7 @@ class PostService:
             new_post = Post(
                 header=data["header"],
                 description=data["description"],
-                post_username=data["author"],
+                post_username=data["username"],
                 course_id=data["course_id"],
                 post_type_id=pt_id,
                 visibility_type_id=vt_id,
@@ -225,6 +255,16 @@ class PostService:
         return {"status": 1, "message": "Success"}
 
     def create_reply(self, pid, data):
+        try:
+            post = session.query(Post).filter_by(id=pid).one()
+        except NoResultFound:
+            return {"status": 0, "message": "No post founded", "post": []}
+        except MultipleResultsFound:
+            print("should not happen")
+
+        if not self.check_register(data["username"], post.course_id):
+            return {"status": 0, "message": "User not registed"}
+
         try:
             new_reply = Reply(
                 post_id=pid,
@@ -248,6 +288,8 @@ class PostService:
         except MultipleResultsFound:
             print("should not happen")
 
+        # check if user has already voted the post
+
         try:
             if data["type"] == "up":
                 post.vote_count += 1
@@ -267,6 +309,9 @@ class PostService:
             return {"status": 0, "message": "No corresponding post founded"}
         except MultipleResultsFound:
             print("should not happen")
+
+        # check if user has already voted the reply
+
 
         try:
             if data["type"] == "up":

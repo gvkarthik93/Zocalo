@@ -18,6 +18,7 @@ export default class PostDetailPage extends Component {
     this.state = {
       postDetails: null,
       showAddBox: false,
+      showEditBox: false,
       answer: '',
       openDeleteDialog: false,
       actionRid: 0
@@ -29,6 +30,8 @@ export default class PostDetailPage extends Component {
     this.handleOpenDeleteDialog = this.handleOpenDeleteDialog.bind(this);
     this.handleCloseDeleteDialog = this.handleCloseDeleteDialog.bind(this);
     this.handleDelete = this.handleDelete.bind(this);
+    this.handleShowEdit = this.handleShowEdit.bind(this);
+    this.handleEdit = this.handleEdit.bind(this);
   }
   componentDidMount() {
     this.fetchPostDetail();
@@ -87,6 +90,7 @@ export default class PostDetailPage extends Component {
   }
   handleCancel() {
     this.setState({showAddBox: false});
+    this.setState({showEditBox: false});
   }
   handleOpenDeleteDialog(rid, e) {
     this.setState({openDeleteDialog: true});
@@ -94,6 +98,38 @@ export default class PostDetailPage extends Component {
   }
   handleCloseDeleteDialog() {
     this.setState({openDeleteDialog: false});
+  }
+  handleShowEdit(rid, answer, e) {
+    this.setState({showEditBox: true});
+    this.setState({actionRid: rid});
+    this.setState({answer: answer});
+  }
+  handleEdit() {
+    fetch('/posts/' + this.props.match.params.pid + '/answer/' + this.state.actionRid, {
+      credentials: 'include',
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + localStorage.getItem('jwtToken')
+      },
+      body: JSON.stringify({
+        type: 'login',
+        username: localStorage.getItem('username'),
+        answer: this.state.answer
+      })
+    }).then(function(res) {
+      return res.json();
+    }).then(function(data) {
+      console.log("Edit post response");
+      console.log(data);
+      if (data.status == 1) {
+        this.fetchPostDetail();
+        this.setState({showEditBox: false});
+      }
+      else {
+        console.log("Something went wrong.")
+      }
+    }.bind(this))
   }
   handleDelete() {
     ///posts/{id}/answer/{id}
@@ -143,7 +179,7 @@ export default class PostDetailPage extends Component {
               {value.author == localStorage.getItem('username') ?
                 (<CardActions>
                   <IconButton tooltip="edit">
-                    <Edit />
+                    <Edit onClick={this.handleShowEdit.bind(this, value.rid, value.answer)}/>
                   </IconButton>
                   <IconButton tooltip="delete">
                     <Delete onClick={this.handleOpenDeleteDialog.bind(this, value.rid)}/>
@@ -155,28 +191,58 @@ export default class PostDetailPage extends Component {
           </div>
         )
       }.bind(this));
+      replies.push(<RaisedButton label="Add Answer" primary={true} onClick={this.handleAddAnswer} style={styles.addAnsButton} />);
 
       var ava = <Avatar>{localStorage.getItem('username')[0]}</Avatar>
       var addBox = (
-        <Card style={styles.addBox}>
-          <CardHeader
-            title={localStorage.getItem('username')}
-            avatar={ava}
-            actAsExpander={false}
-            showExpandableButton={false}
-          />
-          <CardTitle expandable={false}>
-            <TextField
-              hintText="Type your answer here"
-              floatingLabelText="Type your answer here"
-              multiLine={true}
-              rows={1}
-              fullWidth={true}
-              value={this.state.answer}
-              onChange={this.handleChangeAnswer}
+        <div>
+          <Card style={styles.addBox}>
+            <CardHeader
+              title={localStorage.getItem('username')}
+              avatar={ava}
+              actAsExpander={false}
+              showExpandableButton={false}
             />
-          </CardTitle>
-        </Card>
+            <CardTitle expandable={false}>
+              <TextField
+                hintText="Type your answer here"
+                floatingLabelText="Type your answer here"
+                multiLine={true}
+                rows={1}
+                fullWidth={true}
+                value={this.state.answer}
+                onChange={this.handleChangeAnswer}
+              />
+            </CardTitle>
+          </Card>
+          <RaisedButton label="Submit" primary={true} onClick={this.handleAddAnswer} style={styles.addAnsButton} />
+          <RaisedButton label="Cancel" onClick={this.handleCancel} style={styles.addAnsButton} />
+        </div>
+      )
+      var editBox = (
+        <div>
+          <Card style={styles.addBox}>
+            <CardHeader
+              title={localStorage.getItem('username')}
+              avatar={ava}
+              actAsExpander={false}
+              showExpandableButton={false}
+            />
+            <CardTitle expandable={false}>
+              <TextField
+                hintText="Type your answer here"
+                floatingLabelText="Type your answer here"
+                multiLine={true}
+                rows={1}
+                fullWidth={true}
+                value={this.state.answer}
+                onChange={this.handleChangeAnswer}
+              />
+            </CardTitle>
+          </Card>
+          <RaisedButton label="Submit" primary={true} onClick={this.handleEdit} style={styles.addAnsButton} />
+          <RaisedButton label="Cancel" onClick={this.handleCancel} style={styles.addAnsButton} />
+        </div>
       )
       postContainer = (
         <div style={styles.postContainer}>
@@ -192,11 +258,10 @@ export default class PostDetailPage extends Component {
               {data.post.description}
             </CardTitle>
           </Card>
-          <h1>Answers</h1>
-          {replies}
+          <h1>{!this.state.showEditBox ? "Answers" : "Edit answer"}</h1>
+          {!this.state.showEditBox ? replies : null}
           {this.state.showAddBox ? addBox : null}
-          <RaisedButton label={this.state.showAddBox ? "Submit" : "Add Answer"} primary={true} onClick={this.handleAddAnswer} style={styles.addAnsButton} />
-          {this.state.showAddBox ? <RaisedButton label="Cancel" onClick={this.handleCancel} style={styles.addAnsButton} /> : null}
+          {this.state.showEditBox ? editBox : null}
         </div>)
     }
 

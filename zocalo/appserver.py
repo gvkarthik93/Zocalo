@@ -107,7 +107,7 @@ class PostsHandler(tornado.web.RequestHandler):
             self.write(json.dumps(response))
 
     # To create new posts and answers
-    def post(self, param1=None, param2=None, param3=None):
+    def post(self, param1=None, param2=None, param3=None, param4=None):
         auth_header = self.request.headers.get('Authorization')
         au = AuthUtil()
         msg = au.checkToken(auth_header)
@@ -132,7 +132,7 @@ class PostsHandler(tornado.web.RequestHandler):
             self.write(json.dumps(response))
 
     # To edit specific post or answer
-    def put(self, param1=None, param2=None, param3=None):
+    def put(self, param1=None, param2=None, param3=None, param4=None):
         auth_header = self.request.headers.get('Authorization')
         au = AuthUtil()
         msg = au.checkToken(auth_header)
@@ -155,7 +155,7 @@ class PostsHandler(tornado.web.RequestHandler):
             self.write(json.dumps(response))
 
     # To delete specific post or answer
-    def delete(self, param1=None, param2=None, param3=None):
+    def delete(self, param1=None, param2=None, param3=None, param4=None):
         auth_header = self.request.headers.get('Authorization')
         au = AuthUtil()
         msg = au.checkToken(auth_header)
@@ -198,6 +198,7 @@ def main():
         (r"/access/(.*)", AccessHandler),
         (r"/access", AccessHandler),
 
+        (r"/posts/(.*)/(.*)/(.*)/(.*)", PostsHandler),
         (r"/posts/(.*)/(.*)/(.*)", PostsHandler),
         (r"/posts/(.*)/(.*)", PostsHandler),
         (r"/posts/(.*)", PostsHandler),

@@ -122,14 +122,26 @@ class PostsHandler(tornado.web.RequestHandler):
             return
         data["username"] = msg[1]["username"]
         ps = PostService()
-        if param1 is None and param2 is None:            
+
+        # posts/
+        if param1 is None and param2 is None and param3 is None \
+            and param4 is None:
             response = ps.create_post(data)
             self.write(json.dumps(response))
-        elif param2 == "vote":
-            response = ps.update_post_vote(param1)
-            self.write(json.dumps(response))
-        else:
+        
+        # posts/{pid}/
+        elif param2 is None and param3 is None and param4 is None:
             response = ps.create_reply(param1, data)
+            self.write(json.dumps(response))
+
+        # posts/{pid}/vote
+        elif param2 == "vote" and param3 is None and param4 is None:
+            response = ps.update_post_vote(param1, data)
+            self.write(json.dumps(response))
+        
+        # posts/{pid}/answer/{rid}/vote
+        elif param2 == "answer" and param4 == "vote":
+            response = ps.update_reply_vote(param1, data)
             self.write(json.dumps(response))
 
     # To edit specific post or answer

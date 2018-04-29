@@ -1,6 +1,7 @@
 import datetime
 from sqlalchemy import create_engine
 from sqlalchemy import Column, String, Boolean, Integer, DateTime, ForeignKey, UniqueConstraint, func
+from sqlalchemy import false
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
 
@@ -25,11 +26,22 @@ class UserPost(Base):
 
     username = Column(String(100), ForeignKey("users.username"), primary_key=True)
     post_id = Column(Integer, ForeignKey("posts.id"), primary_key=True)
-    viewed = Column(Boolean, default=False)
-    voted = Column(Integer, default=0)
+    viewed = Column(Boolean, server_default=false())
+    vote = Column(Integer, default=0)
 
     u_p = relationship("Post", back_populates="users")
     p_u = relationship("User", back_populates="posts")
+
+
+class UserReply(Base):
+    __tablename__ = 'user_reply'
+
+    username = Column(String(100), ForeignKey("users.username"), primary_key=True)
+    reply_id = Column(Integer, ForeignKey("replies.id"), primary_key=True)
+    vote = Column(Integer, default=0)
+
+    u_r = relationship("Reply", back_populates="users")
+    r_u = relationship("User", back_populates="replies")
 
 
 class UserCourse(Base):
@@ -55,9 +67,10 @@ class User(Base):
 
     email_setting = relationship("EmailSetting", back_populates="users")
     courses = relationship("UserCourse", back_populates="c_u")
-    replies = relationship("Reply", back_populates="user")
+    answers = relationship("Reply", back_populates="user")
     school = relationship("School", back_populates="users")
     posts = relationship("UserPost", back_populates="p_u")
+    replies = relationship("UserReply", back_populates="r_u")
 
     def __repr__(self):
         return "<User(username='%s', password='%s', name='%s', email='%s')>" % (
@@ -219,7 +232,8 @@ class Reply(Base):
     vote_count = Column(Integer, default=0)
 
     post = relationship("Post", back_populates="replies")
-    user = relationship("User", back_populates="replies")
+    user = relationship("User", back_populates="answers")
+    users = relationship("UserReply", back_populates="u_r")
 
     def __repr__(self):
         return "<Reply(postid='%s', answer='%s', create_time='%s', \

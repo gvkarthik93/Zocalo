@@ -34,18 +34,21 @@ class PostService:
 
         post_list = []
         for p in course.posts:
-            d = {}
-            d["pid"] = p.id
-            d["header"] = p.header
-            d["description"] = p.description
-            d["tags"] = []
-            for tg in p.tags:
-                d["tags"].append(tg.p_t.name)
-            d["vote"] = p.vote_count
-            d["time"] = str(p.create_time)
-            d["author"] = p.post_username
-            d["post_type"] = p.post_type.type
-            post_list.append(d)
+            if p.visibility_type.type == "public" or \
+                p.visibility_type.type == "private" and \
+                data["username"] == p.post_username:
+                d = {}
+                d["pid"] = p.id
+                d["header"] = p.header
+                d["description"] = p.description
+                d["tags"] = []
+                for tg in p.tags:
+                    d["tags"].append(tg.p_t.name)
+                d["vote"] = p.vote_count
+                d["time"] = str(p.create_time)
+                d["author"] = p.post_username
+                d["post_type"] = p.post_type.type
+                post_list.append(d)
 
         return {"status": 1, "message": "Success", "posts": post_list}
 
@@ -111,10 +114,13 @@ class PostService:
                 username=data["username"],
                 viewed = True
             )
-            session.add(user_post)
-            session.commit()
         except MultipleResultsFound:
             print("should not happen")
+
+        post.view_count += 1
+        session.add(post)
+        session.add(user_post)
+        session.commit()
 
         p = {}
         p["pid"] = post.id
@@ -309,17 +315,49 @@ class PostService:
         except MultipleResultsFound:
             print("should not happen")
 
-        # check if user has already voted the post
+        try:
+            user_post = session.query(UserPost).filter_by(
+                username=data["username"]).filter_by(post_id=pid).one()
+            user_post.viewed = True
+        except NoResultFound:
+            user_post = UserPost(
+                post_id=pid,
+                username=data["username"],
+                viewed = True,
+                vote = 0
+            )
+        except MultipleResultsFound:
+            print("should not happen")
 
+        print(data)
+        print('userpost vote', user_post.vote)
+        # check if user has already voted the post
         try:
             if data["type"] == "up":
-                post.vote_count += 1
+                if user_post.vote == 0:
+                    post.vote_count += 1
+                    user_post.vote = 1
+                elif user_post.vote == 1:
+                    return {"status": 0, "message": "Already upvoted"}
+                else:
+                    post.vote_count += 2
+                    user_post.vote = 1
+            elif data["type"] == "down":
+                if user_post.vote == 0:
+                    post.vote_count -= 1
+                    user_post.vote = -1
+                elif user_post.vote == -1:
+                    return {"status": 0, "message": "Already downvoted"}
+                else:
+                    post.vote_count -= 2
+                    user_post.vote = -1
             else:
-                post.vote_count -= 1
+               return {"status": 0, "message": "Invalid JSON field"} 
         except:
             return {"status": 0, "message": "Invalid JSON field"}
 
         session.add(post)
+        session.add(user_post)
         session.commit()
         return {"status": 1, "message": "Success"}
 
@@ -331,18 +369,45 @@ class PostService:
         except MultipleResultsFound:
             print("should not happen")
 
+        try:
+            user_reply = session.query(UserReply).filter_by(
+                username=data["username"]).filter_by(reply_id=rid).one()
+        except NoResultFound:
+            user_reply = UserReply(
+                reply_id=rid,
+                username=data["username"],
+                vote = 0
+            )
+        except MultipleResultsFound:
+            print("should not happen")
+
         # check if user has already voted the reply
-
-
         try:
             if data["type"] == "up":
-                post.vote_count += 1
+                if user_reply.vote == 0:
+                    reply.vote_count += 1
+                    user_reply.vote = 1
+                elif user_reply.vote == 1:
+                    return {"status": 0, "message": "Already upvoted"}
+                else:
+                    reply.vote_count += 2
+                    user_reply.vote = 1
+            elif data["type"] == "down":
+                if user_reply.vote == 0:
+                    reply.vote_count -= 1
+                    user_reply.vote = -1
+                elif user_reply.vote == -1:
+                    return {"status": 0, "message": "Already downvoted"}
+                else:
+                    reply.vote_count -= 2
+                    user_reply.vote = -1
             else:
-                post.vote_count -= 1
+                return {"status": 0, "message": "Invalid JSON field"}
         except:
             return {"status": 0, "message": "Invalid JSON field"}
 
         session.add(reply)
+        session.add(user_reply)
         session.commit()
         return {"status": 1, "message": "Success"}
 

@@ -4,9 +4,9 @@ import tornado.ioloop
 import tornado.web
 import json
 import tornado.escape
-from zocalo.service.user_service import UserService
-from zocalo.service.post_service import PostService
-from zocalo.util.auth_util import AuthUtil
+from .service.user_service import UserService
+from .service.post_service import PostService
+from .util.auth_util import AuthUtil
 
 
 class MainHandler(tornado.web.RequestHandler):
@@ -102,13 +102,11 @@ class PostsHandler(tornado.web.RequestHandler):
         data = {}
         data["username"] = msg[1]["username"]
         data["course_id"] = cid
-
+        ps = PostService()
         if param1 is None:
-            ps = PostService()
             response = ps.get_questions(data)
             self.write(json.dumps(response))
         else:
-            ps = PostService()
             response = ps.get_post(param1, data)
             self.write(json.dumps(response))
 
@@ -127,13 +125,14 @@ class PostsHandler(tornado.web.RequestHandler):
             self.write(json.dumps(
                 {"status":0, "message":"Invalid json format"}))
             return
-
-        if param1 is None and param2 is None:
-            ps = PostService()
+        ps = PostService()
+        if param1 is None and param2 is None:            
             response = ps.create_post(data)
             self.write(json.dumps(response))
+        elif param2 == "vote":
+            response = ps.update_vote(param1, data)
+            self.write(json.dumps(response))
         else:
-            ps = PostService()
             response = ps.create_reply(param1, data)
             self.write(json.dumps(response))
 
@@ -152,14 +151,12 @@ class PostsHandler(tornado.web.RequestHandler):
             self.write(json.dumps(
                 {"status":0, "message":"Invalid json format"}))
             return
-
+        ps = PostService()
         if param1 and not param2 and not param3:
-            ps = PostService()
             response = ps.edit_post(param1, data)
             self.write(json.dumps(response))
 
         elif param1 and param2 and param3:
-            ps = PostService()
             response = ps.edit_reply(param3, data)
             self.write(json.dumps(response))
 
@@ -171,14 +168,11 @@ class PostsHandler(tornado.web.RequestHandler):
         msg = au.checkToken(auth_header)
         if not msg[0]:
             self.write(msg[1])
-
+        ps = PostService()
         if param1 and not param2 and not param3:
-            ps = PostService()
             response = ps.delete_post(param1)
             self.write(json.dumps(response))
-
         elif param1 and param2 and param3:
-            ps = PostService()
             response = ps.delete_reply(param3)
             self.write(json.dumps(response))
 

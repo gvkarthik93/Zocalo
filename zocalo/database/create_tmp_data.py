@@ -50,7 +50,7 @@ p2 = Post(
 p3 = Post(
     header="ZooKeeper?", create_time=datetime.datetime.now(), last_edit_time=datetime.datetime.now(),
     description="I heard ZooKeeper is a name of a movie. Why are we studying it?",
-    vote_count=7, post_username="Conor", course_id=1, post_type_id=1, visibility_type_id=1)
+    vote_count=7, post_username="Conor", course_id=1, post_type_id=1, visibility_type_id=2)
 
 # replies
 r1 = Reply(post_id=1, username="Conor", answer="Tomorrow at noon.", vote_count=2, 

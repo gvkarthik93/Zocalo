@@ -48,6 +48,7 @@ class PostService:
                 d["time"] = str(p.create_time)
                 d["author"] = p.post_username
                 d["post_type"] = p.post_type.type
+                d["visibility"] = p.visibility_type.type
                 post_list.append(d)
 
         return {"status": 1, "message": "Success", "posts": post_list}
@@ -126,6 +127,8 @@ class PostService:
         p["pid"] = post.id
         p["header"] = post.header
         p["description"] = post.description
+        p["post_type"] = post.post_type.type
+        p["visibility"] = post.visibility_type.type
         p["tags"] = []
         for tg in post.tags:
             p["tags"].append(tg.p_t.name)
@@ -411,12 +414,4 @@ class PostService:
         session.commit()
         return {"status": 1, "message": "Success"}
 
-    def create_tag(self, pid, data):
-        pass
-
-    def delete_tag(self, pid, data):
-        pass
-
-    def edit_tag(self, pid, data):
-        pass
 

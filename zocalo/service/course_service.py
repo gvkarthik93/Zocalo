@@ -13,6 +13,16 @@ Session = sessionmaker(bind=engine)
 session = Session()
 
 class CourseService:
+    def create_tag(self, data):
+        pass
+
+    def edit_tag(self, data):
+        pass
+
+    def delete_ta(self, data):
+        pass
+
+
     #data: c_name, s_id, c_title
     #input: course_name, school_id, course_title
     #output: status, message

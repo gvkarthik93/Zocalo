@@ -125,7 +125,7 @@ class PostsHandler(tornado.web.RequestHandler):
             response = ps.create_post(data)
             self.write(json.dumps(response))
         elif param2 == "vote":
-            response = ps.update_vote(param1, data)
+            response = ps.update_post_vote(param1, data)
             self.write(json.dumps(response))
         else:
             response = ps.create_reply(param1, data)

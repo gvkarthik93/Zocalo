@@ -1,5 +1,5 @@
 """This file is used to create temporary data for testing purpose."""
-
+import datetime
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from database_setup import *
@@ -38,23 +38,27 @@ uc5 = UserCourse(username="Conor", course_id=1, role_id=3)
 
 # posts
 p1 = Post(
-    header="When is the midterm",
+    header="When is the midterm", create_time=datetime.datetime.now(), last_edit_time=datetime.datetime.now(),
     description="What is the exact time of midterm? Wherer is the midterm?",
     vote_count=3, post_username="SihanC", course_id=1, post_type_id=1, visibility_type_id=1)
 
 p2 = Post(
     header="What is paxos", description="I heard paxos is a name of a place, where is it? I want to visit it",
-    vote_count=20, post_username="SihanC", course_id=1, post_type_id=1, visibility_type_id=1)
+    vote_count=20, post_username="SihanC", course_id=1, post_type_id=1, visibility_type_id=1,
+    create_time=datetime.datetime.now(), last_edit_time=datetime.datetime.now(),)
 
 p3 = Post(
-    header="ZooKeeper?",
+    header="ZooKeeper?", create_time=datetime.datetime.now(), last_edit_time=datetime.datetime.now(),
     description="I heard ZooKeeper is a name of a movie. Why are we studying it?",
     vote_count=7, post_username="Conor", course_id=1, post_type_id=1, visibility_type_id=1)
 
 # replies
-r1 = Reply(post_id=1, username="Conor", answer="Tomorrow at noon.", vote_count=2)
-r2 = Reply(post_id=1, username="Ken_B", answer="Conor is right.", vote_count=1)
-r3 = Reply(post_id=1, username="Ken_B", answer="Sorry, wrong answer, it should be tomorrow evening", vote_count=12)
+r1 = Reply(post_id=1, username="Conor", answer="Tomorrow at noon.", vote_count=2, 
+	       create_time=datetime.datetime.now(), last_edit_time=datetime.datetime.now())
+r2 = Reply(post_id=1, username="Ken_B", answer="Conor is right.", vote_count=1,
+	       create_time=datetime.datetime.now(), last_edit_time=datetime.datetime.now())
+r3 = Reply(post_id=1, username="Ken_B", answer="Sorry, wrong answer, it should be tomorrow evening", 
+	       vote_count=12, create_time=datetime.datetime.now(), last_edit_time=datetime.datetime.now())
 
 # post_tags
 pt1 = PostTag(post_id=1, tag_id=1)

@@ -13,35 +13,6 @@ session = Session()
 
 
 class PostService:
-    def get_all_questions(self, start=None):
-        end = datetime.datetime.now()
-        courses = session.query(Course).all()
-        data = []
-        for c in courses:
-            course = {}
-            course["cid"] = c.id
-            course["course_name"] = c.course_name
-            course["course_title"] = c.course_title
-            course["posts"] = []
-            for p in c.posts:
-                if start is None or \
-                   p.last_edit_time > start and p.last_edit_time < end:
-                    p_d = {}
-                    p_d["pid"] = p.id
-                    p_d["description"] = p.description
-                    p_d["tags"] = []
-                    for tg in p.tags:
-                        p_d["tags"].append(tg.p_t.name)
-                    p_d["vote"] = p.vote_count
-                    p_d["create_time"] = str(p.create_time)
-                    p_d["last_edit_time"] = str(p.last_edit_time)
-                    p_d["author"] = p.post_username
-                    p_d["visibility"] = p.visibility_type.type
-                    p_d["post_type"] = p.post_type.type
-                    course["posts"].append(p_d)
-            data.append(course)
-        return data
-
     def get_questions(self, data):
         try:
             course = session.query(Course).\
@@ -169,13 +140,23 @@ class PostService:
         except MultipleResultsFound:
             print("should not happen")
 
+        if post.post_username != data["username"]:
+            return {"status": 0, "message": "Not the author of the post"}
+
         try:
-            post.header = data["header"],
-            post.summary = data["summary"],
-            post.description = data["description"],
-            post.post_username = data["author"],
-            post.course_id = data["course_id"],
-            post.post_type_id = data["post_type_id"]
+            vt = session.query(VisibilityType).filter_by(type=data["visibility"]).one()
+        except KeyError:
+            return {"status": 0, "message": "Invalid JSON field"}
+        except NoResultFound:
+            return {"status": 0, "message": "Invalid visibility type"}
+        except MultipleResultsFound:
+            print("should not happen")
+
+        try:
+            post.header = data["header"]
+            post.description = data["description"]
+            post.visibility_type_id = vt.id
+            post.last_edit_time = datetime.datetime.now()
         except KeyError:
             return {"status": 0, "message": "Invalid JSON field"}
 
@@ -191,10 +172,12 @@ class PostService:
         except MultipleResultsFound:
             print("should not happen")
 
+        if reply.username != data["username"]:
+            return {"status": 0, "message": "Not the author of the reply"}
+
         try:
-            reply.post_id = rid,
-            reply.username = data["username"],
             reply.answer = data["answer"]
+            reply.last_edit_time = datetime.datetime.now()
         except KeyError:
             return {"status": 0, "message": "Invalid JSON field"}
 
@@ -230,7 +213,9 @@ class PostService:
                 post_username=data["author"],
                 course_id=data["course_id"],
                 post_type_id=pt_id,
-                visibility_type_id=vt_id
+                visibility_type_id=vt_id,
+                last_edit_time=datetime.datetime.now(),
+                create_time=datetime.datetime.now()
             )
         except KeyError:
             return {"status": 0, "message": "Invalid JSON field"}
@@ -244,7 +229,9 @@ class PostService:
             new_reply = Reply(
                 post_id=pid,
                 answer=data["answer"],
-                username=data["username"]
+                username=data["username"],
+                create_time=datetime.datetime.now(),
+                last_edit_time=datetime.datetime.now()
             )
         except KeyError:
             return {"status": 0, "message": "Invalid JSON field"}
@@ -253,7 +240,7 @@ class PostService:
         session.commit()
         return {"status": 1, "message": "Success"}
 
-    def update_vote(self, pid, data):
+    def update_post_vote(self, pid, data):
         try:
             post = session.query(Post).filter_by(id=pid).one()
         except NoResultFound:
@@ -270,6 +257,26 @@ class PostService:
             return {"status": 0, "message": "Invalid JSON field"}
 
         session.add(post)
+        session.commit()
+        return {"status": 1, "message": "Success"}
+
+    def update_reply_vote(self, rid, data):
+        try:
+            reply = session.query(Reply).filter_by(id=rid).one()
+        except NoResultFound:
+            return {"status": 0, "message": "No corresponding post founded"}
+        except MultipleResultsFound:
+            print("should not happen")
+
+        try:
+            if data["type"] == "up":
+                post.vote_count += 1
+            else:
+                post.vote_count -= 1
+        except:
+            return {"status": 0, "message": "Invalid JSON field"}
+
+        session.add(reply)
         session.commit()
         return {"status": 1, "message": "Success"}
 

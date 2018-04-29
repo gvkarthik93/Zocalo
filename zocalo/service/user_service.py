@@ -1,15 +1,14 @@
 import sys
 import os
 import bcrypt
-sys.path.append(os.path.join(os.path.dirname(__file__), "..", ".."))
 from sqlalchemy import create_engine, exists
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.orm.exc import MultipleResultsFound
-from Zocalo.database.database_setup import *
-from Zocalo.util.auth_util import AuthUtil
+from zocalo.database.database_setup import *
+from zocalo.util.auth_util import AuthUtil
 
-engine = create_engine('sqlite:///database/Zocalo.db')
+engine = create_engine('sqlite:///zocalo/database/Zocalo.db')
 Session = sessionmaker(bind=engine)
 session = Session()
 

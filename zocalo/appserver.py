@@ -4,9 +4,9 @@ import tornado.ioloop
 import tornado.web
 import json
 import tornado.escape
-from service.user_service import UserService
-from service.post_service import PostService
-from util.auth_util import AuthUtil
+from zocalo.service.user_service import UserService
+from zocalo.service.post_service import PostService
+from zocalo.util.auth_util import AuthUtil
 
 
 class MainHandler(tornado.web.RequestHandler):

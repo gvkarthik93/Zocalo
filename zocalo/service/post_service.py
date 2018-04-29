@@ -1,14 +1,14 @@
 import sys
 import os
 import datetime
-sys.path.append(os.path.join(os.path.dirname(__file__), "..", ".."))
+# sys.path.append(os.path.join(os.path.dirname(__file__), "..", ".."))
 from sqlalchemy import create_engine, and_, exists
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.orm.exc import MultipleResultsFound
-from Zocalo.database.database_setup import *
+from zocalo.database.database_setup import *
 
-engine = create_engine('sqlite:///database/Zocalo.db')
+engine = create_engine('sqlite:///zocalo/database/Zocalo.db')
 # engine = create_engine('sqlite:///../database/Zocalo.db')
 Session = sessionmaker(bind=engine)
 session = Session()

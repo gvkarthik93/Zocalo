@@ -18,7 +18,7 @@ class IndexSchema:
 
 	def updateIndex(self):
 		print ("Updating index")
-		data = self.service.get_all_questions_wtime(self.lastUpdatedTime)
+		data = self.service.get_all_questions(self.lastUpdatedTime)
 		df = pd.DataFrame(data)
 		self.dataFrame.append(df)
 
@@ -26,13 +26,44 @@ class IndexSchema:
 		self.runTimeIndex()
 
 	def searchIndexedData(self):
-		print ("Search the data in dataframe")
-
-	def editIndexedData(self):
-		print ("Edit the data in dataframe")
+		result = []
+		rowCount, columnCount = self.dataFrame.shape
 
 	def convertDftoJson(self):
 		print ("Converts dataframe to Json to send response back to client")
+
+	def stringSearch(self, text, pattern):
+		la = self.computePatternList(pattern)
+		i,j = 0,0
+		while i<len(text) and j<len(pattern):
+			if text[i]==pattern[j]:
+				i+=1
+				j+=1
+			else:
+				if j!= 0:
+					j = la[j-1]
+				else:
+					i+=1
+			if j == len(pattern):
+				return True
+		return False
+
+	def computePatternList(self, pattern):
+		index = 0
+		lookupArray = [0] * len(pattern)
+		i = 1
+		while i < len(pattern):
+			if pattern[i] == pattern[index]:
+				lookupArray[i] = index + 1
+				index += 1
+				i+=1
+			else:
+				if index != 0:
+					index = lookupArray[index-1]
+				else:
+					lookupArray[i] = 0
+					i+=1
+		return lookupArray
 
 id = IndexSchema()
 id.createIndex()

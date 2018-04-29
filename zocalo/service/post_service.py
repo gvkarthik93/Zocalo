@@ -1,15 +1,13 @@
 import sys
 import os
 import datetime
-sys.path.append(os.path.join(os.path.dirname(__file__), "..", ".."))
 from sqlalchemy import create_engine, and_, exists
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.orm.exc import MultipleResultsFound
-from Zocalo.database.database_setup import *
+from zocalo.database.database_setup import *
 
-engine = create_engine('sqlite:///database/Zocalo.db')
-# engine = create_engine('sqlite:///../database/Zocalo.db')
+engine = create_engine('sqlite:///zocalo/database/Zocalo.db')
 Session = sessionmaker(bind=engine)
 session = Session()
 
@@ -254,3 +252,33 @@ class PostService:
         session.add(new_reply)
         session.commit()
         return {"status": 1, "message": "Success"}
+
+    def update_vote(self, pid, data):
+        try:
+            post = session.query(Post).filter_by(id=pid).one()
+        except NoResultFound:
+            return {"status": 0, "message": "No corresponding post founded"}
+        except MultipleResultsFound:
+            print("should not happen")
+
+        try:
+            if data["type"] == "up":
+                post.vote_count += 1
+            else:
+                post.vote_count -= 1
+        except:
+            return {"status": 0, "message": "Invalid JSON field"}
+
+        session.add(post)
+        session.commit()
+        return {"status": 1, "message": "Success"}
+
+    def create_tag(self, pid, data):
+        pass
+
+    def delete_tag(self, pid, data):
+        pass
+
+    def edit_tag(self, pid, data):
+        pass
+

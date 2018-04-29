@@ -4,7 +4,7 @@ import pandas as pd
 import datetime
 import json
 
-class IndexSchema:
+class Index:
 	def __init__(self):
 		self.service = PostService()
 		self.dataFrame = None

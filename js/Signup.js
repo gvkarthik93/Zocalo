@@ -50,7 +50,7 @@ export default class Signup extends Component {
     //   else if (data.status == 1) {
     //     this.props.history.push('/MainPage');
     //   }
-    // }.bind(this))
+    }.bind(this))
   }
   validateEmail() {
     let re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;

@@ -35,7 +35,8 @@ export default class Mainpage extends Component {
         visibility: "public",
         postType: "question"
       },
-      actionPid: 0
+      actionPid: 0,
+      username: null
     };
     this.fetchPosts = this.fetchPosts.bind(this);
     this.handleFilter = this.handleFilter.bind(this);
@@ -51,24 +52,32 @@ export default class Mainpage extends Component {
     this.handleOpenDeleteDialog = this.handleOpenDeleteDialog.bind(this);
     this.handleEdit = this.handleEdit.bind(this);
     this.handleDelete = this.handleDelete.bind(this);
+    this.handleLogout = this.handleLogout.bind(this);
   }
   componentDidMount() {
+    var username = localStorage.getItem('username') ? localStorage.getItem('username') : null;
+    this.setState({username: username});
     this.fetchPosts();
   }
   fetchPosts() {
-    fetch('posts?cid=1', {
-      credentials: 'include',
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + localStorage.getItem('jwtToken')
-      },
-    }).then(function(res) {
-      return res.json();
-    }).then(function(data) {
-      console.log(data);
-      this.setState({posts: data.posts});
-    }.bind(this))
+    if (localStorage.getItem('jwtToken')) {
+      fetch('posts?cid=1', {
+        credentials: 'include',
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + localStorage.getItem('jwtToken')
+        },
+      }).then(function(res) {
+        return res.json();
+      }).then(function(data) {
+        console.log(data);
+        this.setState({posts: data.posts});
+      }.bind(this))
+    }
+    else {
+      console.log("You are not logged in.");
+    }
   }
   getFilteredData() {
     var data = this.state.posts;
@@ -113,7 +122,7 @@ export default class Mainpage extends Component {
           type: 'login',
           header: this.state.createPostForm.header,
           description: this.state.createPostForm.description,
-          author: localStorage.getItem('username'),
+          author: this.state.username,
           course_id: 1,
           visibility: this.state.createPostForm.visibility,
           post_type: this.state.createPostForm.postType
@@ -188,7 +197,7 @@ export default class Mainpage extends Component {
         'Authorization': 'Bearer ' + localStorage.getItem('jwtToken')
       },
       body: JSON.stringify({
-        username: localStorage.getItem('username'),
+        username: this.state.username,
         header: this.state.createPostForm.header,
         description: this.state.createPostForm.description,
         visibility: this.state.createPostForm.visibility
@@ -236,6 +245,11 @@ export default class Mainpage extends Component {
       }
     }.bind(this))
   }
+  handleLogout() {
+    localStorage.removeItem('username');
+    localStorage.removeItem('jwtToken');
+    this.props.history.push('/LoginPage');
+  }
   render() {
     var posts = [];
     _.forEach(this.getFilteredData(), function(value) {
@@ -253,7 +267,7 @@ export default class Mainpage extends Component {
             <CardTitle expandable={false}>
               {value.description}
             </CardTitle>
-            {value.author == localStorage.getItem('username') ?
+            {value.author == this.state.username ?
               (<CardActions>
                 <RaisedButton label="more" primary={true} onClick={this.handleOpenDetailPage.bind(this, value.pid)} style={styles.rightButton}/>
                 <IconButton tooltip="edit">
@@ -287,12 +301,12 @@ export default class Mainpage extends Component {
           <SearchBar />
         </div>
       </div>);
-    var ava = <Avatar>{localStorage.getItem('username')[0]}</Avatar>
+    var ava = <Avatar>{this.state.username != null ? this.state.username[0] : null}</Avatar>
     var createBox = (
       <div style={styles.postBoard}>
         <Card style={styles.createBox}>
           <CardHeader
-            title={localStorage.getItem('username')}
+            title={this.state.username != null ? this.state.username : null}
             avatar={ava}
             actAsExpander={false}
             showExpandableButton={false}
@@ -342,7 +356,7 @@ export default class Mainpage extends Component {
       <div>
         <Card style={styles.createBox}>
           <CardHeader
-            title={localStorage.getItem('username')}
+            title={this.state.username}
             avatar={ava}
             actAsExpander={false}
             showExpandableButton={false}
@@ -417,7 +431,7 @@ export default class Mainpage extends Component {
       <div>
         <AppBar
           title={customTitle}
-          iconElementRight={<RaisedButton label="Login" onClick={()=>{this.props.history.push('/Loginpage');}} style={styles.rightButton}/>}
+          iconElementRight={<RaisedButton label={localStorage.getItem('jwtToken') != null ? "Logout" : "Login"} onClick={this.handleLogout} style={styles.rightButton}/>}
           style={styles.appbar}
         />
         <div style={styles.tagPanel}>

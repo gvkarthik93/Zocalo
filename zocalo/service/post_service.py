@@ -335,8 +335,6 @@ class PostService:
         except MultipleResultsFound:
             print("should not happen")
 
-        print(data)
-        print('userpost vote', user_post.vote)
         # check if user has already voted the post
         try:
             if data["type"] == "up":

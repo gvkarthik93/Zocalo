@@ -1,5 +1,6 @@
 """This file is used to create temporary data for testing purpose."""
 import datetime
+import hashlib, binascii
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from database_setup import *
@@ -8,6 +9,11 @@ engine = create_engine('sqlite:///Zocalo.db')
 Base.metadata.bind = engine
 Session = sessionmaker(bind=engine)
 session = Session()
+
+def hash_password(pwd):
+    dk = hashlib.pbkdf2_hmac('sha256', pwd.encode(), b'salt',100000)
+    password = binascii.hexlify(dk)
+    return password
 
 # schools
 s1 = School(school_name="Cornell University")
@@ -24,10 +30,14 @@ tg4 = Tag(course_id=1, name="project3")
 tg5 = Tag(course_id=1, name="hw1")
 
 # users
-u1 = User(username="SihanC", password="sc123", name="Sihan Chen", email="sc2288@cornell.edu", school_id=1)
-u2 = User(username="Ken_B", password="kb123", name="Ken Birman", email="kb123@cornell.edu", school_id=1)
-u3 = User(username="Kilian", password="kl456", name="Kilian Winberg", email="kw456@cornell.edu", school_id=1)
-u4 = User(username="Conor", password="cn123", name="Conor Mcgregor", email="cm@cornell.edu", school_id=1)
+p1 = hash_password("sc123")
+p2 = hash_password("kb123")
+p3 = hash_password("kl456")
+p4 = hash_password("cn123")
+u1 = User(username="SihanC", password=p1, name="Sihan Chen", email="sc2288@cornell.edu", school_id=1)
+u2 = User(username="Ken_B", password=p2, name="Ken Birman", email="kb123@cornell.edu", school_id=1)
+u3 = User(username="Kilian", password=p3, name="Kilian Winberg", email="kw456@cornell.edu", school_id=1)
+u4 = User(username="Conor", password=p4, name="Conor Mcgregor", email="cm@cornell.edu", school_id=1)
 
 # enroll students
 uc1 = UserCourse(username="SihanC", course_id=1, role_id=3)

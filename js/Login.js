@@ -46,7 +46,6 @@ export default class Login extends Component {
         this.setState({open: true});
       }
       else if (data.status == 1) {
-        this.props.setCurrentUser(data.token);
         localStorage.setItem('jwtToken', data.token);
         localStorage.setItem('username', this.state.username);
         console.log(data.token);

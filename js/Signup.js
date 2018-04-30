@@ -44,14 +44,13 @@ export default class Signup extends Component {
     }).then(function(data) {
       console.log(data);
       this.props.history.push('/MainPage');
-      // if (data.status == 0) {
-      //   console.log("no username found.");
-      //   this.setState({open: true});
-      // }
-      // else if (data.status == 1) {
-      //   this.props.history.push('/MainPage');
-      // }
-    }.bind(this))
+    //   if (data.status == 0) {
+    //     console.log("Signup unsuccessful.");
+    //   }
+    //   else if (data.status == 1) {
+    //     this.props.history.push('/MainPage');
+    //   }
+    // }.bind(this))
   }
   validateEmail() {
     let re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;

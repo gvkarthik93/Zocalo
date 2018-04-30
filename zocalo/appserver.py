@@ -4,9 +4,10 @@ import tornado.ioloop
 import tornado.web
 import json
 import tornado.escape
-from .service.user_service import UserService
-from .service.post_service import PostService
-from .util.auth_util import AuthUtil
+from zocalo.service.user_service import UserService
+from zocalo.service.post_service import PostService
+from zocalo.service.course_service import CourseService
+from zocalo.util.auth_util import AuthUtil
 
 
 class MainHandler(tornado.web.RequestHandler):
@@ -125,10 +126,10 @@ class PostsHandler(tornado.web.RequestHandler):
 
         # posts/
         if param1 is None and param2 is None and param3 is None \
-            and param4 is None:
+           and param4 is None:
             response = ps.create_post(data)
             self.write(json.dumps(response))
-        
+
         # posts/{pid}/
         elif param2 is None and param3 is None and param4 is None:
             response = ps.create_reply(param1, data)
@@ -138,7 +139,7 @@ class PostsHandler(tornado.web.RequestHandler):
         elif param2 == "vote" and param3 is None and param4 is None:
             response = ps.update_post_vote(param1, data)
             self.write(json.dumps(response))
-        
+
         # posts/{pid}/answer/{rid}/vote
         elif param2 == "answer" and param4 == "vote":
             response = ps.update_reply_vote(param1, data)
@@ -156,7 +157,7 @@ class PostsHandler(tornado.web.RequestHandler):
             data = tornado.escape.json_decode(self.request.body)
         except:
             self.write(json.dumps(
-                {"status":0, "message":"Invalid json format"}))
+                {"status": 0, "message": "Invalid json format"}))
             return
         data["username"] = msg[1]["username"]
         ps = PostService()
@@ -187,8 +188,27 @@ class PostsHandler(tornado.web.RequestHandler):
 
 
 class EnrollHandler(tornado.web.RequestHandler):
-    def post(self, param1=None):
-        if param1 is not None:
+    def post(self, param1=None, param2=None):
+        auth_header = self.request.headers.get('Authorization')
+        au = AuthUtil()
+        msg = au.checkToken(auth_header)
+        if not msg[0]:
+            self.write(msg[1])
+
+        try:
+            data = tornado.escape.json_decode(self.request.body)
+        except:
+            self.write(json.dumps(
+                {"status": 0, "message": "Invalid json format"}))
+            return
+        data["username"] = msg[1]["username"]
+        cs = CourseService()
+
+        # /course/{cid}/tag
+        if param1 is not None and param2 == "tag":
+            response = cs.create_tag(param1, data)
+            self.write(json.dumps(response))
+        elif param1 is not None:
             try:
                 data = tornado.escape.json_decode(self.request.body)
             except:
@@ -201,7 +221,7 @@ class EnrollHandler(tornado.web.RequestHandler):
 
         else:
             # Invalid request type
-            print ("Invalid Request")
+            print("Invalid Request")
 
 
 def main():

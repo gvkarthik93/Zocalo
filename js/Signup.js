@@ -84,47 +84,49 @@ export default class Signup extends Component {
           <Col md={8} lg={8}>
             <Paper style={styles.container}>
               <h1 style={styles.title}>Signup</h1>
-              <TextField
-                floatingLabelText="Username"
-                value={this.state.username}
-                onChange={this.handleChangeUsername}
-              /><br/>
-              <TextField
-                floatingLabelText="Password"
-                type="password"
-                value={this.state.password}
-                onChange={this.handleChangePassword}
-              /><br/>
-              <TextField
-                floatingLabelText="Retype Password"
-                type="password"
-                value={this.state.retypepass}
-                onChange={this.handleChangeRetypePass}
-                errorText={this.state.retypepass == this.state.password || this.state.retypepass == "" ? null : "Retyped password is different from your password!"}
-              /><br/>
-              <TextField
-                floatingLabelText="Email"
-                type="email"
-                value={this.state.email}
-                onChange={this.handleChangeEmail}
-                errorText={this.validateEmail() || this.state.email == "" ? null : "Please enter a valid email."}
-              /><br/>
-              <TextField
-                floatingLabelText="Full name"
-                value={this.state.fullname}
-                onChange={this.handleChangeFullName}
-              /><br/>
-              <div style={{marginTop: 10, marginBottom: 15, textAlign: 'center', fontSize: 13, color: '#ccc'}}>
-                <Link to="/LoginPage">Already have an account? Login here.</Link>
-              </div>
-              <RaisedButton label="Signup" primary={true} style={styles.submitButton}
-                onClick={this.handleSubmit}
-                disabled={this.state.username == ""
-                || this.state.password == ""
-                || this.state.email == ""
-                || this.validateEmail() == false
-                || this.state.fullname == ""
-                || this.state.password != this.state.retypepass ? true : false}/>
+              <form onSubmit={this.handleSubmit}>
+                <TextField
+                  floatingLabelText="Username"
+                  value={this.state.username}
+                  onChange={this.handleChangeUsername}
+                /><br/>
+                <TextField
+                  floatingLabelText="Password"
+                  type="password"
+                  value={this.state.password}
+                  onChange={this.handleChangePassword}
+                /><br/>
+                <TextField
+                  floatingLabelText="Retype Password"
+                  type="password"
+                  value={this.state.retypepass}
+                  onChange={this.handleChangeRetypePass}
+                  errorText={this.state.retypepass == this.state.password || this.state.retypepass == "" ? null : "Retyped password is different from your password!"}
+                /><br/>
+                <TextField
+                  floatingLabelText="Email"
+                  type="email"
+                  value={this.state.email}
+                  onChange={this.handleChangeEmail}
+                  errorText={this.validateEmail() || this.state.email == "" ? null : "Please enter a valid email."}
+                /><br/>
+                <TextField
+                  floatingLabelText="Full name"
+                  value={this.state.fullname}
+                  onChange={this.handleChangeFullName}
+                /><br/>
+                <div style={{marginTop: 20, marginBottom: 15, textAlign: 'center', fontSize: 13, color: '#ccc'}}>
+                  <Link to="/LoginPage">Already have an account? Login here.</Link>
+                </div>
+                <RaisedButton label="Signup" primary={true} style={styles.submitButton}
+                  type="submit"
+                  disabled={this.state.username == ""
+                  || this.state.password == ""
+                  || this.state.email == ""
+                  || this.validateEmail() == false
+                  || this.state.fullname == ""
+                  || this.state.password != this.state.retypepass ? true : false}/>
+              </form>
             </Paper>
           </Col>
           <Col md={2} lg={2}/>
@@ -149,7 +151,8 @@ const styles = {
     width: '256px'
   },
   submitButton: {
-    margin: 12
+    marginTop: '20px',
+    width: '100%'
   },
   title: {
       fontFamily: 'Nunito, sans-serif',

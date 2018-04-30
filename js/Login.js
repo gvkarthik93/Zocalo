@@ -83,24 +83,27 @@ export default class Login extends Component {
           <Col md={8} lg={8}>
             <Paper style={styles.container}>
               <h1 style={styles.title}>Login</h1>
-              <TextField
-                floatingLabelText="Username"
-                value={this.state.username}
-                onChange={this.handleChangeUsername}
-              /><br/>
-              <TextField
-                floatingLabelText="Password"
-                type="password"
-                value={this.state.password}
-                onChange={this.handleChangePassword}
-              /><br/>
-              <div style={{marginTop: 10, marginBottom: 15, textAlign: 'center', fontSize: 13, color: '#ccc'}}>
-                <Link to="/SignupPage">Do not have an account? Signup!</Link>
-              </div>
-              <RaisedButton label="login" primary={true} style={styles.submitButton}
-                onClick={this.handleSubmit}
-                disabled={this.state.username == ""
-                || this.state.password == "" ? true : false}/>
+              <form onSubmit={this.handleSubmit}>
+                <TextField
+                  floatingLabelText="Username"
+                  value={this.state.username}
+                  onChange={this.handleChangeUsername}
+                /><br/>
+                <TextField
+                  floatingLabelText="Password"
+                  type="password"
+                  value={this.state.password}
+                  onChange={this.handleChangePassword}
+                /><br/>
+                <div style={{marginTop: 20, marginBottom: 15, textAlign: 'center', fontSize: 13, color: '#ccc'}}>
+                  <Link to="/SignupPage">Do not have an account? Signup!</Link>
+                </div>
+                <RaisedButton label="login" primary={true} style={styles.submitButton}
+                  type="submit"
+                  onClick={this.handleSubmit}
+                  disabled={this.state.username == ""
+                  || this.state.password == "" ? true : false}/>
+              </form>
             </Paper>
             <Dialog
               title="Login unsuccessful"
@@ -134,7 +137,8 @@ const styles = {
     width: '256px'
   },
   submitButton: {
-    margin: 12
+    marginTop: '20px',
+    width: '100%'
   },
   title: {
       fontFamily: 'Nunito, sans-serif',

@@ -16,7 +16,7 @@ session = Session()
 
 class UserService:
     def hash_password(self, pwd):
-        dk = hashlib.pbkdf2_hmac('sha256', pwd, b'salt',100000)
+        dk = hashlib.pbkdf2_hmac('sha256', pwd.encode(), b'salt',100000)
         password = binascii.hexlify(dk)
         return password
 

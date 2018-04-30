@@ -1,6 +1,7 @@
 import sys
 import os
 import bcrypt
+import hashlib, binascii
 from sqlalchemy import create_engine, exists
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm.exc import NoResultFound
@@ -15,9 +16,9 @@ session = Session()
 
 class UserService:
     def hash_password(self, pwd):
-        # hashed_pwd = bcrypt.hashpw(pwd.encode('utf-8'), bcrypt.gensalt(17))
-        return pwd
-        # return hashed_pwd
+        dk = hashlib.pbkdf2_hmac('sha256', pwd, b'salt',100000)
+        password = binascii.hexlify(dk)
+        return password
 
     def login(self, data):
         try:

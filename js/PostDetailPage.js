@@ -209,7 +209,7 @@ export default class PostDetailPage extends Component {
                 hintText="Type your answer here"
                 floatingLabelText="Type your answer here"
                 multiLine={true}
-                rows={1}
+                rows={3}
                 fullWidth={true}
                 value={this.state.answer}
                 onChange={this.handleChangeAnswer}
@@ -234,7 +234,7 @@ export default class PostDetailPage extends Component {
                 hintText="Type your answer here"
                 floatingLabelText="Type your answer here"
                 multiLine={true}
-                rows={1}
+                rows={3}
                 fullWidth={true}
                 value={this.state.answer}
                 onChange={this.handleChangeAnswer}

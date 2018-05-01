@@ -332,7 +332,7 @@ export default class Mainpage extends Component {
               hintText="Type your question details here"
               floatingLabelText="Description"
               multiLine={true}
-              rows={1}
+              rows={3}
               fullWidth={true}
               value={this.state.createPostForm.description}
               onChange={this.handleChangeDescription}
@@ -382,7 +382,7 @@ export default class Mainpage extends Component {
               hintText="Type your question details here"
               floatingLabelText="Description"
               multiLine={true}
-              rows={1}
+              rows={3}
               fullWidth={true}
               value={this.state.createPostForm.description}
               onChange={this.handleChangeDescription}

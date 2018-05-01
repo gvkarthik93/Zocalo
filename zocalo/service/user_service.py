@@ -1,6 +1,5 @@
 import sys
 import os
-import bcrypt
 import hashlib, binascii
 from sqlalchemy import create_engine, exists
 from sqlalchemy.orm import sessionmaker
@@ -31,7 +30,6 @@ class UserService:
             pass
 
         try:
-            # if not bcrypt.checkpw(data["password"], user.password):
             print(user.password)
             print(self.hash_password(data["password"]))
             if user.password != self.hash_password(data["password"]):

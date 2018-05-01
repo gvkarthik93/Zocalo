@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import AppBar from 'material-ui/AppBar';
 import Avatar from 'material-ui/Avatar';
 import {Card, CardActions, CardHeader, CardTitle, CardText} from 'material-ui/Card';
+import Chip from 'material-ui/Chip';
 import Dialog from 'material-ui/Dialog';
 import Drawer from 'material-ui/Drawer';
 import FlatButton from 'material-ui/FlatButton';
@@ -56,8 +57,13 @@ export default class Mainpage extends Component {
   }
   componentDidMount() {
     var username = localStorage.getItem('username') ? localStorage.getItem('username') : null;
-    this.setState({username: username});
-    this.fetchPosts();
+    if (username == null) {
+      this.props.history.push('/LoginPage');
+    }
+    else {
+      this.setState({username: username});
+      this.fetchPosts();
+    }
   }
   fetchPosts() {
     if (localStorage.getItem('jwtToken')) {
@@ -253,7 +259,8 @@ export default class Mainpage extends Component {
   render() {
     var posts = [];
     _.forEach(this.getFilteredData(), function(value) {
-      var ava = <Avatar>{value.author[0]}</Avatar>
+      var ava = <Avatar>{value.author[0]}</Avatar>;
+      var tags = value.tags.map((tag) => (<Chip onClick={this.handleFilter.bind(this,tag)} style={styles.chip}>{tag}</Chip>));
       posts.push (
         <div style={styles.cardContainer}>
           <Card>
@@ -266,6 +273,7 @@ export default class Mainpage extends Component {
             />
             <CardTitle expandable={false}>
               {value.description}
+              <div style={styles.wrapper}>{tags}</div>
             </CardTitle>
             {value.author == this.state.username ?
               (<CardActions>
@@ -291,8 +299,8 @@ export default class Mainpage extends Component {
       tags = tags.concat(value.tags);
     });
     var tags = _.uniq(tags);
-    var tagButtons = tags.map((tag)=>(<RaisedButton label={tag} primary={true} onClick={this.handleFilter.bind(this, tag)} style={styles.tagButton} />));
-    tagButtons.unshift(<RaisedButton label="All" primary={true} onClick={this.handleFilter.bind(this, "All")} style={styles.tagButton} />)
+    var tagButtons = tags.map((tag)=>(<RaisedButton label={tag} primary={this.state.filter == tag} onClick={this.handleFilter.bind(this, tag)} style={styles.tagButton} />));
+    tagButtons.unshift(<RaisedButton label="All" primary={this.state.filter == "All"} onClick={this.handleFilter.bind(this, "All")} style={styles.tagButton} />)
 
     const customTitle = (
       <div>
@@ -514,5 +522,14 @@ const styles = {
   },
   createBox: {
     marginTop: '12px'
+  },
+  chip: {
+    marginRight: '8px',
+  },
+  wrapper: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    marginTop: '20px',
+    marginBottom: '-12px'
   }
 }

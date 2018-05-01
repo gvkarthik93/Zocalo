@@ -8,13 +8,13 @@ then
 fi
 
 # setup database schema
-python database_setup.py
+python3 database_setup.py
 echo 'Created Zocalo schema'
 
 # create lookup table data
-python lookup_data.py
+python3 lookup_data.py
 echo 'Created Zocalo lookup data'
 
 # testing data
-python create_tmp_data.py
+python3 create_tmp_data.py
 echo 'Created Zocalo testing data'

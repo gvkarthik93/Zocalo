@@ -5,10 +5,10 @@ from sqlalchemy import create_engine, exists
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.orm.exc import MultipleResultsFound
-from zocalo.database.database_setup import *
+from zocalo.database.schema import *
 from zocalo.util.auth_util import AuthUtil
 
-engine = create_engine('sqlite:///zocalo/database/Zocalo.db')
+engine = create_engine('sqlite:///Zocalo.db')
 Session = sessionmaker(bind=engine)
 session = Session()
 
@@ -30,8 +30,6 @@ class UserService:
             pass
 
         try:
-            print(user.password)
-            print(self.hash_password(data["password"]))
             if user.password != self.hash_password(data["password"]):
                 return {"status": 0, "message": "Wrong password", "courses": []}
         except KeyError:

@@ -1,5 +1,4 @@
 import datetime
-from sqlalchemy import create_engine
 from sqlalchemy import Column, String, Boolean, Integer, DateTime, ForeignKey, UniqueConstraint, func
 from sqlalchemy import false
 from sqlalchemy.orm import relationship
@@ -240,8 +239,3 @@ class Reply(Base):
                 username='%s')>" % (
             self.post_id, self.answer, self.username,
             self.create_time)
-
-
-engine = create_engine('sqlite:///Zocalo.db')
-
-Base.metadata.create_all(engine)

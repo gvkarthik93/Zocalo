@@ -5,9 +5,9 @@ from sqlalchemy import create_engine, and_, exists
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.orm.exc import MultipleResultsFound
-from zocalo.database.database_setup import *
+from zocalo.database.schema import *
 
-engine = create_engine('sqlite:///zocalo/database/Zocalo.db')
+engine = create_engine('sqlite:///Zocalo.db')
 Session = sessionmaker(bind=engine)
 session = Session()
 

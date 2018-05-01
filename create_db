@@ -1,0 +1,16 @@
+#!/bin/bash
+
+# delete Zocalo.db file if exist
+if [ -f Zocalo.db ]
+then
+    rm Zocalo.db
+    echo 'Removed Zocalo.db' 
+fi
+
+# setup database
+python3 -m zocalo.database.setup
+echo 'Initialized database'
+
+# testing data
+python3 -m zocalo.database.temp_data
+echo 'Created Zocalo testing data'

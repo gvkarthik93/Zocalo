@@ -32,7 +32,8 @@ class PostService:
                     reply = {}
                     reply["rid"] = r.id
                     reply["answer"] = r.answer
-                    reply["vote"] = r.vote_count
+                    reply["up_vote"] = r.up_vote
+                    reply["down_vote"] = r.down_vote
                     reply["create_time"] = str(r.create_time)
                     reply["last_edit_time"] = str(r.last_edit_time)
                     reply["author"] = r.username
@@ -45,7 +46,8 @@ class PostService:
             post["pid"] = p.id
             post["header"] = p.header
             post["description"] = p.description
-            post["vote"] = p.vote_count
+            post["up_vote"] = p.up_vote
+            post["down_vote"] = p.down_vote
             post["create_time"] = str(p.create_time)
             post["last_edit_time"] = str(p.last_edit_time)
             post["author"] = p.post_username
@@ -85,7 +87,7 @@ class PostService:
                 d["tags"] = []
                 for tg in p.tags:
                     d["tags"].append(tg.p_t.name)
-                d["vote"] = p.vote_count
+                d["vote"] = p.up_vote
                 d["time"] = str(p.create_time)
                 d["author"] = p.post_username
                 d["post_type"] = p.post_type.type
@@ -113,7 +115,8 @@ class PostService:
             user_post = UserPost(
                 post_id=pid,
                 username=data["username"],
-                viewed = True
+                viewed=True,
+                vote=0
             )
         except MultipleResultsFound:
             print("should not happen")
@@ -130,18 +133,32 @@ class PostService:
         p["post_type"] = post.post_type.type
         p["visibility"] = post.visibility_type.type
         p["time"] = str(post.last_edit_time)
-        p["vote"] = post.vote_count
+        p["voted"] = user_post.vote
+        p["vote"] = post.up_vote
         p["author"] = post.post_username
         p["tags"] = []
         for tg in post.tags:
             p["tags"].append(tg.p_t.name)
         p["replies"] = []
         for r in post.replies:
+            try:
+                user_reply = session.query(UserReply).filter_by(
+                    username=data["username"]).filter_by(reply_id=r.id).one()
+            except NoResultFound:
+                user_reply = UserReply(
+                    reply_id=r.id,
+                    username=data["username"]
+                )
+            except MultipleResultsFound:
+                print("should not happen")
+            session.add(user_reply)
+            session.commit()
             rd = {}
             rd["rid"] = r.id
             rd["author"] = r.username
             rd["time"] = str(r.last_edit_time)
-            rd["vote"] = r.vote_count
+            rd["vote"] = r.up_vote
+            rd["voted"] = user_reply.vote
             rd["answer"] = r.answer
             p["replies"].append(rd)
 
@@ -329,8 +346,8 @@ class PostService:
             user_post = UserPost(
                 post_id=pid,
                 username=data["username"],
-                viewed = True,
-                vote = 0
+                viewed=True,
+                vote=0
             )
         except MultipleResultsFound:
             print("should not happen")
@@ -339,24 +356,26 @@ class PostService:
         try:
             if data["type"] == "up":
                 if user_post.vote == 0:
-                    post.vote_count += 1
+                    post.up_vote += 1
                     user_post.vote = 1
                 elif user_post.vote == 1:
                     return {"status": 0, "message": "Already upvoted"}
                 else:
-                    post.vote_count += 2
+                    post.up_vote += 1
+                    post.down_vote -= 1
                     user_post.vote = 1
             elif data["type"] == "down":
                 if user_post.vote == 0:
-                    post.vote_count -= 1
+                    post.down_vote += 1
                     user_post.vote = -1
                 elif user_post.vote == -1:
                     return {"status": 0, "message": "Already downvoted"}
                 else:
-                    post.vote_count -= 2
+                    post.up_vote -= 1
+                    post.down_vote += 1
                     user_post.vote = -1
             else:
-               return {"status": 0, "message": "Invalid JSON field"} 
+                return {"status": 0, "message": "Invalid JSON field"}
         except:
             return {"status": 0, "message": "Invalid JSON field"}
 
@@ -380,7 +399,7 @@ class PostService:
             user_reply = UserReply(
                 reply_id=rid,
                 username=data["username"],
-                vote = 0
+                vote=0
             )
         except MultipleResultsFound:
             print("should not happen")
@@ -389,21 +408,23 @@ class PostService:
         try:
             if data["type"] == "up":
                 if user_reply.vote == 0:
-                    reply.vote_count += 1
+                    reply.up_vote += 1
                     user_reply.vote = 1
                 elif user_reply.vote == 1:
                     return {"status": 0, "message": "Already upvoted"}
                 else:
-                    reply.vote_count += 2
+                    reply.down_vote -= 1
+                    reply.up_vote += 1
                     user_reply.vote = 1
             elif data["type"] == "down":
                 if user_reply.vote == 0:
-                    reply.vote_count -= 1
+                    reply.down_vote += 1
                     user_reply.vote = -1
                 elif user_reply.vote == -1:
                     return {"status": 0, "message": "Already downvoted"}
                 else:
-                    reply.vote_count -= 2
+                    reply.down_vote += 1
+                    reply.up_vote -= 1
                     user_reply.vote = -1
             else:
                 return {"status": 0, "message": "Invalid JSON field"}
@@ -414,5 +435,3 @@ class PostService:
         session.add(user_reply)
         session.commit()
         return {"status": 1, "message": "Success"}
-
-

@@ -190,7 +190,8 @@ class Post(Base):
     description = Column(String(1000))
     create_time = Column(DateTime)
     last_edit_time = Column(DateTime)
-    vote_count = Column(Integer, default=0)
+    up_vote = Column(Integer, default=0)
+    down_vote = Column(Integer, default=0)
     view_count = Column(Integer, default=0)
     post_username = Column(String(100), ForeignKey("users.username"))
     answerer_username = Column(String(100), ForeignKey("users.username"))
@@ -209,11 +210,9 @@ class Post(Base):
 
     def __repr__(self):
         return "<Post(header='%s', description='%s', \
-                create_time='%s', post_username='%s', answer='%s', \
-                vote_count='%s')>" % (
+                create_time='%s', post_username='%s', answer='%s')>" % (
             self.header, self.description,
-            self.create_time, self.post_username, self.answerer_username,
-            self.vote_count)
+            self.create_time, self.post_username, self.answerer_username)
 
 
 class Reply(Base):
@@ -229,7 +228,8 @@ class Reply(Base):
     answer = Column(String(1000))
     create_time = Column(DateTime)
     last_edit_time = Column(DateTime)
-    vote_count = Column(Integer, default=0)
+    up_vote = Column(Integer, default=0)
+    down_vote = Column(Integer, default=0)
 
     post = relationship("Post", back_populates="replies")
     user = relationship("User", back_populates="answers")
@@ -237,9 +237,9 @@ class Reply(Base):
 
     def __repr__(self):
         return "<Reply(postid='%s', answer='%s', create_time='%s', \
-                username='%s', vote_count='%s')>" % (
+                username='%s')>" % (
             self.post_id, self.answer, self.username,
-            self.create_time, self.vote_count)
+            self.create_time)
 
 
 engine = create_engine('sqlite:///Zocalo.db')

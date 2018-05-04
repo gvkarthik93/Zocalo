@@ -9,6 +9,17 @@ from zocalo.service.post_service import PostService
 from zocalo.service.course_service import CourseService
 from zocalo.util.auth_util import AuthUtil
 
+# Keep track of number of repeated function calls
+count = 0
+#interval between function call in ms
+interval_ms = 1000
+
+class PeriodicFunctionHandler():
+    def generic_func():
+        global count
+        count = count + 1
+        #add function call to in memory db update here
+        #print("This function has been called " + str(count) + " times")
 
 class MainHandler(tornado.web.RequestHandler):
     def get(self):
@@ -252,6 +263,8 @@ def main():
     port = int(os.environ.get("PORT", 8002))
     http_server.listen(port)
     print ("Server Running on Port: ", port)
+    #tornado request for repeated function call
+    #tornado.ioloop.PeriodicCallback(PeriodicFunctionHandler.generic_func,interval_ms).start()
     tornado.ioloop.IOLoop.instance().start()
 
 if __name__ == "__main__":

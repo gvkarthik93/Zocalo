@@ -17,6 +17,8 @@ import TextField from 'material-ui/TextField';
 import IconButton from 'material-ui/IconButton';
 import Edit from 'material-ui/svg-icons/image/edit';
 import Delete from 'material-ui/svg-icons/action/delete';
+import Thumbup from 'material-ui/svg-icons/action/thumb-up';
+import Thumbdown from 'material-ui/svg-icons/action/thumb-down';
 
 var _ = require('lodash');
 export default class Mainpage extends Component {
@@ -53,6 +55,7 @@ export default class Mainpage extends Component {
     this.handleOpenDeleteDialog = this.handleOpenDeleteDialog.bind(this);
     this.handleEdit = this.handleEdit.bind(this);
     this.handleDelete = this.handleDelete.bind(this);
+    this.handleVote = this.handleVote.bind(this);
     this.handleLogout = this.handleLogout.bind(this);
   }
   componentDidMount() {
@@ -251,6 +254,29 @@ export default class Mainpage extends Component {
       }
     }.bind(this))
   }
+  handleVote(pid, type, e) {
+    fetch('/posts/' + pid + '/vote', {
+      credentials: 'include',
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + localStorage.getItem('jwtToken')
+      },
+      body: JSON.stringify({
+        type: type
+      })
+    }).then(function(res) {
+      return res.json();
+    }).then(function(data) {
+      if (data.status == 1) {
+        this.fetchPosts();
+        console.log(pid + " upvoted.");
+      }
+      else {
+        console.log(data);
+      }
+    }.bind(this))
+  }
   handleLogout() {
     localStorage.removeItem('username');
     localStorage.removeItem('jwtToken');
@@ -284,9 +310,21 @@ export default class Mainpage extends Component {
                 <IconButton tooltip="delete">
                   <Delete onClick={this.handleOpenDeleteDialog.bind(this, value.pid)}/>
                 </IconButton>
+                <IconButton tooltip="up-vote">
+                  <Thumbup onClick={this.handleVote.bind(this, value.pid, 'up')}/>
+                </IconButton>
+                <IconButton tooltip="down-vote">
+                  <Thumbdown onClick={this.handleVote.bind(this, value.pid, 'down')}/>
+                </IconButton>
               </CardActions>) :
               (<CardActions>
                 <RaisedButton label="more" primary={true} onClick={this.handleOpenDetailPage.bind(this, value.pid)} style={styles.rightButton}/>
+                <IconButton tooltip="up-vote">
+                  <Thumbup onClick={this.handleVote.bind(this, value.pid, 'up')}/>
+                </IconButton>
+                <IconButton tooltip="up-vote">
+                  <Thumbdown onClick={this.handleVote.bind(this, value.pid, 'down')}/>
+                </IconButton>
               </CardActions>)
             }
           </Card>

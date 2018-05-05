@@ -270,7 +270,7 @@ export default class Mainpage extends Component {
     }).then(function(data) {
       if (data.status == 1) {
         this.fetchPosts();
-        console.log(pid + " upvoted.");
+        console.log(pid + " " + type + "voted.");
       }
       else {
         console.log(data);

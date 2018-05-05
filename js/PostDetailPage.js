@@ -11,6 +11,8 @@ import TextField from 'material-ui/TextField';
 import IconButton from 'material-ui/IconButton';
 import Edit from 'material-ui/svg-icons/image/edit';
 import Delete from 'material-ui/svg-icons/action/delete';
+import Thumbup from 'material-ui/svg-icons/action/thumb-up';
+import Thumbdown from 'material-ui/svg-icons/action/thumb-down';
 
 export default class PostDetailPage extends Component {
   constructor(props) {
@@ -32,6 +34,7 @@ export default class PostDetailPage extends Component {
     this.handleDelete = this.handleDelete.bind(this);
     this.handleShowEdit = this.handleShowEdit.bind(this);
     this.handleEdit = this.handleEdit.bind(this);
+    this.handleVote = this.handleVote.bind(this);
   }
   componentDidMount() {
     this.fetchPostDetail();
@@ -156,6 +159,29 @@ export default class PostDetailPage extends Component {
       }
     }.bind(this))
   }
+  handleVote(rid, type, e) {
+    fetch('/posts/' + this.props.match.params.pid + '/answer/' + rid + '/vote', {
+      credentials: 'include',
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + localStorage.getItem('jwtToken')
+      },
+      body: JSON.stringify({
+        type: type
+      })
+    }).then(function(res) {
+      return res.json();
+    }).then(function(data) {
+      if (data.status == 1) {
+        this.fetchPostDetail();
+        console.log(rid + " " + type + "voted.");
+      }
+      else {
+        console.log(data);
+      }
+    }.bind(this))
+  }
   render() {
     var postContainer = null;
     if (this.state.postDetails != null) {
@@ -186,8 +212,21 @@ export default class PostDetailPage extends Component {
                   <IconButton tooltip="delete">
                     <Delete onClick={this.handleOpenDeleteDialog.bind(this, value.rid)}/>
                   </IconButton>
+                  <IconButton tooltip="up-vote">
+                    <Thumbup onClick={this.handleVote.bind(this, value.rid, 'up')}/>
+                  </IconButton>
+                  <IconButton tooltip="down-vote">
+                    <Thumbdown onClick={this.handleVote.bind(this, value.rid, 'down')}/>
+                  </IconButton>
                 </CardActions>) :
-                null
+                (<CardActions>
+                  <IconButton tooltip="up-vote">
+                    <Thumbup onClick={this.handleVote.bind(this, value.rid, 'up')}/>
+                  </IconButton>
+                  <IconButton tooltip="down-vote">
+                    <Thumbdown onClick={this.handleVote.bind(this, value.rid, 'down')}/>
+                  </IconButton>
+                </CardActions>)
               }
             </Card>
           </div>
@@ -275,7 +314,7 @@ export default class PostDetailPage extends Component {
         <AppBar
           title="Zocalo"
           onTitleClick={(e) => {console.log("eh")}}
-          iconElementRight={<RaisedButton label="Login" onClick={()=>{this.props.history.push('/Loginpage');}} style={styles.rightButton}/>}
+          iconElementRight={<RaisedButton label={localStorage.getItem('jwtToken') != null ? "Logout" : "Login"} onClick={()=>{this.props.history.push('/Loginpage');}} style={styles.rightButton}/>}
           style={styles.appbar}
         />
         {postContainer}

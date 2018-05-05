@@ -193,7 +193,7 @@ export default class PostDetailPage extends Component {
         var ava = <Avatar>{value.author[0]}</Avatar>
         replies.push (
           <div style={styles.cardContainer}>
-            <Card>
+            <Card style={value.visibility == "private" ? styles.privateCard : null}>
               <CardHeader
                 title={value.author}
                 subtitle={value.vote + " votes • " + value.time}
@@ -284,13 +284,15 @@ export default class PostDetailPage extends Component {
           <RaisedButton label="Cancel" onClick={this.handleCancel} style={styles.addAnsButton} />
         </div>
       )
+      var ava = <Avatar>{data.post.author[0]}</Avatar>;
       postContainer = (
         <div style={styles.postContainer}>
           <h1>Question</h1>
-          <Card>
+          <Card style={data.post.visibility == "private" ? styles.privateCard : null}>
             <CardHeader
               title={data.post.header}
-              avatar={<Avatar>?</Avatar>}
+              subtitle={data.post.vote + " votes • " + data.post.time}
+              avatar={ava}
               actAsExpander={false}
               showExpandableButton={false}
             />
@@ -313,7 +315,8 @@ export default class PostDetailPage extends Component {
       <div>
         <AppBar
           title="Zocalo"
-          onTitleClick={(e) => {console.log("eh")}}
+          titleStyle={styles.titleStyle}
+          onTitleClick={(e) => {this.props.history.push('/MainPage');}}
           iconElementRight={<RaisedButton label={localStorage.getItem('jwtToken') != null ? "Logout" : "Login"} onClick={()=>{this.props.history.push('/Loginpage');}} style={styles.rightButton}/>}
           style={styles.appbar}
         />
@@ -336,6 +339,9 @@ const styles = {
     position: 'fixed',
     top: '0'
   },
+  titleStyle: {
+    cursor: 'pointer'
+  },
   rightButton: {
     marginTop: '6px',
     marginRight: '12px'
@@ -351,5 +357,8 @@ const styles = {
   },
   addAnsButton: {
     marginRight: '18px'
+  },
+  privateCard: {
+    background: '#f2f2f2'
   }
 }

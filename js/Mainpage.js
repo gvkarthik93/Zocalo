@@ -289,7 +289,7 @@ export default class Mainpage extends Component {
       var tags = value.tags.map((tag) => (<Chip onClick={this.handleFilter.bind(this,tag)} style={styles.chip}>{tag}</Chip>));
       posts.push (
         <div style={styles.cardContainer}>
-          <Card>
+          <Card style={value.visibility == "private" ? styles.privateCard : null}>
             <CardHeader
               title={value.header}
               subtitle={value.vote + " votes • " + value.time}
@@ -569,5 +569,8 @@ const styles = {
     flexWrap: 'wrap',
     marginTop: '20px',
     marginBottom: '-12px'
+  },
+  privateCard: {
+    background: '#f2f2f2'
   }
 }

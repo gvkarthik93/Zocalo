@@ -203,9 +203,9 @@ class Post(Base):
     course = relationship("Course", back_populates="posts")
     replies = relationship("Reply",cascade="all, delete-orphan", back_populates="post")
     tags = relationship("PostTag", cascade="all, delete-orphan", back_populates="t_p")
+    users = relationship("UserPost", cascade="all, delete-orphan", back_populates="u_p")
     post_author = relationship("User", foreign_keys=[post_username])
     answer_ta = relationship("User", foreign_keys=[answerer_username])
-    users = relationship("UserPost", back_populates="u_p")
 
     def __repr__(self):
         return "<Post(header='%s', description='%s', \
@@ -232,7 +232,7 @@ class Reply(Base):
 
     post = relationship("Post", back_populates="replies")
     user = relationship("User", back_populates="answers")
-    users = relationship("UserReply", back_populates="u_r")
+    users = relationship("UserReply", cascade="all, delete-orphan", back_populates="u_r")
 
     def __repr__(self):
         return "<Reply(postid='%s', answer='%s', create_time='%s', \

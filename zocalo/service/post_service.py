@@ -178,9 +178,6 @@ class PostService:
         if post.post_username != data["username"]:
             return {"status": 0, "message": "Not the author of the post"}
 
-        # for r in post.replies:
-        #     session.delete(r)
-
         session.delete(post)
         session.commit()
         return {"status": 1, "message": "Success"}

@@ -141,8 +141,9 @@ class PostsHandler(tornado.web.RequestHandler):
             response = ps.create_post(data)
             self.write(json.dumps(response))
 
-        # posts/{pid}/
-        elif param2 is None and param3 is None and param4 is None:
+        # posts/{pid}/answer
+        elif param1 is not None and param2 == "answer" and param3 is None \
+                and param4 is None:
             response = ps.create_reply(param1, data)
             self.write(json.dumps(response))
 

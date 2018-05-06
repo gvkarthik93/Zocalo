@@ -1,6 +1,3 @@
-import sys
-import os
-import json
 from sqlalchemy import exists
 from sqlalchemy import create_engine, and_
 from sqlalchemy.orm import sessionmaker
@@ -8,19 +5,64 @@ from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.orm.exc import MultipleResultsFound
 from zocalo.database.schema import *
 
+
 engine = create_engine('sqlite:///Zocalo.db')
 Session = sessionmaker(bind=engine)
 session = Session()
 
+
 class CourseService:
-    def create_tag(self, data):
-        pass
+    def check_register(self, username, cid):
+        return session.query(
+            exists().where(and_(
+                UserCourse.username == username,
+                UserCourse.course_id == cid))).scalar()
+
+    def create_tag(self, cid, data):
+        if not self.check_register(data["username"], cid):
+            return {"status": 0, "message": "User not registed"}
+
+        # check duplicate tag name
+        try:
+            count = session.query(exists().where(and_(
+                Tag.course_id == cid,
+                Tag.name == data["name"]))).scalar()
+        except KeyError:
+            return {"status": 0, "message": "Invalid JSON field"}
+
+        if count != 0:
+            return {"status": 0, "message": "Tag already existed"}
+
+        try:
+            new_tag = Tag(
+                name=data["name"],
+                course_id=cid
+            )
+        except KeyError:
+            return {"status": 0, "message": "Invalid JSON field"}
+
+        session.add(new_tag)
+        session.commit()
+        return {"status": 1, "message": "Success"}
 
     def edit_tag(self, data):
         pass
 
-    def delete_ta(self, data):
-        pass
+    def delete_tag(self, cid, tag_name, data):
+        if not self.check_register(data["username"], cid):
+            return {"status": 0, "message": "User not registed"}
+
+        try:
+            tag = session.query(Tag).filter_by(course_id=cid). \
+                filter_by(name=tag_name).one()
+        except NoResultFound:
+            return {"status": 0, "message": "No tag founded"}
+        except MultipleResultsFound:
+            print("should not happen")
+
+        session.delete(tag)
+        session.commit()
+        return {"status": 1, "message": "Success"}
 
 
     #data: c_name, s_id, c_title

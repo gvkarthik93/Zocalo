@@ -11,8 +11,10 @@ from zocalo.util.auth_util import AuthUtil
 
 # Keep track of number of repeated function calls
 count = 0
-#interval between function call in ms
+
+# interval between function call in ms
 interval_ms = 1000
+
 
 class PeriodicFunctionHandler():
     def generic_func():
@@ -20,6 +22,7 @@ class PeriodicFunctionHandler():
         count = count + 1
         #add function call to in memory db update here
         #print("This function has been called " + str(count) + " times")
+
 
 class MainHandler(tornado.web.RequestHandler):
     def get(self):
@@ -130,7 +133,7 @@ class PostsHandler(tornado.web.RequestHandler):
             data = tornado.escape.json_decode(self.request.body)
         except:
             self.write(json.dumps(
-                {"status":0, "message":"Invalid json format"}))
+                {"status": 0, "message": "Invalid json format"}))
             return
         data["username"] = msg[1]["username"]
         ps = PostService()
@@ -225,7 +228,7 @@ class EnrollHandler(tornado.web.RequestHandler):
                 data = tornado.escape.json_decode(self.request.body)
             except:
                 self.write(json.dumps(
-                    {"status":0, "message":"Invalid json format"}))
+                    {"status": 0, "message": "Invalid json format"}))
                 return
 
             # Enroll for course
@@ -234,6 +237,21 @@ class EnrollHandler(tornado.web.RequestHandler):
         else:
             # Invalid request type
             print("Invalid Request")
+
+    def delete(self, param1=None, param2=None, param3=None, param4=None):
+        auth_header = self.request.headers.get('Authorization')
+        au = AuthUtil()
+        msg = au.checkToken(auth_header)
+        if not msg[0]:
+            self.write(msg[1])
+        data = {}
+        data["username"] = msg[1]["username"]
+        ps = CourseService()
+
+        # /course/{cid}/tag/{tag_name}
+        if param1 is not None and param2 == "tag" and param3 is not None:
+            response = ps.delete_tag(param1, param3, data)
+            self.write(json.dumps(response))
 
 
 def main():
@@ -252,6 +270,7 @@ def main():
         (r"/posts/(.*)", PostsHandler),
         (r"/posts", PostsHandler),
 
+        (r"/course/(.*)/(.*)/(.*)", EnrollHandler),
         (r"/course/(.*)/(.*)", EnrollHandler),
         (r"/course/(.*)", EnrollHandler),
 

@@ -174,7 +174,7 @@ class Tag(Base):
     name = Column(String(50), nullable=False)
 
     course = relationship("Course", back_populates="tags")
-    posts = relationship("PostTag", back_populates="p_t")
+    posts = relationship("PostTag", cascade="all, delete-orphan", back_populates="p_t")
 
     def __repr__(self):
         return "<Tag(id='%d', course_id='%d'), name='%s'>" % (

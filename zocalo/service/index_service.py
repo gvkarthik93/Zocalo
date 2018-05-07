@@ -11,6 +11,7 @@ class IndexService:
 		self.dataFrame = None
 		self.lastUpdatedTime = None
 
+	# Build index during run time
 	def runTimeIndex(self):
 		print ("Building runtime index")
 		data = self.service.get_all_data()
@@ -18,6 +19,7 @@ class IndexService:
 		self.lastUpdatedTime = datetime.datetime.now()
 		return self.dataFrame
 
+	# Update Index every minute
 	def updateIndex(self):
 		print ("Updating index")
 		data = self.service.get_all_data(self.lastUpdatedTime)

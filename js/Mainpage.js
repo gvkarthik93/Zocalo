@@ -287,7 +287,6 @@ export default class Mainpage extends Component {
     var postData = this.getFilteredData();
     // Sort posts
     if (this.state.sort == "time") {
-      console.log(postData);
       postData = _.orderBy(postData, ['time'], ['desc']);
     }
     else if (this.state.sort == "vote") {

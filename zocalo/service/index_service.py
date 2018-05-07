@@ -46,6 +46,8 @@ class IndexService:
 		print ("Converting data to json format")
 		return json.dumps(data)
 
+	# Check if pattern exists in text
+	# KMP String Matching Algorithm
 	def stringSearch(self, text, pattern):
 		la = self.computePatternList(pattern)
 		i,j = 0,0

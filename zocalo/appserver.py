@@ -288,11 +288,13 @@ def main():
     port = int(os.environ.get("PORT", 8002))
     http_server.listen(port)
     
+    # Create the index for the first time during server startup
     global index
     index.createIndex()
 
     print ("Server Running on Port: ", port)
-    #tornado request for repeated function call
+    #Tornado request for repeated function call
+    #Tornado request to update the index every 60 seconds
     tornado.ioloop.PeriodicCallback(PeriodicFunctionHandler.generic_func,interval_ms).start()
     tornado.ioloop.IOLoop.instance().start()
 

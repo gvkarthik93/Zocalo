@@ -4,16 +4,19 @@ import tornado.ioloop
 import tornado.web
 import json
 import tornado.escape
+import pandas as pd
 from zocalo.service.user_service import UserService
 from zocalo.service.post_service import PostService
 from zocalo.service.course_service import CourseService
+from zocalo.service.index_service import IndexService
 from zocalo.util.auth_util import AuthUtil
 
 # Keep track of number of repeated function calls
 count = 0
+index = IndexService()
 
 # interval between function call in ms
-interval_ms = 1000
+interval_ms = 60000
 
 
 class PeriodicFunctionHandler():
@@ -21,7 +24,9 @@ class PeriodicFunctionHandler():
         global count
         count = count + 1
         #add function call to in memory db update here
-        #print("This function has been called " + str(count) + " times")
+        global index
+        index.updateIndex()
+        print("Index has been updated " + str(count) + " times")
 
 
 class MainHandler(tornado.web.RequestHandler):
@@ -282,9 +287,13 @@ def main():
     http_server = tornado.httpserver.HTTPServer(application)
     port = int(os.environ.get("PORT", 8002))
     http_server.listen(port)
+    
+    global index
+    index.createIndex()
+
     print ("Server Running on Port: ", port)
     #tornado request for repeated function call
-    #tornado.ioloop.PeriodicCallback(PeriodicFunctionHandler.generic_func,interval_ms).start()
+    tornado.ioloop.PeriodicCallback(PeriodicFunctionHandler.generic_func,interval_ms).start()
     tornado.ioloop.IOLoop.instance().start()
 
 if __name__ == "__main__":

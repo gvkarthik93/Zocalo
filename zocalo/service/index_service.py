@@ -1,10 +1,11 @@
-from user_service import UserService
-from post_service import PostService
+from zocalo.service.user_service import UserService
+from zocalo.service.post_service import PostService
+from zocalo.service.course_service import CourseService
 import pandas as pd
 import datetime
 import json
 
-class Index:
+class IndexService:
 	def __init__(self):
 		self.service = PostService()
 		self.dataFrame = None
@@ -15,7 +16,7 @@ class Index:
 		data = self.service.get_all_data()
 		self.dataFrame = pd.DataFrame(data)
 		self.lastUpdatedTime = datetime.datetime.now()
-		print (self.dataFrame)
+		return self.dataFrame
 
 	def updateIndex(self):
 		print ("Updating index")
@@ -24,7 +25,7 @@ class Index:
 		self.dataFrame.append(df)
 
 	def createIndex(self):
-		self.runTimeIndex()
+		return self.runTimeIndex()
 
 	def searchIndexedData(self,query):
 		documents = list()
@@ -73,6 +74,3 @@ class Index:
 					lookupArray[i] = 0
 					i+=1
 		return lookupArray
-
-id = IndexSchema()
-id.createIndex()

@@ -64,6 +64,7 @@ class IndexService:
 				return True
 		return False
 
+	# Computer the look up pattern for KMP string matching algorithm
 	def computePatternList(self, pattern):
 		index = 0
 		lookupArray = [0] * len(pattern)

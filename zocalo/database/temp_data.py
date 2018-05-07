@@ -7,10 +7,12 @@ from sqlalchemy.orm import sessionmaker
 from zocalo.database.schema import Base, School, Course, Tag, User, UserCourse, \
     Post, Reply, PostTag
 
+
 def hash_password(pwd):
     dk = hashlib.pbkdf2_hmac('sha256', pwd.encode(), b'salt',100000)
     password = binascii.hexlify(dk)
     return password
+
 
 def create_tmp_data(base, engine):
     base.metadata.bind = engine
@@ -66,11 +68,11 @@ def create_tmp_data(base, engine):
 
     # replies
     r1 = Reply(post_id=1, username="Conor", answer="Tomorrow at noon.", up_vote=1, down_vote=0,
-    	       create_time=datetime.datetime.now(), last_edit_time=datetime.datetime.now())
+               create_time=datetime.datetime.now(), last_edit_time=datetime.datetime.now())
     r2 = Reply(post_id=1, username="Ken_B", answer="Conor is right.", up_vote=1, down_vote=4,
-    	       create_time=datetime.datetime.now(), last_edit_time=datetime.datetime.now())
+               create_time=datetime.datetime.now(), last_edit_time=datetime.datetime.now())
     r3 = Reply(post_id=1, username="Ken_B", answer="Sorry, wrong answer, it should be tomorrow evening", 
-    	       up_vote=20, down_vote=1, create_time=datetime.datetime.now(), last_edit_time=datetime.datetime.now())
+               up_vote=20, down_vote=1, create_time=datetime.datetime.now(), last_edit_time=datetime.datetime.now())
 
     # post_tags
     pt1 = PostTag(post_id=1, tag_id=1)
@@ -113,4 +115,3 @@ def create_tmp_data(base, engine):
 if __name__ == '__main__':
     engine = create_engine('sqlite:///Zocalo.db')
     create_tmp_data(Base, engine)
-

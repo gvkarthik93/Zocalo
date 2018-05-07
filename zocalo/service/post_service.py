@@ -79,7 +79,7 @@ class PostService:
         for p in course.posts:
             if p.visibility_type.type == "public" or \
                 p.visibility_type.type == "private" and \
-                data["username"] == p.post_username:
+                    data["username"] == p.post_username:
                 d = {}
                 d["pid"] = p.id
                 d["header"] = p.header

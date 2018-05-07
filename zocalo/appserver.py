@@ -18,12 +18,13 @@ index = IndexService()
 # interval between function call in ms
 interval_ms = 60000
 
-
+# Periodic function to update the index
 class PeriodicFunctionHandler():
     def generic_func():
         global count
-        count = count + 1
         global index
+        
+        count = count + 1
         index.updateIndex()
         print("Index has been updated " + str(count) + " times")
 

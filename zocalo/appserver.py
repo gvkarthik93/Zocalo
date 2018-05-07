@@ -23,7 +23,6 @@ class PeriodicFunctionHandler():
     def generic_func():
         global count
         count = count + 1
-        #add function call to in memory db update here
         global index
         index.updateIndex()
         print("Index has been updated " + str(count) + " times")

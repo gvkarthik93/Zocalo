@@ -26,7 +26,7 @@ export default class Mainpage extends Component {
     super(props);
     this.state = {
       filter: "All",
-      sort: null,
+      sort: "time",
       posts: null,
       showAddBox: false,
       showCreateBox: false,
@@ -284,7 +284,17 @@ export default class Mainpage extends Component {
   }
   render() {
     var posts = [];
-    _.forEach(this.getFilteredData(), function(value) {
+    var postData = this.getFilteredData();
+    // Sort posts
+    if (this.state.sort == "time") {
+      console.log(postData);
+      postData = _.orderBy(postData, ['time'], ['desc']);
+    }
+    else if (this.state.sort == "vote") {
+      postData = _.orderBy(postData, ['vote'], ['desc']);
+    }
+    
+    _.forEach(postData, function(value) {
       var ava = <Avatar>{value.author[0]}</Avatar>;
       var tags = value.tags.map((tag) => (<Chip onClick={this.handleFilter.bind(this,tag)} style={styles.chip}>{tag}</Chip>));
       posts.push (
@@ -461,8 +471,8 @@ export default class Mainpage extends Component {
           floatingLabelText="Sort By"
           style={styles.sortDropdown}
         >
-          <MenuItem key={1} value={1} primaryText="Time" />
-          <MenuItem key={2} value={2} primaryText="Votes" />
+          <MenuItem value="time" primaryText="Time" />
+          <MenuItem value="vote" primaryText="Votes" />
         </SelectField>
       </div>
     )

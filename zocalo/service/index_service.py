@@ -29,6 +29,7 @@ class IndexService:
 	def createIndex(self):
 		return self.runTimeIndex()
 
+	# Search from the index
 	def searchIndexedData(self,query):
 		documents = list()
 		for (idx, row) in self.dataFrame.iterrows():
@@ -40,6 +41,7 @@ class IndexService:
 				documents.append(doc)
 		return documents
 
+	# Converte DataFrame to JSON
 	def convertDftoJson(self, data):
 		print ("Converting data to json format")
 		return json.dumps(data)
